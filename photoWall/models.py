@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 class User(models.Model):
 	name = models.CharField('User name', max_length=32)
@@ -18,7 +19,7 @@ class Picture(models.Model):
 class PhotoWall(models.Model):
 	name = models.CharField('Photo wall name', max_length=32)
 	creator = models.ForeignKey(User, related_name="creator+")
-	create_data = models.DateField()
+	create_data = models.DateField(default=datetime.now())
 	access_users = models.ManyToManyField(User)
 	description = models.CharField('Description', max_length=256)
 	def __unicode__(self):
