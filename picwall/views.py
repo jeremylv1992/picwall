@@ -9,6 +9,7 @@ from datetime import date
 from picwall.models import pw_pic, pic_comment
 from myForms import Login_Form
 import os
+import json
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 def index(request):
@@ -136,7 +137,11 @@ def publish_comment(request):
 	comment.save()
 	return HttpResponseRedirect('/picwall/pic_info/'+pic.pic_id)
 
-
-
-
+def return_pics(request):
+    import json
+    user = User.objects.get(username='jeremy')
+    pics = []
+    for pic in user.pw_pic_set.all():
+	pics.append(pic.toDICT())
+    return HttpResponse(json.dumps(pics))
 

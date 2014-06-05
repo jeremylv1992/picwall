@@ -12,6 +12,16 @@ class pw_pic(models.Model):
     def __unicode__(self):
 	return self.pic_id
 
+    def toDICT(self):
+	ff = []
+	for f in self._meta.fields:
+	    ff.append(f.name)
+	d = {}
+	for attr in ff:
+	    d[attr] = str(getattr(self, attr))
+	
+	return d
+
 
 class pw_user(models.Model):
     name = models.CharField(max_length = 20, primary_key = True)

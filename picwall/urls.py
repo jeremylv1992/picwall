@@ -19,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^pic_info/(?P<pic_id>\w+)/$', views.pic_info),
     url(r'^publish_comment/$', views.publish_comment),
     url(r'^home_walls/$', views.index_picWall),
+    url(r'^get_pics/$', views.return_pics),
 )
