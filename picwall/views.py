@@ -114,8 +114,8 @@ def index_pic(request):
 def index_picWall(request):
     if not request.user.is_authenticated():
 	return HttpResponseRedirect('/picwall/login/')
-    pics = request.user.pw_pic_set.all()
-    return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
+    picwalls = request.user.photowall_set.all()
+    return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
 
 
 
@@ -145,6 +145,7 @@ def return_pics(request):
 	pics.append(pic.toDICT())
     return HttpResponse(json.dumps(pics))
 
+<<<<<<< HEAD
 def get_photo_information_of_photo_wall(request, photo_wall_id):
 	if request.method == 'GET':
 		wall = PhotoWall.objects.get(pk=photo_wall_id)
@@ -186,3 +187,21 @@ def save_photo_wall(request):
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	return HttpResponse("Not POST!")
+=======
+def picwall_info(request, picwall_id):
+    return render(request, 'picwall/photo.html', {})
+
+
+def create_picwall(request):
+    if request.method == 'POST':
+	wall = PhotoWall()
+	wall.name = request.POST['name']
+	wall.description = request.POST['description']
+	wall.creator = request.user
+	wall.access_users.add(request.user)
+	wall.save()
+	return HttpResponse("create sucess")
+    return HttpResponse("create fail")
+
+
+>>>>>>> 656a8b1290103657703f53ac964758abb5eaa640

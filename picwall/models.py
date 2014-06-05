@@ -48,6 +48,7 @@ class PhotoWall(models.Model):
 	create_data = models.DateField(default=datetime.now())
 	access_users = models.ManyToManyField(User)
 	description = models.CharField('Description', max_length=256)
+<<<<<<< HEAD
 	def __unicode__(self):
 		return str(self.name)
 	def toDICT(self):
@@ -58,6 +59,11 @@ class PhotoWall(models.Model):
 		for attr in ff:
 			d[attr] = str(getattr(self, attr))
 		return d
+=======
+	create_date  = models.DateField()
+	def PhotoInformation__unicode__(self):
+		return self.name
+>>>>>>> 656a8b1290103657703f53ac964758abb5eaa640
 
 class PhotoInformation(models.Model):
 	picture = models.ForeignKey(pw_pic)

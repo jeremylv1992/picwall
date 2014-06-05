@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+        <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="{{STATIC_URL}}js/upload1.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row clearfix">
+        <div class="col-md-12 column">
+          <div class="page-header">
+            <div class="row clearfix">
+              <div class="col-md-10 column">
+                <h1>
+                  Web Application Demo <small>A better way for photo sharing</small>
+                </h1>
+              </div>
+              <div class="col-md-2 column">
+
+                <h1>
+                  <a class="btn" href="#">{{username}}</a>
+                  <a class="btn btn-primary" href="/picwall/logout">Quit</a>
+                </h1>
+
+                <!-- Modal (Upload Photo) -->
+                <div class="modal fade" id="myUploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Upload Photo</h4>
+                      </div>
+                      
+                      <div class="modal-body">                
+                        <form role="form" id="photoForm" action="/picwall/upload_pic/" method="post" enctype="multipart/form-data">{% csrf_token %}                  
+                          <div class="form-group">
+                            <label for="input-img">Photo</label>
+                            <div id="preview"></div>
+                            <input type="file" name='pic' accept="image/*" id="input-img" onchange="preview(this)">
+                            <p class="help-block">Select a photo</p>
+                          </div>
+                          <div class="form-group">
+                            <label for="img-title">Title of photo</label>
+                            <input type="text" name='title' class="form-control" id="img-title" placeholder="input the title of your photo">
+                          </div>
+                          <div class="form-group">
+                            <label for="image-dsr">Description of photo</label>
+                            <textarea id="image-dsr" name='desc' class="form-control" rows="3" placeholder="briefly describe your photo" ></textarea>
+                          </div>
+                        </form>
+                      </div>
+                      
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="submitPhotoBtn" class="btn btn-default" data-dismiss="modal">Submit</button>
+                      </div>
+                    </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+                <!-- Modal (Create Wall)-->
+                <div class="modal fade" id="myCreateWallModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Create Picture Wall</h4>
+                      </div>
+                      
+                      <div class="modal-body">                
+                        <form role="form" id="wallForm" action="#" method="post" enctype="multipart/form-data">
+                          <div class="form-group">
+                            <label for="img-title">Name of Picture Wall</label>
+                            <input type="text" class="form-control" id="img-title" placeholder="input the name of picture wall">
+                          </div>
+                          <div class="form-group">
+                            <label for="image-dsr">Description of Picture Wall</label>
+                            <textarea id="image-dsr" class="form-control" rows="3" placeholder="briefly describe your picture wall" ></textarea>
+                          </div>
+                        </form>
+                      </div>
+                      
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" id="submitWallBtn" class="btn btn-default" data-dismiss="modal">Submit</button>
+                      </div>
+                    </div><!-- /.modal-content -->
+                  </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+
+              </div>
+            </div>
+          </div>
+          <ul class="nav nav-tabs">
+            <li class="active">
+              <a href="/picwall/home">Pictures</a>
+            </li>
+            <li>
+              <a href="/picwall/home_walls">Picture Walls</a>
+            </li>
+            <li class="dropdown pull-right">
+               <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<strong class="caret"></strong></a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a data-toggle="modal" data-target="#myUploadPhotoModal">Upload</a>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                  <a data-toggle="modal" data-target="#myCreateWallModal">Create Wall</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <br/>
+          <div class="row">
+	    {% for picwall in picwalls %}
+            <div class="col-md-4">
+              <div class="thumbnail">
+                <img alt="300x200" src="{{STATIC_URL}}imgs/001.JPG" />
+                <div class="caption">
+                  <h3>
+		    {{picwall.name}}
+                  </h3>
+                  <p>
+		    {{picwall.description}}
+                  </p>
+                  <p>
+                    <a class="btn btn-primary" href="/picwall/picwall_info/{{picwall.id}}">进入</a> <a class="btn" href="#">Action</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+	{% endfor %} 
+          </div>
+          
+          <ul class="pagination">
+            <li>
+              <a href="#">Prev</a>
+            </li>
+            <li>
+              <a href="#">1</a>
+            </li>
+            <li>
+              <a href="#">2</a>
+            </li>
+            <li>
+              <a href="#">3</a>
+            </li>
+            <li>
+              <a href="#">4</a>
+            </li>
+            <li>
+              <a href="#">5</a>
+            </li>
+            <li>
+              <a href="#">Next</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+  </body>
+</html>
