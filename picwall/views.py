@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 import time
 from datetime import date
-from picwall.models import pw_pic, pic_comment
+from picwall.models import pw_pic, pic_comment, PhotoWall, PhotoInformation
 from myForms import Login_Form
 import os
 import json
@@ -114,8 +114,8 @@ def index_pic(request):
 def index_picWall(request):
     if not request.user.is_authenticated():
 	return HttpResponseRedirect('/picwall/login/')
-    pics = request.user.pw_pic_set.all()
-    return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
+    picwalls = request.user.photowall_set.all()
+    return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
 
 
 
@@ -144,4 +144,20 @@ def return_pics(request):
     for pic in user.pw_pic_set.all():
 	pics.append(pic.toDICT())
     return HttpResponse(json.dumps(pics))
+
+def picwall_info(request, picwall_id):
+    return render(request, 'picwall/photo.html', {})
+
+
+def create_picwall(request):
+    if request.method == 'POST':
+	wall = PhotoWall()
+	wall.name = request.POST['name']
+	wall.description = request.POST['description']
+	wall.creator = request.user
+	wall.access_users.add(request.user)
+	wall.save()
+	return HttpResponse("create sucess")
+    return HttpResponse("create fail")
+
 

@@ -49,7 +49,7 @@ class PhotoWall(models.Model):
 	creator = models.ForeignKey(User, related_name="creator+")
 	access_users = models.ManyToManyField(User)
 	description = models.CharField('Description', max_length=256)
-	createdDate  = models.DateField()
+	create_date  = models.DateField()
 	def PhotoInformation__unicode__(self):
 		return self.name
 

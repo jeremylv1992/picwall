@@ -20,4 +20,6 @@ urlpatterns = patterns('',
     url(r'^publish_comment/$', views.publish_comment),
     url(r'^home_walls/$', views.index_picWall),
     url(r'^get_pics/$', views.return_pics),
+    url(r'^picwall_info/(?P<picwall_id>\d+)$', views.picwall_info),
+    url(r'^create_picwall/$', views.create_picwall),
 )
