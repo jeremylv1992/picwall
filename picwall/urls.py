@@ -20,4 +20,8 @@ urlpatterns = patterns('',
     url(r'^publish_comment/$', views.publish_comment),
     url(r'^home_walls/$', views.index_picWall),
     url(r'^get_pics/$', views.return_pics),
+	url(r'^get_photo_information_of_photo_wall/$', views.get_photo_information_of_photo_wall, name='get_photo_information_of_photo_wall'),
+	url(r'^create_photo_wall/$', views.create_photo_wall, name='create_photo_wall'),
+	url(r'^photo_wall/(?P<photo_wall_id>\d+)/$', views.view_photo_wall, name='view_photo_wall'),
+	url(r'^save_photo_wall/$', views.save_photo_wall, name='save_photo_wall')
 )
