@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>picture wall login</title>
+		<meta http-equiv="content-type" charset="UTF-8"/>
+		<link rel="stylesheet" href = "{{STATIC_URL}}dist/css/bootstrap.css" />
+		<link rel="stylesheet" href = "{{STATIC_URL}}dist/css/bootstrap.min.css" />
+		<link rel="stylesheet" href = "{{STATIC_URL}}dist/css/bootstrap-theme.css" />
+		<link rel="stylesheet" href = "{{STATIC_URL}}dist/css/bootstrap-theme.min.css" />
+	</head>
+	
+	<script type="text/javascript">
+		function check_password()
+		{
+		
+			var ps1 = eval(document.getElementById("inputPassword3")).value;
+			var checkPs = eval(document.getElementById("checkPassword")).value;
+
+			if (ps1 != checkPs)
+			{
+				alert("password and checkPassword are not same");
+			}
+		}
+	</script>
+	
+	<body>
+		<div class="panel panel-default">
+		    <div class="panel-body"><span class="label label-warning text-center">PROMPT:  {{register_prompt}}</span></div>
+		</div>
+		<div class="container">
+			<div class="modal-dialog">
+				<div class="rows">
+					<div class="panel panel-default">
+						<div class="panel-heading"> 
+							<h1 class="text-center">Register</h1>
+
+						</div>
+						<div class="panel-body">
+							<form class="form-horizontal" role="form" action="/picwall/register/" method="post">{% csrf_token  %}
+								 <div class="form-group">
+									<label for="" class="col-sm-3 control-label">UserName</label>
+									<div class="col-sm-9">
+										<input type="text" name="name" class="form-control" placeholder="UserName">
+                                
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="inputEmail3" class="col-sm-3 control-label">Email</label>
+									<div class="col-sm-9">
+										<input type="email" name="email" class="form-control" id="inputEmail3" placeholder="Email" required="">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="inputPassword3" class="col-sm-3 control-label">Password</label>
+									<div class="col-sm-9">
+										<input type="password" name="password" class="form-control" id="inputPassword3" placeholder="Password" required="">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label for="checkPassword" class="col-sm-3 control-label" onblur="check_password()">CheckPassword</label>
+									<div class="col-sm-9">
+										<input type="password" name="checkPassword" class="form-control" id="checkPassword" placeholder="Password" required="">
+									</div>
+								</div>
+								
+								
+								<div class="form-group last">
+									<div class="col-sm-offset-3 col-sm-9">
+										<button type="submit" class="btn btn-success btn-sm"  >Register</button>
+										<button type="reset" class="btn btn-default btn-sm">Reset</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
