@@ -114,8 +114,8 @@ def index_pic(request):
 def index_picWall(request):
     if not request.user.is_authenticated():
 	return HttpResponseRedirect('/picwall/login/')
-    pics = request.user.pw_pic_set.all()
-    return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
+    picwalls = request.user.photowall_set.all()
+    return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
 
 
 
@@ -145,23 +145,27 @@ def return_pics(request):
 	pics.append(pic.toDICT())
     return HttpResponse(json.dumps(pics))
 
+def picwall_info(request, picwall_id):
+    return render(request, 'picwall/photo.html', {})
+
+
+def create_picwall(request):
+    if request.method == 'POST':
+	wall = PhotoWall()
+	wall.name = request.POST['name']
+	wall.description = request.POST['description']
+	wall.creator = request.user
+	wall.save()
+	wall.access_users.add(request.user)
+	return HttpResponseRedirect('/picwall/home_walls/')
+
+
 def get_photo_information_of_photo_wall(request, photo_wall_id):
 	if request.method == 'GET':
 		wall = PhotoWall.objects.get(pk=photo_wall_id)
 		picture_information = PhotoInformation.objects.filter(photo_wall=wall)
 		return HttpResponse(serializers.serialize("json", wall))
 	return HttpResponse("")
-
-def create_photo_wall(request):
-	if request.method == 'POST':
-		wall = PhotoWall()
-		wall.name = request.POST['name']
-		wall.description = request.POST['description']
-		wall.creator = request.user
-		wall.access_users.add(request.user)
-		wall.save()
-		return HttpResponse("create sucess")
-	return HttpResponse("create fail")
 
 def view_photo_wall(request, photo_wall_id):
 	wall = PhotoWall.objects.get(pk=photo_wall_id)

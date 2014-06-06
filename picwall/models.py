@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+# Create your models here.
 
 class pw_pic(models.Model):
     pic_id   = models.CharField(max_length = 100)
@@ -42,13 +43,13 @@ class pic_comment(models.Model):
     class Meta:
 	ordering = ('published_date',)
 
+
 class PhotoWall(models.Model):
 	name = models.CharField('Photo wall name', max_length=32)
 	creator = models.ForeignKey(User, related_name="creator+")
 	create_data = models.DateField(default=datetime.now())
 	access_users = models.ManyToManyField(User)
 	description = models.CharField('Description', max_length=256)
-<<<<<<< HEAD
 	def __unicode__(self):
 		return str(self.name)
 	def toDICT(self):
@@ -59,11 +60,6 @@ class PhotoWall(models.Model):
 		for attr in ff:
 			d[attr] = str(getattr(self, attr))
 		return d
-=======
-	create_date  = models.DateField()
-	def PhotoInformation__unicode__(self):
-		return self.name
->>>>>>> 656a8b1290103657703f53ac964758abb5eaa640
 
 class PhotoInformation(models.Model):
 	picture = models.ForeignKey(pw_pic)
@@ -80,3 +76,4 @@ class PhotoInformation(models.Model):
 		for attr in ff:
 			d[attr] = str(getattr(self, attr))
 		return d
+

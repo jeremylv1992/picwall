@@ -77,20 +77,20 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="myModalLabel">Create Picture Wall</h4>
                       </div>
-                      
+                       
                       <div class="modal-body">                
-                        <form role="form" id="wallForm" action="#" method="post" enctype="multipart/form-data">
+                        <form role="form" id="wallForm" action="/picwall/create_picwall/" method="post" enctype="multipart/form-data">{% csrf_token %}
                           <div class="form-group">
                             <label for="img-title">Name of Picture Wall</label>
-                            <input type="text" class="form-control" id="img-title" placeholder="input the name of picture wall">
+                            <input type="text" name='name' class="form-control" id="img-title" placeholder="input the name of picture wall">
                           </div>
                           <div class="form-group">
                             <label for="image-dsr">Description of Picture Wall</label>
-                            <textarea id="image-dsr" class="form-control" rows="3" placeholder="briefly describe your picture wall" ></textarea>
+                            <textarea id="image-dsr" name='description'  class="form-control" rows="3" placeholder="briefly describe your picture wall" ></textarea>
                           </div>
                         </form>
                       </div>
-                      
+                     
                       <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button type="submit" id="submitWallBtn" class="btn btn-default" data-dismiss="modal">Submit</button>

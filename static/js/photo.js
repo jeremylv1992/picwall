@@ -7,7 +7,7 @@ var PHOTOPADDING = 7;
 var PHOTOPADDINGDOWN = 35;
 var IPADDR = "172.18.158.164:8888";
 
-
+ 
 $(function()
 { 
     //div.style.width="40%"; 
@@ -36,7 +36,7 @@ function init()
     });
     
     //**********************************************
-    //注册鼠标事件
+    // set mouse
     //**********************************************
     /*
     $("body").mousedown(function(){
@@ -57,12 +57,24 @@ function init()
 function appendBarPhotos()
 {
     //IPADDR+"/picwall/get_pics/"
-    $.getJSON("http://172.18.158.164:8888/picwall/get_pics/", function(result){
-        alert("ok");
-        //alert(content.responseText);
-        //$("#myDiv").html(htmlobj.responseText);
+    /*
+    $.ajax({ url: "/picwall/get_pics/", success: function(result){
+            var varphotos = result.evalJSON();
+            alert(varphotos);
+        }});
+    */
+    $.getJSON("/picwall/get_pics/", function(data){
+        var str="";
+        for(var i=0; i<data.length; i++)
+        {
+            str+="<img class='barphotos' class='list-group-item' src='/picwall/pics/"+data[i]["pic_id"]+
+                "/' id='photo" + i.toString() + "'alt='404' onmousedown='mouseDown(event)' >";
+            //alert(data[i]["pic_id"]);
+        }
+        $("#sidebar").append(str);
     });
-            
+    
+    /* 
     var str="";
     for(var i=0; i<6; i++)
     {
@@ -70,6 +82,7 @@ function appendBarPhotos()
         ".JPG' id='photo" + i.toString() + "'alt='404' onmousedown='mouseDown(event)' >";
     }
     $("#sidebar").append(str);
+    */
 }
 
 function mouseDown(ev)
@@ -105,7 +118,8 @@ function mouseUp(ev)
     {
         var canvas = $("#floatCanvas");
         canvas.attr("id", "");
-        canvas.attr("class", "wallphotos");
+        var oriClass = canvas.attr("class");
+        canvas.attr("class", oriClass + " wallphotos");
         canvas.css("z-index", "0");
         $("body").append(canvas);
         //setSelect(ev.target);
@@ -127,6 +141,9 @@ function addCanvas(src, dest, event)
     g_deltaY = event.pageY - top + PHOTOPADDING;
 
     //canvas属性设置
+    var photoID = src.split("/");
+    photoID = photoID[photoID.length-1];
+    //alert(photoID);
     var shadowWidth = 6;
     canvas.css("top", top - PHOTOPADDING);
     canvas.css("left", left - PHOTOPADDING);
@@ -134,10 +151,13 @@ function addCanvas(src, dest, event)
     canvas.css("height", height + shadowWidth);
     canvas.attr("width", width + shadowWidth);
     canvas.attr("height", height + shadowWidth);
+    canvas.attr("class", photoID);
     canvas.draggable({ containment:"#main"});
     canvas.mousedown(function(ev){
         setSelect(ev);
     });
+
+    
 
     //绘制canvas
     var ctx = $("#floatCanvas")[0].getContext("2d");
@@ -173,8 +193,14 @@ function cancelSelect()
 
 function save()
 {
+    var jsonStr = "{"
     $(".wallphotos").each(function(){
-        alert($(this));
-    });
 
+        var pid = ($(this).attr("class").split(" "))[0];
+        var left = $(this).css("left");
+        var top = $(this).css("top");
+        jsonStr += "[\"pid\":\"" + pid + "\",\"left\":\"" + left + "\",\"top\":\"" + top + "\"],";
+    });
+    jsonStr += "}";
+    alert(jsonStr);
 }
