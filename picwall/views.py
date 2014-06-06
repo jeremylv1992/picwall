@@ -139,10 +139,9 @@ def publish_comment(request):
 
 def return_pics(request):
     import json
-    user = User.objects.get(username='jeremy')
     pics = []
-    for pic in user.pw_pic_set.all():
-	pics.append(pic.toDICT())
+    for pic in request.user.pw_pic_set.all():
+		pics.append(pic.toDICT())
     return HttpResponse(json.dumps(pics))
 
 def picwall_info(request, picwall_id):
@@ -190,4 +189,13 @@ def save_photo_wall(request):
 			photo_infomation = PhotoInformation(picture=pic, positionX=px, positionY=py)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
-	return HttpResponse("Not POST!")
+	elif request.method == 'GET':
+		import HTMLParser
+		html_parser = HTMLParser.HTMLParser()
+		text = request.GET['text'];
+		text = html_parser.unescape(text)
+		wall_id = request.GET['wid']
+		wall = PhotoWall.objects.get(pk=wall_id)
+		print text
+		return HttpResponse("Save OK!")
+	return HttpResponse("Not valid method!")
