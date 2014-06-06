@@ -150,13 +150,14 @@ def picwall_info(request, picwall_id):
 
 
 def create_picwall(request):
-    if request.method == 'POST':
-	wall = PhotoWall()
-	wall.name = request.POST['name']
-	wall.description = request.POST['description']
-	wall.creator = request.user
-	wall.save()
-	wall.access_users.add(request.user)
+	if request.method == 'POST':
+		wall = PhotoWall()
+		wall.name = request.POST['name']
+		wall.description = request.POST['description']
+		wall.creator = request.user
+		wall.save()
+		wall.access_users.add(request.user)
+		wall.save()
 	return HttpResponseRedirect('/picwall/home_walls/')
 
 
@@ -183,8 +184,8 @@ def save_photo_wall(request):
 		l = json.loads(text)
 		PhotoInformation.objects.filter(photo_wall=wall).delete()
 		for pic in l:
-			px = pic['X']
-			py = pic['Y']
+			px = pic['left']
+			py = pic['top']
 			pic = Picture.objects.get(pk=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, positionX=px, positionY=py)
 			photo_infomation.save()

@@ -64,8 +64,8 @@ class PhotoWall(models.Model):
 class PhotoInformation(models.Model):
 	picture = models.ForeignKey(pw_pic)
 	photo_wall = models.ForeignKey(PhotoWall)
-	positionX = models.FloatField('Top')
-	positionY = models.FloatField('Left')
+	left = models.FloatField()
+	top = models.FloatField()
 	def __unicode__(self):
 		return str(self.picture) + " of " + str(self.photo_wall)
 	def toDICT(self):
