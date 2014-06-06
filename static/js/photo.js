@@ -15,7 +15,7 @@ $(function()
     // /div.style.overflow="auto"; 
     init();
     appendBarPhotos();
-    alert("finish");
+    //alert("finish");
 });
 
 function init()
@@ -31,7 +31,8 @@ function init()
 
     $("#topbarleft>button").attr("disabled", true);
     $("#topbarleft>button").click(function(){
-        g_selected.remove();
+        //alert(g_selected);
+        $(g_selected).remove();
         cancelSelect();
     });
     
@@ -56,13 +57,6 @@ function init()
 
 function appendBarPhotos()
 {
-    //IPADDR+"/picwall/get_pics/"
-    /*
-    $.ajax({ url: "/picwall/get_pics/", success: function(result){
-            var varphotos = result.evalJSON();
-            alert(varphotos);
-        }});
-    */
     $.getJSON("/picwall/get_pics/", function(data){
         var str="";
         for(var i=0; i<data.length; i++)
@@ -74,15 +68,6 @@ function appendBarPhotos()
         $("#sidebar").append(str);
     });
     
-    /* 
-    var str="";
-    for(var i=0; i<6; i++)
-    {
-        str+="<img class='barphotos' class='list-group-item' src='photos/00"+i.toString()+
-        ".JPG' id='photo" + i.toString() + "'alt='404' onmousedown='mouseDown(event)' >";
-    }
-    $("#sidebar").append(str);
-    */
 }
 
 function mouseDown(ev)
@@ -142,7 +127,7 @@ function addCanvas(src, dest, event)
 
     //canvas Ù–‘…Ë÷√
     var photoID = src.split("/");
-    photoID = photoID[photoID.length-1];
+    photoID = photoID[photoID.length-2];
     //alert(photoID);
     var shadowWidth = 6;
     canvas.css("top", top - PHOTOPADDING);
@@ -151,12 +136,14 @@ function addCanvas(src, dest, event)
     canvas.css("height", height + shadowWidth);
     canvas.attr("width", width + shadowWidth);
     canvas.attr("height", height + shadowWidth);
-    canvas.attr("class", photoID);
     canvas.draggable({ containment:"#main"});
+    var newclass = canvas.attr("class");
+    newclass = photoID+" "+newclass;
+    //alert(newclass);
+    canvas.attr("class", photoID+" "+newclass);
     canvas.mousedown(function(ev){
         setSelect(ev);
     });
-
     
 
     //ªÊ÷∆canvas
@@ -202,5 +189,17 @@ function save()
         jsonStr += "[\"pid\":\"" + pid + "\",\"left\":\"" + left + "\",\"top\":\"" + top + "\"],";
     });
     jsonStr += "}";
-    alert(jsonStr);
+
+    var url = window.location.href;
+    var wid = url.split("/");
+    wid = wid[wid.length-1];
+    theurl = "/picwall/save_photo_wall/";
+    //$.post(url,{"text":jsonStr, "wid":wid});
+    $.ajax({ url : theurl,
+        data : {"wid":wid, "text":jsonStr},
+        success: function(data){
+        alert(data);
+      }});
+
+    alert(url);
 }

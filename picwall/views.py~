@@ -140,12 +140,15 @@ def publish_comment(request):
 def return_pics(request):
     import json
     pics = []
-
+<<<<<<< HEAD
     if request.user.is_authenticated():	
 	user = User.objects.get(username='jeremy')
 	for pic in user.pw_pic_set.all():
 	    pics.append(pic.toDICT())
-
+=======
+    for pic in request.user.pw_pic_set.all():
+		pics.append(pic.toDICT())
+>>>>>>> 330d03848031af2f340b05f8d39f8aaac23af964
     return HttpResponse(json.dumps(pics))
 
 def picwall_info(request, picwall_id):
