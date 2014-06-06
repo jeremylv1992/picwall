@@ -16,7 +16,7 @@ $(function()
     init();
     loadBarPhotos();
     loadWallPhotos();
-    alert("finish");
+    //alert("finish");
 });
 
 function init()
