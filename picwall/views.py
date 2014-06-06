@@ -101,7 +101,7 @@ def upload_pic(request):
 
 
 def find_pic(request, pic_id):
-	image_data = open('/home/jeremy/JJ/files/images/'+pic_id, "rb").read()
+	image_data = open(os.path.join(BASE_DIR,'files/images/'+pic_id), "rb").read()
 	return HttpResponse(image_data, mimetype="image/jpeg")
 
 
@@ -139,10 +139,11 @@ def publish_comment(request):
 
 def return_pics(request):
     import json
-    user = User.objects.get(username='jeremy')
     pics = []
-    for pic in user.pw_pic_set.all():
-	pics.append(pic.toDICT())
+    if request.user.is_authenticated():	
+	user = User.objects.get(username='jeremy')
+	for pic in user.pw_pic_set.all():
+	    pics.append(pic.toDICT())
     return HttpResponse(json.dumps(pics))
 
 def picwall_info(request, picwall_id):
