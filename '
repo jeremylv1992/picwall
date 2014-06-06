@@ -183,32 +183,34 @@ def save_photo_wall(request):
 	print request.method
 	if request.method == 'POST':
 		text = request.POST['text'];
-		wid = request.POST['wid']
-		wall = PhotoWall.objects.get(pk=wid)
-
-		PhotoInformation.objects.filter(photo_wall=wall).delete()
-
+		wall_id = request.POST['wid']
+		wall = PhotoWall.objects.get(pk=wall_id)
 		l = json.loads(text)
+		PhotoInformation.objects.filter(photo_wall=wall).delete()
 		for pic in l:
-			x = pic['left']
-			y = pic['top']
-			pic = pw_pic.objects.get(pic_id=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
+			px = pic['left']
+			py = pic['top']
+			pic = Picture.objects.get(pk=pic['pid'])
+			photo_infomation = PhotoInformation(picture=pic, positionX=px, positionY=py)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	elif request.method == 'GET':
+		import HTMLParser
 		text = request.GET['text'];
+		html_parser = HTMLParser.HTMLParser()
+		text = html_parser.unescape(text)
+
 		wid = request.GET['wid']
 		wall = PhotoWall.objects.get(pk=wid)
 
 		PhotoInformation.objects.filter(photo_wall=wall).delete()
 
+		print text
+		l = [{"pid":"a_Fri_Jun__6_08_25_26_2014_1","left":"688.533px","top":"247.533px"},]
+		text2 = json.dumps(l)
+		print text2
+		if text != text2:
+			print "?????"
 		l = json.loads(text)
-		for pic in l:
-			x = pic['left']
-			y = pic['top']
-			pic = pw_pic.objects.get(pic_id=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
-			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	return HttpResponse("Not valid method!")

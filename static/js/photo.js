@@ -180,26 +180,24 @@ function cancelSelect()
 
 function save()
 {
-    var jsonStr = "{"
+    var jsonStr = "["
     $(".wallphotos").each(function(){
 
         var pid = ($(this).attr("class").split(" "))[0];
         var left = $(this).css("left");
         var top = $(this).css("top");
-        jsonStr += "[\"pid\":\"" + pid + "\",\"left\":\"" + left + "\",\"top\":\"" + top + "\"],";
+        jsonStr += "{\"pid\":\"" + pid + "\",\"left\":\"" + left + "\",\"top\":\"" + top + "\"},";
     });
-    jsonStr += "}";
+	jsonStr = jsonStr.substring(0, jsonStr.length-1)
+    jsonStr += "]";
 
     var url = window.location.href;
     var wid = url.split("/");
     wid = wid[wid.length-1];
     theurl = "/picwall/save_photo_wall/";
-    //$.post(url,{"text":jsonStr, "wid":wid});
     $.ajax({ url : theurl,
         data : {"wid":wid, "text":jsonStr},
         success: function(data){
         alert(data);
       }});
-
-    alert(url);
 }
