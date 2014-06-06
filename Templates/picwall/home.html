@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>upload images</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+
+	<script type="text/javascript" src="{{STATIC_URL}}js/upload.js"></script>
+  	
+  </head>
+  <body>
+	<div class="row">
+	  <div class="col-md-8 col-md-offset-4">
+		<button class="upload btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+		  Upload
+		</button>
+
+		<!-- Modal -->
+	<!--	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">-->
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">上传图片</h4>
+			  </div>
+			  
+			  <div class="modal-body">				
+				<form role="form" action="/picwall/upload_pic/" method="post" enctype="multipart/form-data">{% csrf_token %}				  
+				  <div class="form-group">
+					<label for="input-img">图片</label>
+					<div id="preview"></div>
+					<input type="file" name='pic' accept="image/*" id="input-img" onchange="preview(this)">
+					<p class="help-block">请选择一张图片</p>
+				  </div>
+				  <div class="form-group">
+					<label for="img-title">图片标题</label>
+					<input type="text" name='title' class="form-control" id="img-title" placeholder="输入图片名称">
+				  </div>
+				  <div class="form-group">
+					<label for="image-dsr">图片简述</label>
+					<textarea id="image-dsr" name='desc' class="form-control" rows="3" placeholder="简单描述下你的图片呗" ></textarea>
+				  </div>
+				   
+				<div class="modal-footer">
+				    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				    <button type="submit" class="btn btn-default" data-dismiss="modal">提交</button>
+				</div>
+				
+				</form>
+			  </div>
+			  
+			</div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+<!--		</div><!-- /.modal --> -->
+	  </div>
+	</div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <a href='/picwall/logout/'>log out</a>
+  </body>
+
+
+
+
+
+
+
+
+
