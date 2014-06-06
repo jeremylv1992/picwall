@@ -10,6 +10,7 @@ from picwall.models import pw_pic, pic_comment, PhotoWall, PhotoInformation
 from myForms import Login_Form
 import os
 import simplejson as json
+from django.core import serializers
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 def index(request):
@@ -164,11 +165,14 @@ def create_picwall(request):
 	return HttpResponseRedirect('/picwall/home_walls/')
 
 
-def get_photo_information_of_photo_wall(request, photo_wall_id):
+def get_photo_information_of_photo_wall(request):
 	if request.method == 'GET':
-		wall = PhotoWall.objects.get(pk=photo_wall_id)
-		picture_information = PhotoInformation.objects.filter(photo_wall=wall)
-		return HttpResponse(serializers.serialize("json", wall))
+		wid = request.GET['wid']
+		wall = PhotoWall.objects.get(pk=wid)
+		l = []
+		for pic_in in PhotoInformation.objects.filter(photo_wall=wall):
+			l.append(pic_in.toDICT())
+		return HttpResponse(json.dumps(l))
 	return HttpResponse("")
 
 def view_photo_wall(request, photo_wall_id):
