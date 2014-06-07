@@ -263,7 +263,8 @@ function cancelSelect()
 
 function save()
 {
-    var jsonStr = "["
+    var jsonStr = "[";
+	var first = true;
     $(".wallphotos").each(function(){
 
         var pid = ($(this).attr("class").split(" "))[0];
@@ -276,9 +277,12 @@ function save()
             "\",\"top\":\"" + top + 
             "\",\"width\":\"" + width + 
             "\",\"height\":\"" + height + 
-            "\"},";
+            "\"}";
+		if (first)
+			first = false;
+		else
+			jsonStr += ","
     });
-	jsonStr = jsonStr.substring(0, jsonStr.length-1)
     jsonStr += "]";
 
     var url = window.location.href;

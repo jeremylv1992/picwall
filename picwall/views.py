@@ -109,11 +109,11 @@ def index_picWall(request):
 
 
 def pic_info(request, pic_id):
-    if not request.user.is_authenticated():
-	return HttpResponseRedirect('/picwall/home')
-    pic = get_object_or_404(Picture, pic_id = pic_id)
-    comments = pic.PictureComment_set.all()
-    return render(request, 'picwall/comment.html', {'pic_info':pic,'comments':comments,})
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/picwall/home')
+	thepic = get_object_or_404(Picture, pic_id = pic_id)
+	comments = PictureComment.objects.filter(pic=thepic)
+	return render(request, 'picwall/comment.html', {'pic_info':thepic,'comments':comments,})
 
 def publish_comment(request):
     if request.method == 'POST':
