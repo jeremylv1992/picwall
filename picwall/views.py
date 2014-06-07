@@ -182,7 +182,7 @@ def save_photo_wall(request):
 		for pic in l:
 			x = pic['left']
 			y = pic['top']
-			pic = Picture.objects.get(pic_id=pic['pic_id'])
+			pic = Picture.objects.get(pic_id=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
@@ -200,7 +200,7 @@ def save_photo_wall(request):
 			y = pic['top']
 			w = pic['width']
 			h = pic['height']
-			pic = Picture.objects.get(pic_id=pic['pic_id'])
+			pic = Picture.objects.get(pic_id=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
