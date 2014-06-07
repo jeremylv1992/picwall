@@ -1,55 +1,42 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-# Create your models here.
 
-class pw_pic(models.Model):
-    pic_id   = models.CharField(max_length = 100)
-    pic_name = models.CharField(max_length = 50)
-    pic_desc = models.CharField(max_length = 100)
-    pic_url  = models.CharField(max_length = 200)
-    pic_upload_time = models.DateTimeField('date published')
-    pic_author = models.ForeignKey(User)     
-    def __unicode__(self):
-	return self.pic_id
+class Picture(models.Model):
+	pic_id   = models.CharField(max_length = 100)
+	pic_name = models.CharField(max_length = 50)
+	pic_desc = models.CharField(max_length = 100)
+	pic_url  = models.CharField(max_length = 200)
+	pic_upload_time = models.DateTimeField()
+	pic_author = models.ForeignKey(User)     
+	def __unicode__(self):
+		return self.pic_id
+	def toDICT(self):
+		ff = []
+		for f in self._meta.fields:
+		    ff.append(f.name)
+		d = {}
+		for attr in ff:
+		    d[attr] = str(getattr(self, attr))
+		return d
 
-    def toDICT(self):
-	ff = []
-	for f in self._meta.fields:
-	    ff.append(f.name)
-	d = {}
-	for attr in ff:
-	    d[attr] = str(getattr(self, attr))
-	
-	return d
-
-
-class pw_user(models.Model):
-    name = models.CharField(max_length = 20, primary_key = True)
-    email = models.CharField(max_length = 50)
-#   pics = models.ManyToManyField(pw_pic, through = 'pw_user_pic')
-    def __unicode__(self):
-	return self.name
-
-class pic_comment(models.Model):
-    content = models.CharField(max_length=100)
-    author = models.ForeignKey(User)
-    pic = models.ForeignKey(pw_pic)
-    published_date = models.DateField()
-    
-    def __unicode__(self):
-	return self.content + '@' + str(self.pic)
-
-    class Meta:
-	ordering = ('published_date',)
+class PictureComment(models.Model):
+	content = models.CharField(max_length=100)
+	author = models.ForeignKey(User, related_name="commenter")
+	pic = models.ForeignKey(Picture)
+	published_date = models.DateField()
+	def __unicode__(self):
+		return self.content + '@' + str(self.pic)
+	class Meta:
+		ordering = ('published_date',)
 
 
 class PhotoWall(models.Model):
-	name = models.CharField('Photo wall name', max_length=32)
+	name = models.CharField(max_length=32)
 	creator = models.ForeignKey(User, related_name="creator+")
 	create_data = models.DateField(default=datetime.now())
-	access_users = models.ManyToManyField(User)
-	description = models.CharField('Description', max_length=256)
+	access_users = models.ManyToManyField(User, related_name="access_user_+")
+	description = models.CharField(max_length=256)
 	def __unicode__(self):
 		return str(self.name)
 	def toDICT(self):
@@ -62,10 +49,12 @@ class PhotoWall(models.Model):
 		return d
 
 class PhotoInformation(models.Model):
-	picture = models.ForeignKey(pw_pic)
+	picture = models.ForeignKey(Picture)
 	photo_wall = models.ForeignKey(PhotoWall)
 	left = models.CharField(max_length=16)
 	top = models.CharField(max_length=16)
+	width = models.CharField(max_length=16)
+	height = models.CharField(max_length=16)
 	def __unicode__(self):
 		return str(self.picture) + " of " + str(self.photo_wall)
 	def toDICT(self):

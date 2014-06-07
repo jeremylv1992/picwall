@@ -15,6 +15,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
+
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'Photo_Wall',
 		'USER': 'root',
@@ -22,6 +23,7 @@ DATABASES = {
 		'HOST': '127.0.0.1',
 		'PORT': '3306',
     },
+
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -80,7 +82,7 @@ STATICFILES_DIRS = (
     ('dist/fonts', os.path.join(STATIC_ROOT, 'fonts')),
     ('js', os.path.join(STATIC_ROOT, 'js')),
     ('css', os.path.join(STATIC_ROOT, 'css')),
-    ('imgs', os.path.join(STATIC_ROOT, 'imgs')),
+    ('images', os.path.join(STATIC_ROOT, 'images')),
 )
 
 # List of finder classes that know how to find static files in

@@ -5,7 +5,7 @@ var g_deltaY = 0;
 var BARWIDTH = 200;
 var PHOTOPADDING = 7;
 var PHOTOPADDINGDOWN = 35;
-var IPADDR = "172.18.158.164:8888";
+var PHOTOWIDTH;
 
  
 $(function()
@@ -14,7 +14,8 @@ $(function()
     //div.style.height=200; 
     // /div.style.overflow="auto"; 
     init();
-    appendBarPhotos();
+    loadBarPhotos();
+    loadWallPhotos();
     //alert("finish");
 });
 
@@ -55,7 +56,7 @@ function init()
 
 }
 
-function appendBarPhotos()
+function loadBarPhotos()
 {
     $.getJSON("/picwall/get_pics/", function(data){
         var str="";
@@ -68,6 +69,84 @@ function appendBarPhotos()
         $("#sidebar").append(str);
     });
     
+}
+
+function loadWallPhotos()
+{
+    var url = window.location.href;
+    var wid = url.split("/");
+    wid = wid[wid.length-1];
+    $.getJSON("/picwall/get_photo_wall/?wid="+wid, function(data){
+        var str="";
+        for(var i=0; i<data.length; i++)
+        {
+            var src = "/picwall/pics/"+data[i]["picture"];
+            var top = data[i]["top"];
+            var left = data[i]["left"];
+            var width = data[i]["width"];
+            var height = data[i]["height"];
+            //alert(src);
+            appendWallPhotos("body",src, top, left, width, height);
+            //function appendWallPhotos(dest, src, top, left, width, height)
+            //appendWallPhotos("body",+)
+            //alert(data[i]["fields"]["top"]);
+        }
+        $("#sidebar").append(str);
+    });
+}
+
+function appendWallPhotos(dest, src, top, left, width, height)
+{
+    $(dest).append("<canvas id='floatCanvas'></canvas>");
+    var canvas = $("#floatCanvas");
+    //alert(width);
+    
+    width = parseInt(width);
+    height = parseInt(height);
+    //alert(height);
+
+    //canvas Ù–‘…Ë÷
+    var photoID = src.split("/");
+    photoID = photoID[photoID.length-1];
+    var shadowWidth = 6;
+    canvas.css("top", top);
+    canvas.css("left", left);
+    canvas.css("width", width);
+    canvas.css("height", height);
+    canvas.attr("width", width);
+    canvas.attr("height", height);
+    canvas.draggable({ containment:"#main"});
+    var newclass = canvas.attr("class");
+    newclass = photoID+" "+newclass;
+    //alert(newclass);
+    canvas.attr("class", photoID+" "+newclass);
+    canvas.mousedown(function(ev){
+        setSelect(ev);
+    });
+    canvas.attr("id", "");
+    var oriClass = canvas.attr("class");
+    canvas.attr("class", oriClass + " wallphotos");
+    canvas.css("z-index", "0");
+
+    //ªÊ÷∆canvas
+    var ctx = canvas[0].getContext("2d");
+
+    var img = new Image();
+    img.src = src;
+    img.onload = function()
+    {
+        ctx.shadowColor = "#000000"; 
+        ctx.shadowOffsetX = 1;    
+        ctx.shadowOffsetY = 1;  
+        ctx.shadowBlur = 10;
+        ctx.fillStyle="#FFFFFF";
+        ctx.fillRect(0,0,width-shadowWidth,height-shadowWidth);
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.drawImage(img,PHOTOPADDING,PHOTOPADDING, width - PHOTOPADDING*2 - shadowWidth, height - PHOTOPADDINGDOWN - PHOTOPADDING - shadowWidth); 
+    }
+
 }
 
 function mouseDown(ev)
@@ -166,6 +245,10 @@ function addCanvas(src, dest, event)
     }
 }
 
+
+
+
+
 function setSelect(ev)
 {
     g_selected = ev.target;
@@ -186,7 +269,14 @@ function save()
         var pid = ($(this).attr("class").split(" "))[0];
         var left = $(this).css("left");
         var top = $(this).css("top");
-        jsonStr += "{\"pid\":\"" + pid + "\",\"left\":\"" + left + "\",\"top\":\"" + top + "\"},";
+        var width = $(this).css("width");
+        var height = $(this).css("height");
+        jsonStr += "{\"pid\":\"" + pid + 
+            "\",\"left\":\"" + left + 
+            "\",\"top\":\"" + top + 
+            "\",\"width\":\"" + width + 
+            "\",\"height\":\"" + height + 
+            "\"},";
     });
 	jsonStr = jsonStr.substring(0, jsonStr.length-1)
     jsonStr += "]";
@@ -196,7 +286,7 @@ function save()
     wid = wid[wid.length-1];
     theurl = "/picwall/save_photo_wall/";
     $.ajax({ url : theurl,
-        data : {"wid":wid, "text":jsonStr},
+        data : {"wid":wid,"text":jsonStr},
         success: function(data){
         alert(data);
       }});

@@ -15,15 +15,14 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Photo_Wall',
-		'USER': 'root',
-		'PASSWORD': 'zhaopianqiang',
-		'HOST': '127.0.0.1',
-		'PORT': '3306',
-    },
-
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'JJdb',                      # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3:
+        'USER': 'root',
+        'PASSWORD': '1992',
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
+    }
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -82,7 +81,7 @@ STATICFILES_DIRS = (
     ('dist/fonts', os.path.join(STATIC_ROOT, 'fonts')),
     ('js', os.path.join(STATIC_ROOT, 'js')),
     ('css', os.path.join(STATIC_ROOT, 'css')),
-    ('images', os.path.join(STATIC_ROOT, 'images')),
+    ('imgs', os.path.join(STATIC_ROOT, 'imgs')),
 )
 
 # List of finder classes that know how to find static files in

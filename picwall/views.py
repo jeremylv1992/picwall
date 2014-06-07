@@ -6,49 +6,39 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 import time
 from datetime import date
-from picwall.models import pw_pic, pic_comment, PhotoWall, PhotoInformation
+from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation
 from myForms import Login_Form
 import os
 import simplejson as json
+from django.core import serializers
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 def index(request):
-    return HttpResponse('Hello Picwall!')
+    return HttpResponse('Hello Picturewall!')
 
 
 def log_in(request):
-    if request.user.is_authenticated():
-	return HttpResponseRedirect('/picwall/home/')
-    login_prompt = ''
-    if request.method == 'POST':
-#	form = Login_Form(request.POST)
-#	if form.is_valid():
-#	    username = form.cleaned_data['name']
-#	    password = form.cleaned_data['pwd']
-	email = request.POST['email']
-	password = request.POST['password']
-#	user = authenticate(username = username, password = password)
-	users = User.objects.filter(email = email)
-	if len(users) > 0:
-	    user = authenticate(username = users[0].username, password = password)
-	    if user is not None:
-		if user.is_active:
-		    login(request, user)
-		    return HttpResponseRedirect('/picwall/home/')
-		    #redirect to a success page
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/picwall/home/')
+	login_prompt = ''
+	email = ''
+	if request.method == 'POST':
+		email = request.POST['email']
+		password = request.POST['password']
+		users = User.objects.filter(email = email)
+		if len(users) > 0:
+			user = authenticate(username = users[0].username, password = password)
+			if user is not None:
+				if user.is_active:
+					login(request, user)
+					return HttpResponseRedirect('/picwall/home/')
+				else:
+					login_promt = 'Invalid user'
+			else:
+				login_prompt = 'Password is wrong'
 		else:
-		    login_promt = 'Invalid user'
-	    	    #return a 'disable account' error message
-	    else:
-		login_prompt = 'Password is wrong'
-		#return invalid login!
-	else:
-	    login_prompt = 'E-mail is invalid'
-	    #return HttpResponse('invalid login!')
-#   else:
-#	form = Login_Form()
-
-    return render(request, 'picwall/login.html',{'login_prompt':login_prompt,})
+			login_prompt = 'E-mail is invalid'
+	return render(request, 'picwall/login.html',{'login_prompt':login_prompt,})
 
 def log_out(request):
    logout(request)
@@ -81,7 +71,7 @@ def register(request):
     
 def upload_pic(request):
     if request.method == 'POST':
-	pic = pw_pic()
+	pic = Picture()
 	pic_data = request.FILES['pic']
 	pic.pic_name = request.POST['title']
 	pic.pic_desc = request.POST['desc']
@@ -90,7 +80,6 @@ def upload_pic(request):
 	pic.pic_url = '/tmp/'+pic.pic_id
 	pic.pic_author = request.user
 	pic.save()
-#	pic_url ='/home/jeremy/JJ/files/images/' + pic.pic_id
 	pic_url = os.path.join(BASE_DIR, 'files/images/' + pic.pic_id)
 	des_origin_f = open(pic_url, "ab")
 	for chunk in pic_data.chunks():  
@@ -108,45 +97,43 @@ def find_pic(request, pic_id):
 def index_pic(request):
     if not request.user.is_authenticated():
 	return HttpResponseRedirect('/picwall/login')
-    pics = request.user.pw_pic_set.all()
+    pics = request.user.picture_set.all()
     return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
 
 def index_picWall(request):
-    if not request.user.is_authenticated():
-	return HttpResponseRedirect('/picwall/login/')
-    picwalls = request.user.photowall_set.all()
-    return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/picwall/login/')
+	picwalls = PhotoWall.objects.filter(creator=request.user)
+	return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
 
 
 
 def pic_info(request, pic_id):
     if not request.user.is_authenticated():
 	return HttpResponseRedirect('/picwall/home')
-    pic = get_object_or_404(pw_pic, pic_id = pic_id)
-    comments = pic.pic_comment_set.all()
+    pic = get_object_or_404(Picture, pic_id = pic_id)
+    comments = pic.PictureComment_set.all()
     return render(request, 'picwall/comment.html', {'pic_info':pic,'comments':comments,})
 
 def publish_comment(request):
     if request.method == 'POST':
-	comment = pic_comment()
+	comment = PictureComment()
 	comment.content = request.POST['content']
 	comment.author = request.user
-	pic = get_object_or_404(pw_pic, pic_id = request.POST['pic_id'])
+	pic = get_object_or_404(Picture, pic_id = request.POST['pic_id'])
 	comment.pic = pic
 	comment.published_date = date.today() 	
 	comment.save()
 	return HttpResponseRedirect('/picwall/pic_info/'+pic.pic_id)
 
 def return_pics(request):
-    pics = []
+	pics = []
 
-    if request.user.is_authenticated():	
-	user = request.user
-
-	for pic in user.pw_pic_set.all():
+	if request.user.is_authenticated():	
+		user = request.user
+	for pic in Picture.objects.filter(pic_author=user):
 		pics.append(pic.toDICT())
-
-    return HttpResponse(json.dumps(pics))
+	return HttpResponse(json.dumps(pics))
 
 def picwall_info(request, picwall_id):
     return render(request, 'picwall/photo.html', {})
@@ -164,11 +151,14 @@ def create_picwall(request):
 	return HttpResponseRedirect('/picwall/home_walls/')
 
 
-def get_photo_information_of_photo_wall(request, photo_wall_id):
+def get_photo_information_of_photo_wall(request):
 	if request.method == 'GET':
-		wall = PhotoWall.objects.get(pk=photo_wall_id)
-		picture_information = PhotoInformation.objects.filter(photo_wall=wall)
-		return HttpResponse(serializers.serialize("json", wall))
+		wid = request.GET['wid']
+		wall = PhotoWall.objects.get(pk=wid)
+		l = []
+		for pic_in in PhotoInformation.objects.filter(photo_wall=wall):
+			l.append(pic_in.toDICT())
+		return HttpResponse(json.dumps(l))
 	return HttpResponse("")
 
 def view_photo_wall(request, photo_wall_id):
@@ -192,7 +182,7 @@ def save_photo_wall(request):
 		for pic in l:
 			x = pic['left']
 			y = pic['top']
-			pic = pw_pic.objects.get(pic_id=pic['pid'])
+			pic = Picture.objects.get(pic_id=pic['pic_id'])
 			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
@@ -203,12 +193,15 @@ def save_photo_wall(request):
 
 		PhotoInformation.objects.filter(photo_wall=wall).delete()
 
+		print text
 		l = json.loads(text)
 		for pic in l:
 			x = pic['left']
 			y = pic['top']
-			pic = pw_pic.objects.get(pic_id=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
+			w = pic['width']
+			h = pic['height']
+			pic = Picture.objects.get(pic_id=pic['pic_id'])
+			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	return HttpResponse("Not valid method!")
