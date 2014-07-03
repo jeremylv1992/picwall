@@ -23,6 +23,18 @@ DATABASES = {
     }
 }
 
+# from bae.core import const
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': 'picwallDB'
+# 		'USER': const.MYSQL_USER,
+# 		'PASSWORD': const.MYSQL_PASS,
+# 		'HOST': const.MYSQL_HOST,
+# 		'PORT': const.MYSQL_PORT,
+# 	}
+# }
+
 ALLOWED_HOSTS = []
 
 TIME_ZONE = 'America/Chicago'
