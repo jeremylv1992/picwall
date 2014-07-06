@@ -1,0 +1,67 @@
+body {
+	background-color: #F6F6F6;
+}
+
+#sidebar
+{
+	width: 18%;
+	float: left;
+	overflow: auto;
+	z-index: 3;
+	
+	height: 100%;
+}
+
+#topbar
+{
+	padding: 5px;
+	border-left: 0px;
+	border-right: 0px;
+	border-top: 0px;
+	border-bottom: 1px;
+	border-style: solid;
+	border-color: #AAAAAA;
+	height: 45px;
+	width: 100%;
+}
+
+#topbarright
+{
+	float: right;
+	margin-right: 20px;
+}
+
+#topbarleft
+{
+	margin-left: 19%;
+}
+
+#main
+{
+	width: 82%;
+	float: left;
+	height: 100%;
+	background-image: url("images/background.jpg");
+	background-size: 100% 100%;
+	/*background-color: #C88400;*/
+}
+
+
+.barphotos
+{
+	width: 90%;
+	margin: 5%;
+	cursor: move;
+}
+
+.wallphotos
+{
+	position: absolute;
+	cursor: move;
+}
+
+#floatCanvas
+{
+	position: absolute;
+	z-index: 2;
+}

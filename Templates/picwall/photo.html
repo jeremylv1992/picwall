@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{STATIC_URL}}css/jquery-ui-1.10.4.custom.min.css">
+    
+    <link rel="stylesheet" href="{{STATIC_URL}}css/photo.css">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row" id="contain">
+        
+        <div id="topbar">
+          <div class="btn-group" id="topbarleft" >
+            <button type="button" class="btn btn-default" >Delete</button>
+          </div>
+          <div class="btn-group" id="topbarright">
+            <button type="button" class="btn btn-default" id="savebutton">Save</button>
+            <button type="button" class="btn btn-default" onclick="window.open('http://localhost:8000/picwall/home_walls/')">Exit</button>
+          </div>
+        </div>
+
+        <div id="down">
+          <div id="sidebar">
+          </div>
+          <div id="main"> 
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+    <!-- script -->
+    <script src="{{STATIC_URL}}js/jquery-1.11.1.min.js"></script>
+    <script src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+    <script src="{{STATIC_URL}}js/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="{{STATIC_URL}}js/photo.js"></script>
+  </body>
+</html>
