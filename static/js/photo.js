@@ -285,6 +285,8 @@ function save()
     });
     jsonStr += "]";
 
+	alert(jsonStr);
+
     var url = window.location.href;
     var wid = url.split("/");
     wid = wid[wid.length-1];
