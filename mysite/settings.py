@@ -118,7 +118,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'picwall',
-    'south',
 )
 
 # A sample logging configuration. The only tangible logging
