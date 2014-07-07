@@ -12,7 +12,6 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-from bae.core import const
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
