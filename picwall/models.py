@@ -50,7 +50,7 @@ class PhotoWall(models.Model):
 
 class PhotoInformation(models.Model):
 	picture = models.ForeignKey(Picture)
-	photo_wall = models.ForeignKey(PhotoWall)
+	photo_wall = models.ManyToManyField(PhotoWall)
 	left = models.CharField(max_length=16)
 	top = models.CharField(max_length=16)
 	width = models.CharField(max_length=16)
