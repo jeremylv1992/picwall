@@ -11,7 +11,11 @@ class Migration(SchemaMigration):
         # Adding model 'Picture'
         db.create_table(u'picwall_picture', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+<<<<<<< HEAD
             ('pid', self.gf('django.db.models.fields.CharField')(max_length=100)),
+=======
+            ('pic_id', self.gf('django.db.models.fields.CharField')(max_length=100)),
+>>>>>>> 7874d3acf3b010fdfa2665b6b416b12a76e43a18
             ('pic_name', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('pic_desc', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('pic_url', self.gf('django.db.models.fields.CharField')(max_length=200)),
@@ -35,7 +39,11 @@ class Migration(SchemaMigration):
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=32)),
             ('creator', self.gf('django.db.models.fields.related.ForeignKey')(related_name='creator+', to=orm['auth.User'])),
+<<<<<<< HEAD
             ('create_data', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2014, 6, 6, 0, 0))),
+=======
+            ('create_data', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2014, 7, 4, 0, 0))),
+>>>>>>> 7874d3acf3b010fdfa2665b6b416b12a76e43a18
             ('description', self.gf('django.db.models.fields.CharField')(max_length=256)),
         ))
         db.send_create_signal(u'picwall', ['PhotoWall'])
@@ -98,7 +106,11 @@ class Migration(SchemaMigration):
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+<<<<<<< HEAD
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
+=======
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
+>>>>>>> 7874d3acf3b010fdfa2665b6b416b12a76e43a18
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -106,7 +118,11 @@ class Migration(SchemaMigration):
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
+<<<<<<< HEAD
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
+=======
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
+>>>>>>> 7874d3acf3b010fdfa2665b6b416b12a76e43a18
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         u'contenttypes.contenttype': {
@@ -129,7 +145,11 @@ class Migration(SchemaMigration):
         u'picwall.photowall': {
             'Meta': {'object_name': 'PhotoWall'},
             'access_users': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'access_user_+'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+<<<<<<< HEAD
             'create_data': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 6, 6, 0, 0)'}),
+=======
+            'create_data': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 7, 4, 0, 0)'}),
+>>>>>>> 7874d3acf3b010fdfa2665b6b416b12a76e43a18
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'creator+'", 'to': u"orm['auth.User']"}),
             'description': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -140,10 +160,17 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'pic_author': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'pic_desc': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+<<<<<<< HEAD
             'pic_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'pic_upload_time': ('django.db.models.fields.DateTimeField', [], {}),
             'pic_url': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'pid': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+=======
+            'pic_id': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'pic_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'pic_upload_time': ('django.db.models.fields.DateTimeField', [], {}),
+            'pic_url': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+>>>>>>> 7874d3acf3b010fdfa2665b6b416b12a76e43a18
         },
         u'picwall.picturecomment': {
             'Meta': {'ordering': "('published_date',)", 'object_name': 'PictureComment'},

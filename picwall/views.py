@@ -9,7 +9,7 @@ from datetime import date
 from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation
 from myForms import Login_Form
 import os
-import simplejson as json
+import json
 from django.core import serializers
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 

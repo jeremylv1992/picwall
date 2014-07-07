@@ -12,27 +12,15 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'picwallDB',
-#         'USER': 'root',
-#         'PASSWORD': 'zhaopianqiang',
-#         'HOST': '',
-#         'PORT': '',
-#     }
-# }
-
-from bae.core import const
 DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'picwallDB'
-		'USER': const.MYSQL_USER,
-		'PASSWORD': const.MYSQL_PASS,
-		'HOST': const.MYSQL_HOST,
-		'PORT': const.MYSQL_PORT,
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'sOxuvpILZdgftjJBOqFI',
+        'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
+        'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
+        'HOST': 'sqld.duapp.com',
+        'PORT': '4050',
+    }
 }
 
 ALLOWED_HOSTS = []
