@@ -17,10 +17,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'rKTfLnZDQVwYMuuCQeJH',
-        'USER': const.MYSQL_USER,
-        'PASSWORD': const.MYSQL_PASS,
-        'HOST': const.MYSQL_HOST,
-        'PORT': const.MYSQL_PORT,
+        'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
+        'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
+        'HOST': 'sqld.duapp.com',
+        'PORT': 4050,
     }
 }
 
