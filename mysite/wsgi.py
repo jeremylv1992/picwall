@@ -3,6 +3,7 @@ import os
 import sys
  
 os.environ.setdefault(['DJANGO_SETTINGS_MODULE'], 'mysite.settings')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mysite.settings'
  
 path = os.path.dirname(os.path.abspath(__file__)) + '/mysite'
 if path not in sys.path:
