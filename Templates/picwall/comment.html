@@ -85,7 +85,7 @@
             <p>
 	    {{ pic_info.pic_name }}
             </p> <small>{{ pic_info.pic_author }}</small>
-          </blockquote><img alt="140x140" src="/picwall/pics/{{ pic_info.pic_id }}/" class="img-thumbnail myImageSize" />
+          </blockquote><img alt="140x140" src="/picwall/pics/{{ pic_info.file_name }}/" class="img-thumbnail myImageSize" />
         </div>
         <div class="col-md-4 column">
           <div class="detailBox">
@@ -98,7 +98,7 @@
             </div>
             <div class="actionBox">
               <form class="form-inline" action='/picwall/publish_comment/' method='POST' role="form">{% csrf_token %}
-		  <input type='text' name='pic_id' value='{{ pic_info.pic_id }}' style="display:none;"/>
+		  <input type='text' name='file_name' value='{{ pic_info.file_name }}' style="display:none;"/>
                 <div class="form-group">
                   <input class="form-control" type="text" name='content' placeholder="Your comments" />
                 </div>

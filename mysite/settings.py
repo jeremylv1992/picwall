@@ -12,6 +12,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'picwallDB',
+#         'USER': 'root',
+#         'PASSWORD': 'zhaopianqiang',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -118,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'picwall',
+	'south',
 )
 
 # A sample logging configuration. The only tangible logging

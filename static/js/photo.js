@@ -10,20 +10,14 @@ var PHOTOWIDTH;
  
 $(function()
 { 
-    //div.style.width="40%"; 
-    //div.style.height=200; 
-    // /div.style.overflow="auto"; 
     init();
     loadBarPhotos();
     loadWallPhotos();
-    //alert("finish");
 });
 
 function init()
 {
     //≥ı ºªØCSS
-    //alert($("#topbar").css("border"));
-    //alert(parseInt($("#topbar").css("border-bottom")));
     var height = $(window).height() - 45;
     //var mainWidth = $(window).width() - parseInt($("#sidebar").css("width"));
     //$("#sidebar").css("height", height);
@@ -62,13 +56,11 @@ function loadBarPhotos()
         var str="";
         for(var i=0; i<data.length; i++)
         {
-            str+="<img class='barphotos' class='list-group-item' src='/picwall/pics/"+data[i]["pic_id"]+
+            str+="<img class='barphotos' class='list-group-item' src='/picwall/pics/"+data[i]["file_name"]+
                 "/' id='photo" + i.toString() + "'alt='404' onmousedown='mouseDown(event)' >";
-            //alert(data[i]["pic_id"]);
         }
         $("#sidebar").append(str);
     });
-    
 }
 
 function loadWallPhotos()
@@ -265,6 +257,7 @@ function save()
 {
     var jsonStr = "[";
 	var first = true;
+
     $(".wallphotos").each(function(){
 
         var pid = ($(this).attr("class").split(" "))[0];
@@ -272,20 +265,20 @@ function save()
         var top = $(this).css("top");
         var width = $(this).css("width");
         var height = $(this).css("height");
+
+		if (first)
+			first = false;
+		else
+			jsonStr += ","
+
         jsonStr += "{\"pid\":\"" + pid + 
             "\",\"left\":\"" + left + 
             "\",\"top\":\"" + top + 
             "\",\"width\":\"" + width + 
             "\",\"height\":\"" + height + 
             "\"}";
-		if (first)
-			first = false;
-		else
-			jsonStr += ","
     });
     jsonStr += "]";
-
-	alert(jsonStr);
 
     var url = window.location.href;
     var wid = url.split("/");

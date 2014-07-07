@@ -4,13 +4,17 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
-import time
+from django.core import serializers
 from datetime import date
+
 from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation
+
 from myForms import Login_Form
+
+import time
 import os
 import json
-from django.core import serializers
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 def index(request):
@@ -70,35 +74,35 @@ def register(request):
     return render(request, 'picwall/register.html', {'register_prompt':register_prompt,})
     
 def upload_pic(request):
-    if request.method == 'POST':
-	pic = Picture()
-	pic_data = request.FILES['pic']
-	pic.pic_name = request.POST['title']
-	pic.pic_desc = request.POST['desc']
-	pic.pic_upload_time = timezone.now()
-	pic.pic_id = '%s_%s_%s'%(str(request.user), str(time.asctime(time.localtime())).replace(':', '_').replace(' ', '_'), pic.pic_name)
-	pic.pic_url = '/tmp/'+pic.pic_id
-	pic.pic_author = request.user
-	pic.save()
-	pic_url = os.path.join(BASE_DIR, 'files/images/' + pic.pic_id)
-	des_origin_f = open(pic_url, "ab")
-	for chunk in pic_data.chunks():  
-	    des_origin_f.write(chunk)  
-	des_origin_f.close()   
+	if request.method == 'POST':
+		name = request.POST['title']
+		desc = request.POST['desc']
+		author = request.user
+
+		pic = Picture.objects.create_picture(name, author, desc)
+		pic.save()
+	
+		# save image file
+		image = request.FILES['pic']
+		url = os.path.join(BASE_DIR, 'files/images/' + pic.file_name)
+		fp = open(url, "ab")
+		for chunk in image.chunks():  
+			fp.write(chunk)  
+		fp.close()   
 
 	return HttpResponseRedirect('/picwall/home/')
 
 
-def find_pic(request, pic_id):
-	image_data = open(os.path.join(BASE_DIR,'files/images/'+pic_id), "rb").read()
-	return HttpResponse(image_data, mimetype="image/jpeg")
+def find_pic(request, file_name):
+	image = open(os.path.join(BASE_DIR,'files/images/'+file_name), "rb").read()
+	return HttpResponse(image)
 
 
 def index_pic(request):
-    if not request.user.is_authenticated():
-	return HttpResponseRedirect('/picwall/login')
-    pics = request.user.picture_set.all()
-    return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
+	if not request.user.is_authenticated():
+		return HttpResponseRedirect('/picwall/login')
+	pics = request.user.picture_set.all()
+	return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
 
 def index_picWall(request):
 	if not request.user.is_authenticated():
@@ -106,32 +110,30 @@ def index_picWall(request):
 	picwalls = PhotoWall.objects.filter(creator=request.user)
 	return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
 
-
-
-def pic_info(request, pic_id):
+def pic_info(request, file_name):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/picwall/home')
-	thepic = get_object_or_404(Picture, pic_id = pic_id)
-	comments = PictureComment.objects.filter(pic=thepic)
-	return render(request, 'picwall/comment.html', {'pic_info':thepic,'comments':comments,})
+	pic = get_object_or_404(Picture, file_name = file_name)
+	comments = PictureComment.objects.filter(pic=pic)
+	return render(request, 'picwall/comment.html', {'pic_info':pic,'comments':comments,})
 
 def publish_comment(request):
     if request.method == 'POST':
 	comment = PictureComment()
 	comment.content = request.POST['content']
 	comment.author = request.user
-	pic = get_object_or_404(Picture, pic_id = request.POST['pic_id'])
+	pic = get_object_or_404(Picture, file_name = request.POST['file_name'])
 	comment.pic = pic
 	comment.published_date = date.today() 	
 	comment.save()
-	return HttpResponseRedirect('/picwall/pic_info/'+pic.pic_id)
+	return HttpResponseRedirect('/picwall/pic_info/'+pic.file_name)
 
 def return_pics(request):
 	pics = []
 
 	if request.user.is_authenticated():	
 		user = request.user
-	for pic in Picture.objects.filter(pic_author=user):
+	for pic in Picture.objects.filter(author=user):
 		pics.append(pic.toDICT())
 	return HttpResponse(json.dumps(pics))
 
@@ -182,7 +184,7 @@ def save_photo_wall(request):
 		for pic in l:
 			x = pic['left']
 			y = pic['top']
-			pic = Picture.objects.get(pic_id=pic['pid'])
+			pic = Picture.objects.get(file_name=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
@@ -195,12 +197,16 @@ def save_photo_wall(request):
 
 		print text
 		l = json.loads(text)
+		print l
+		cnt = 0
 		for pic in l:
+			cnt = cnt + 1
+			print cnt
 			x = pic['left']
 			y = pic['top']
 			w = pic['width']
 			h = pic['height']
-			pic = Picture.objects.get(pic_id=pic['pid'])
+			pic = Picture.objects.get(file_name=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
