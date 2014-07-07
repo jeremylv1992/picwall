@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sOxuvpILZdgftjJBOqFI',
+        'NAME': 'rKTfLnZDQVwYMuuCQeJH',
         'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
         'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
         'HOST': 'sqld.duapp.com',
