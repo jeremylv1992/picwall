@@ -27,12 +27,11 @@ urlpatterns = patterns('',
 
 	## POST
 	url(r'^get_user_pics/$', views.get_user_pics),
-	url(r'^photowall/info/(?P<wid>\d+)$', views.pw_info),
+	url(r'^photowall/info/(?P<wid>\d+)/$', views.pw_info),
 	url(r'^photowall/create/$', views.create_pw),
 	
-	url(r'^photowall/pics/(?P<wid>\d+)/$', views.get_pics_of_pw),
+	url(r'^photowall/pics/$', views.get_pics_of_pw),
 	url(r'^photowall/(?P<wid>\d+)/$', views.view_pw),
-	url(r'^photowall/save$', views.save_pw),
-	url(r'^photowall/delete/(?P<wid>\d+)$', views.delete_pw),
-
+	url(r'^photowall/save/$', views.save_pw),
+	url(r'^photowall/delete/(?P<wid>\d+)/$', views.delete_pw),
 )

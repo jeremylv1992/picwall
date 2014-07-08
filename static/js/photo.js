@@ -7,6 +7,8 @@ var PHOTOPADDING = 7;
 var PHOTOPADDINGDOWN = 35;
 var PHOTOWIDTH;
 
+var GET_PICUTRE = '/picwall/picture/image/';
+var SAVE_PHOTOWALL = '/picwall/photowall/save/'
 var GET_USER_PICTURES = '/picwall/get_user_pics/';
 var GET_PHOTOWALL_PICTURES = '/picwall/photowall/pics/'
 
@@ -24,7 +26,6 @@ function init()
 
 	$("#topbarleft>button").attr("disabled", true);
 	$("#topbarleft>button").click(function(){
-		//alert(g_selected);
 		$(g_selected).remove();
 		cancelSelect();
 	});
@@ -49,7 +50,7 @@ function loadBarPhotos()
 		var str="";
 		for(var i=0; i<data.length; i++)
 	{
-		str+="<img class='barphotos' class='list-group-item' src='/picwall/pics/"+data[i]["file_name"]+
+		str+="<img class='barphotos' class='list-group-item' src='"+GET_PICUTRE+data[i]["file_name"]+
 		"/' id='photo" + i.toString() + "'alt='404' onmousedown='mouseDown(event)' >";
 	}
 	$("#sidebar").append(str);
@@ -60,12 +61,12 @@ function loadWallPhotos()
 {
 	var url = window.location.href;
 	var wid = url.split("/");
-	wid = wid[wid.length-1];
+	wid = wid[wid.length-2];
 	$.getJSON(GET_PHOTOWALL_PICTURES+"?wid="+wid, function(data){
 		var str="";
 		for(var i=0; i<data.length; i++)
 	{
-		var src = "/picwall/pics/"+data[i]["picture"];
+		var src = GET_PICUTRE+data[i]["picture"];
 		var top = data[i]["top"];
 		var left = data[i]["left"];
 		var width = data[i]["width"];
@@ -97,7 +98,6 @@ function appendWallPhotos(dest, src, top, left, width, height)
 	canvas.draggable({ containment:"#main"});
 	var newclass = canvas.attr("class");
 	newclass = photoID+" "+newclass;
-	//alert(newclass);
 	canvas.attr("class", photoID+" "+newclass);
 	canvas.mousedown(function(ev){
 		setSelect(ev);
@@ -148,7 +148,6 @@ function mouseUp(ev)
 {
 	var barwidth =parseInt($("#sidebar").css("width"));
 	var mouseX = ev.pageX;
-	//alert($(ev.target).offset().left);
 	if(     $(ev.target).offset().left <= barwidth  
 			||  $(ev.target).offset().top <= $("#sidebar").offset().top
 			||  $(ev.target).offset().left + parseInt($(ev.target).css("width")) >= $(window).width()
@@ -186,7 +185,6 @@ function addCanvas(src, dest, event)
 	//canvas Ù–‘…Ë÷√
 	var photoID = src.split("/");
 	photoID = photoID[photoID.length-2];
-	//alert(photoID);
 	var shadowWidth = 6;
 	canvas.css("top", top - PHOTOPADDING);
 	canvas.css("left", left - PHOTOPADDING);
@@ -197,7 +195,6 @@ function addCanvas(src, dest, event)
 	canvas.draggable({ containment:"#main"});
 	var newclass = canvas.attr("class");
 	newclass = photoID+" "+newclass;
-	//alert(newclass);
 	canvas.attr("class", photoID+" "+newclass);
 	canvas.mousedown(function(ev){
 		setSelect(ev);
@@ -269,8 +266,9 @@ function save()
 
 	var url = window.location.href;
 	var wid = url.split("/");
-	wid = wid[wid.length-1];
-	theurl = "/picwall/save_photowall/";
+	wid = wid[wid.length-2];
+	theurl = SAVE_PHOTOWALL;
+
 	$.ajax({ url : theurl,
 		data : {"wid":wid,"text":jsonStr},
 		success: function(data){

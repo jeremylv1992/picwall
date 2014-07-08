@@ -50,6 +50,9 @@ def get_user(user):
 		raise WebSiteUser.DoesNotExist
 	return WebSiteUser.objects.get(user=user)
 
+def return_origin_page(request):
+	return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
 def index(request):
 	return HttpResponse('Hello Picturewall!')
 
@@ -136,7 +139,7 @@ def upload_pic(request):
 			fp.write(chunk)  
 		fp.close()   
 
-	return HttpResponseRedirect(HOME_PAGE)
+	return return_origin_page(request)
 
 def delete_pic(request, file_name):
 	try:
@@ -144,10 +147,9 @@ def delete_pic(request, file_name):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(CONTEXT['login_page'])
 
-	pic = Picture.objects.filter(file_name=file_name)
-	if pic != None:
-		pic.delete()
-	return HttpResponseRedirect(HOME_PAGE);
+	pic = get_object_or_404(Picture, file_name=file_name)
+	pic.delete()
+	return return_origin_page(request)
 
 def pic_image(request, file_name):
 	try:
@@ -230,12 +232,13 @@ def pic_comment(request):
 	if request.method == 'POST':
 		comment = PictureComment()
 		comment.content = request.POST['content']
-		comment.author = get_object_or_404(WebSiteUser, request.user)
-		pic = get_object_or_404(Picture, file_name = request.POST['file_name'])
+		comment.author = get_object_or_404(WebSiteUser, user=request.user)
+		pic = get_object_or_404(Picture, file_name=request.POST['file_name'])
 		comment.pic = pic
 		comment.published_date = date.today() 	
 		comment.save()
-	return HttpResponseRedirect(CONTEXT['picture_info_page'] + pic.file_name)
+
+	return return_origin_page(request)
 
 # photo wall
 def pw_info(request, wid):
@@ -258,7 +261,8 @@ def create_pw(request):
 		description = request.POST['description']
 		creator = get_object_or_404(WebSiteUser, user=request.user)
 		PhotoWall.objects.create_photowall(name, description, creator)
-	return HttpResponseRedirect(CONTEXT['photowall_page'])
+
+	return return_origin_page(request)
 
 def get_pics_of_pw(request):
 	try:
@@ -273,6 +277,7 @@ def get_pics_of_pw(request):
 		for pic_in in PhotoInformation.objects.filter(photowall=wall):
 			l.append(pic_in.toDICT())
 		return HttpResponse(json.dumps(l))
+
 	return HttpResponse("")
 
 def view_pw(request, photowall_id):
@@ -334,10 +339,10 @@ def delete_pw(request, wid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(CONTEXT['login_page'])
 
-	wall = PhotoWall.objects.get(pk=wid)
-	if wall is not None:
-		wall.delete()
-	return HttpResponseRedirect("/picwall/home_walls");
+	wall = get_object_or_404(PhotoWall, pk=wid)
+	wall.delete()
+
+	return return_origin_page(request)
 
 def make_friend(request, user_name):
 	try:
