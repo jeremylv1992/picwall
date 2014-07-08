@@ -127,7 +127,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$12000$YyM4xQV7aN84$4XdSvsmoS5TYvEU8MFsCR7sxeo6d7Gdjj/9Xml0CUxo=','2014-07-08 10:58:34',1,'root','','','',1,1,'2014-07-08 10:58:02'),(2,'pbkdf2_sha256$12000$wuM9yxlguUA5$xlTRBb5MUs019LT/mYtd0GyVk4X2TE54XrdXV4sAvDk=','2014-07-08 11:19:05',0,'1','','','a@b.c',0,1,'2014-07-08 10:58:06');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$12000$YyM4xQV7aN84$4XdSvsmoS5TYvEU8MFsCR7sxeo6d7Gdjj/9Xml0CUxo=','2014-07-08 10:58:34',1,'root','','','',1,1,'2014-07-08 10:58:02'),(2,'pbkdf2_sha256$12000$wuM9yxlguUA5$xlTRBb5MUs019LT/mYtd0GyVk4X2TE54XrdXV4sAvDk=','2014-07-08 12:17:27',0,'1','','','a@b.c',0,1,'2014-07-08 10:58:06');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,7 +271,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('qvufo0naf1frm3zf47u58wkav1b02t8m','MTk3Y2Q2YTE1YjZmZjYwNzE2MjAxYmMyNWQwMDhkZjVhYWI1N2ZkMDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0=','2014-07-22 11:19:05');
+INSERT INTO `django_session` VALUES ('aut34vq2tkbvnnlqp0038zf264k6h8ld','NTcxMDYxMWViOWJiNGQzNDIxMTE1Nzc3OTExYjI4ZWIxMGJkODFjZDp7fQ==','2014-07-22 12:34:21');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -409,7 +409,7 @@ CREATE TABLE `picwall_picture` (
   PRIMARY KEY (`id`),
   KEY `picwall_picture_e969df21` (`author_id`),
   CONSTRAINT `author_id_refs_id_481d8ada` FOREIGN KEY (`author_id`) REFERENCES `picwall_websiteuser` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -418,6 +418,7 @@ CREATE TABLE `picwall_picture` (
 
 LOCK TABLES `picwall_picture` WRITE;
 /*!40000 ALTER TABLE `picwall_picture` DISABLE KEYS */;
+INSERT INTO `picwall_picture` VALUES (1,'Tue_Jul__8_06_46_09_2014__1','','','2014-07-08 05:00:00',1,'');
 /*!40000 ALTER TABLE `picwall_picture` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -515,4 +516,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-07-08 19:44:12
+-- Dump completed on 2014-07-08 20:47:57
