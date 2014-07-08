@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.core import serializers
 from datetime import date
 
-from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation
+from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser
 
 from myForms import Login_Form
 
@@ -16,14 +16,15 @@ import os
 import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
 
 def index(request):
     return HttpResponse('Hello Picturewall!')
 
-
 def log_in(request):
 	if request.user.is_authenticated():
 		return HttpResponseRedirect('/picwall/home/')
+
 	login_prompt = ''
 	email = ''
 	if request.method == 'POST':
@@ -57,18 +58,21 @@ def register(request):
 	name = request.POST['name']
 	email = request.POST['email']
 	pwd = request.POST['password']
+
 	users1 = User.objects.filter(email = email)
 	users2 = User.objects.filter(username = name)
+
 	if len(users1) == 0:
-	    if len(users2) == 0:
-		user = User.objects.create_user(name, email, pwd)
-		user.save()
-		register_prompt = 'Succeed to register! Now Please log in!'
-		user = authenticate(username = name, password = pwd)
-		login(request, user)
-		return HttpResponseRedirect('/picwall/home/')
-	    else:
-		register_prompt = 'The name have been registered!'
+		if len(users2) == 0:
+			user = User.objects.create_user(name, email, pwd)
+			webuser = WebSiteUser.objects.create_user(user)
+
+			register_prompt = 'Succeed to register! Now Please log in!'
+			user = authenticate(username = name, password = pwd)
+			login(request, user)
+			return HttpResponseRedirect('/picwall/home/')
+		else:
+			register_prompt = 'The name have been registered!'
 	else:
 	    register_prompt = 'Your email have been registered!'
     return render(request, 'picwall/register.html', {'register_prompt':register_prompt,})
@@ -77,14 +81,14 @@ def upload_pic(request):
 	if request.method == 'POST':
 		name = request.POST['title']
 		desc = request.POST['desc']
-		author = request.user
+		author = WebSiteUser.objects.get(user=request.user)
 
 		pic = Picture.objects.create_picture(name, author, desc)
 		pic.save()
 	
 		# save image file
 		image = request.FILES['pic']
-		url = os.path.join(BASE_DIR, 'files/images/' + pic.file_name)
+		url = os.path.join(IMAGE_DIR, pic.file_name)
 		fp = open(url, "ab")
 		for chunk in image.chunks():  
 			fp.write(chunk)  
@@ -92,100 +96,107 @@ def upload_pic(request):
 
 	return HttpResponseRedirect('/picwall/home/')
 
+def delete_pic(request, file_name):
+	pic = Picture.objects.filter(file_name=file_name)
+	if pic != None:
+		pic.delete()
+	return HttpResponseRedirect('/picwall/home/');
 
 def find_pic(request, file_name):
-	image = open(os.path.join(BASE_DIR,'files/images/'+file_name), "rb").read()
+	image = open(os.path.join(IMAGE_DIR, file_name), "rb").read()
 	return HttpResponse(image)
 
 
 def index_pic(request):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/picwall/login')
-	pics = request.user.picture_set.all()
-	return render(request, 'picwall/index.html', {'pics': pics, 'username': str(request.user),})
+	user = WebSiteUser.objects.get(user=request.user)
+	pics = Picture.objects.filter(author=user)
+	return render(request, 'picwall/index.html', {'pics': pics, 'username': str(user),})
 
 def index_picWall(request):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/picwall/login/')
-	picwalls = PhotoWall.objects.filter(creator=request.user)
-	return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': str(request.user),})
+	user = WebSiteUser.objects.get(user=request.user)
+	picwalls = PhotoWall.objects.get_access_photowall(user)
+	return render(request, 'picwall/picwall_index.html', {'picwalls': picwalls, 'username': user,})
+
+# pictures
+def return_pics(request):
+	pics = []
+
+	if request.user.is_authenticated():	
+		user = WebSiteUser.objects.get(user=request.user)
+
+	for pic in Picture.objects.filter(author=user):
+		pics.append(pic.toDICT())
+
+	return HttpResponse(json.dumps(pics))
 
 def pic_info(request, file_name):
 	if not request.user.is_authenticated():
 		return HttpResponseRedirect('/picwall/home')
+
 	pic = get_object_or_404(Picture, file_name = file_name)
 	comments = PictureComment.objects.filter(pic=pic)
 	return render(request, 'picwall/comment.html', {'pic_info':pic,'comments':comments,})
 
+# picture comment
 def publish_comment(request):
-    if request.method == 'POST':
-	comment = PictureComment()
+	if request.method == 'POST':
+		comment = PictureComment()
 	comment.content = request.POST['content']
-	comment.author = request.user
+	comment.author = WebSiteUser.objects.get(user=request.user)
 	pic = get_object_or_404(Picture, file_name = request.POST['file_name'])
 	comment.pic = pic
 	comment.published_date = date.today() 	
 	comment.save()
 	return HttpResponseRedirect('/picwall/pic_info/'+pic.file_name)
 
-def return_pics(request):
-	pics = []
-
-	if request.user.is_authenticated():	
-		user = request.user
-	for pic in Picture.objects.filter(author=user):
-		pics.append(pic.toDICT())
-	return HttpResponse(json.dumps(pics))
-
+# photo wall
 def picwall_info(request, picwall_id):
-    return render(request, 'picwall/photo.html', {})
-
+	return render(request, 'picwall/photo.html', {})
 
 def create_picwall(request):
 	if request.method == 'POST':
-		wall = PhotoWall()
-		wall.name = request.POST['name']
-		wall.description = request.POST['description']
-		wall.creator = request.user
-		wall.save()
-		wall.access_users.add(request.user)
-		wall.save()
+		name = request.POST['name']
+		description = request.POST['description']
+		creator = WebSiteUser.objects.get(user=request.user)
+		PhotoWall.objects.create_photowall(name, description, creator)
 	return HttpResponseRedirect('/picwall/home_walls/')
 
-
-def get_photo_information_of_photo_wall(request):
+def get_photo_information_of_photowall(request):
 	if request.method == 'GET':
 		wid = request.GET['wid']
 		wall = PhotoWall.objects.get(pk=wid)
 		l = []
-		for pic_in in PhotoInformation.objects.filter(photo_wall=wall):
+		for pic_in in PhotoInformation.objects.filter(photowall=wall):
 			l.append(pic_in.toDICT())
 		return HttpResponse(json.dumps(l))
 	return HttpResponse("")
 
-def view_photo_wall(request, photo_wall_id):
-	wall = PhotoWall.objects.get(pk=photo_wall_id)
-	pics = PhotoInformation.objects.filter(photo_wall=wall)
+def view_photowall(request, photowall_id):
+	wall = PhotoWall.objects.get(pk=photowall_id)
+	pics = PhotoInformation.objects.filter(photowall=wall)
 	l = []
 	for pic in pics:
 		l.append(pic.toDict())
 	return HttpResponse(json.dumps(l))
 
-def save_photo_wall(request):
-	print request.method
+def save_photowall(request):
 	if request.method == 'POST':
 		text = request.POST['text'];
 		wid = request.POST['wid']
 		wall = PhotoWall.objects.get(pk=wid)
 
-		PhotoInformation.objects.filter(photo_wall=wall).delete()
+		PhotoInformation.objects.filter(photowall=wall).delete()
 
 		l = json.loads(text)
 		for pic in l:
 			x = pic['left']
 			y = pic['top']
 			pic = Picture.objects.get(file_name=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y)
+			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	elif request.method == 'GET':
@@ -193,21 +204,22 @@ def save_photo_wall(request):
 		wid = request.GET['wid']
 		wall = PhotoWall.objects.get(pk=wid)
 
-		PhotoInformation.objects.filter(photo_wall=wall).delete()
+		PhotoInformation.objects.filter(photowall=wall).delete()
 
-		print text
 		l = json.loads(text)
-		print l
-		cnt = 0
 		for pic in l:
-			cnt = cnt + 1
-			print cnt
 			x = pic['left']
 			y = pic['top']
 			w = pic['width']
 			h = pic['height']
 			pic = Picture.objects.get(file_name=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photo_wall_id=wid, left=x, top=y, height=h, width=w)
+			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	return HttpResponse("Not valid method!")
+
+def delete_photowall(request, wid):
+	wall = PhotoWall.objects.get(pk=wid)
+	if wall is not None:
+		wall.delete()
+	return HttpResponseRedirect("/picwall/home_walls");

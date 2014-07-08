@@ -42,7 +42,7 @@
                         <h4 class="modal-title" id="myModalLabel">Upload Photo</h4>
                       </div>
                       
-                      <div class="modal-body">                
+                      <div class="modal-body">
                         <form role="form" id="photoForm" action="/picwall/upload_pic/" method="post" enctype="multipart/form-data">{% csrf_token %}                  
                           <div class="form-group">
                             <label for="input-img">Photo</label>
@@ -125,24 +125,30 @@
           </ul>
           <br/>
           <div class="row">
-	    {% for pic in pics %}
+			  {% for pic in pics %}
+
             <div class="col-md-4">
               <div class="thumbnail">
                 <img alt="300x200" src="/picwall/pics/{{pic.file_name}}" />
                 <div class="caption">
                   <h3>
-		    {{pic.pic_name}}
+					  {{pic.pic_name}}
                   </h3>
                   <p>
-		    {{pic.pic_desc}}
+				  	{{pic.pic_desc}}
                   </p>
+
                   <p>
-                    <a class="btn btn-primary" href="/picwall/pic_info/{{ pic.file_name }}">进入</a> <a class="btn" href="#">Action</a>
+					<a class="btn btn-primary" href="/picwall/pic_info/{{ pic.file_name }}">进入</a>
+					<a class="btn btn-success" href="#">Collect</a>
+					<a class="btn btn-danger" href="/picwall/delete_pic/{{ pic.file_name }}">Delete</a>
                   </p>
+
                 </div>
               </div>
             </div>
-	{% endfor %} 
+
+			{% endfor %} 
           </div>
           
           <ul class="pagination">

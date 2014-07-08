@@ -103,10 +103,10 @@
             </div>
           </div>
           <ul class="nav nav-tabs">
-            <li class="active">
+            <li>
               <a href="/picwall/home">Pictures</a>
             </li>
-            <li>
+            <li class="active">
               <a href="/picwall/home_walls">Picture Walls</a>
             </li>
             <li class="dropdown pull-right">
@@ -137,7 +137,9 @@
 		    {{picwall.description}}
                   </p>
                   <p>
-                    <a class="btn btn-primary" href="/picwall/picwall_info/{{picwall.id}}">进入</a> <a class="btn" href="#">Action</a>
+                    <a class="btn btn-primary" href="/picwall/picwall_info/{{ picwall.id }}">进入</a>
+					<a class="btn btn-success" href="#">Collect</a>
+					<a class="btn btn-danger" href="/picwall/delete_photowall/{{ picwall.id }}">Delete</a>
                   </p>
                 </div>
               </div>

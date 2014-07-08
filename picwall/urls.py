@@ -10,6 +10,7 @@ urlpatterns = patterns('',
 
 	url(r'^home/$', views.index_pic),
 	url(r'^upload_pic/$', views.upload_pic),
+	url(r'^delete_pic/(?P<file_name>\w+)/$', views.delete_pic),
 
 	url(r'^pics/(?P<file_name>\w+)/$', views.find_pic),
 	url(r'^pic_info/(?P<file_name>\w+)/$', views.pic_info),
@@ -20,8 +21,8 @@ urlpatterns = patterns('',
 	url(r'^picwall_info/(?P<picwall_id>\d+)$', views.picwall_info),
 	url(r'^create_picwall/$', views.create_picwall),
 	
-	url(r'^get_photo_wall/$', views.get_photo_information_of_photo_wall, name='get_photo_information_of_photo_wall'),
-	url(r'^photo_wall/(?P<photo_wall_id>\d+)/$', views.view_photo_wall, name='view_photo_wall'),
-	url(r'^save_photo_wall/$', views.save_photo_wall, name='save_photo_wall'),
-
+	url(r'^get_photowall/$', views.get_photo_information_of_photowall),
+	url(r'^photowall/(?P<wid>\d+)/$', views.view_photowall),
+	url(r'^save_photowall/$', views.save_photowall),
+	url(r'^delete_photowall/(?P<wid>\d+)$', views.delete_photowall),
 )

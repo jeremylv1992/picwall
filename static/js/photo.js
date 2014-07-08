@@ -68,7 +68,7 @@ function loadWallPhotos()
     var url = window.location.href;
     var wid = url.split("/");
     wid = wid[wid.length-1];
-    $.getJSON("/picwall/get_photo_wall/?wid="+wid, function(data){
+    $.getJSON("/picwall/get_photowall/?wid="+wid, function(data){
         var str="";
         for(var i=0; i<data.length; i++)
         {
@@ -283,7 +283,7 @@ function save()
     var url = window.location.href;
     var wid = url.split("/");
     wid = wid[wid.length-1];
-    theurl = "/picwall/save_photo_wall/";
+    theurl = "/picwall/save_photowall/";
     $.ajax({ url : theurl,
         data : {"wid":wid,"text":jsonStr},
         success: function(data){

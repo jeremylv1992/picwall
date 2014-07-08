@@ -8,6 +8,30 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'PhotoInformation'
+        db.create_table(u'picwall_photoinformation', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('picture', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['picwall.Picture'])),
+            ('photowall', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['picwall.PhotoWall'])),
+            ('left', self.gf('django.db.models.fields.CharField')(max_length=16)),
+            ('top', self.gf('django.db.models.fields.CharField')(max_length=16)),
+            ('width', self.gf('django.db.models.fields.CharField')(max_length=16)),
+            ('height', self.gf('django.db.models.fields.CharField')(max_length=16)),
+        ))
+        db.send_create_signal(u'picwall', ['PhotoInformation'])
+
+        # Adding model 'Picture'
+        db.create_table(u'picwall_picture', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('file_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('desc', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('upload_time', self.gf('django.db.models.fields.DateTimeField')()),
+            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name='picture_author', to=orm['picwall.WebSiteUser'])),
+            ('url', self.gf('django.db.models.fields.CharField')(max_length=200)),
+        ))
+        db.send_create_signal(u'picwall', ['Picture'])
+
         # Adding model 'WebSiteUser'
         db.create_table(u'picwall_websiteuser', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -23,18 +47,6 @@ class Migration(SchemaMigration):
             ('to_websiteuser', models.ForeignKey(orm[u'picwall.websiteuser'], null=False))
         ))
         db.create_unique(m2m_table_name, ['from_websiteuser_id', 'to_websiteuser_id'])
-
-        # Adding model 'Picture'
-        db.create_table(u'picwall_picture', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('file_name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('desc', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('upload_time', self.gf('django.db.models.fields.DateTimeField')()),
-            ('author', self.gf('django.db.models.fields.related.ForeignKey')(related_name='picture_author', to=orm['picwall.WebSiteUser'])),
-            ('url', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal(u'picwall', ['Picture'])
 
         # Adding model 'PictureComment'
         db.create_table(u'picwall_picturecomment', (
@@ -61,32 +73,23 @@ class Migration(SchemaMigration):
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
             ('photowall', models.ForeignKey(orm[u'picwall.photowall'], null=False)),
-            ('user', models.ForeignKey(orm[u'auth.user'], null=False))
+            ('websiteuser', models.ForeignKey(orm[u'picwall.websiteuser'], null=False))
         ))
-        db.create_unique(m2m_table_name, ['photowall_id', 'user_id'])
-
-        # Adding model 'PhotoInformation'
-        db.create_table(u'picwall_photoinformation', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('picture', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['picwall.Picture'])),
-            ('photowall', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['picwall.PhotoWall'])),
-            ('left', self.gf('django.db.models.fields.CharField')(max_length=16)),
-            ('top', self.gf('django.db.models.fields.CharField')(max_length=16)),
-            ('width', self.gf('django.db.models.fields.CharField')(max_length=16)),
-            ('height', self.gf('django.db.models.fields.CharField')(max_length=16)),
-        ))
-        db.send_create_signal(u'picwall', ['PhotoInformation'])
+        db.create_unique(m2m_table_name, ['photowall_id', 'websiteuser_id'])
 
 
     def backwards(self, orm):
+        # Deleting model 'PhotoInformation'
+        db.delete_table(u'picwall_photoinformation')
+
+        # Deleting model 'Picture'
+        db.delete_table(u'picwall_picture')
+
         # Deleting model 'WebSiteUser'
         db.delete_table(u'picwall_websiteuser')
 
         # Removing M2M table for field friends on 'WebSiteUser'
         db.delete_table(db.shorten_name(u'picwall_websiteuser_friends'))
-
-        # Deleting model 'Picture'
-        db.delete_table(u'picwall_picture')
 
         # Deleting model 'PictureComment'
         db.delete_table(u'picwall_picturecomment')
@@ -96,9 +99,6 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field access_users on 'PhotoWall'
         db.delete_table(db.shorten_name(u'picwall_photowall_access_users'))
-
-        # Deleting model 'PhotoInformation'
-        db.delete_table(u'picwall_photoinformation')
 
 
     models = {
@@ -150,7 +150,7 @@ class Migration(SchemaMigration):
         },
         u'picwall.photowall': {
             'Meta': {'object_name': 'PhotoWall'},
-            'access_users': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'access_users_of_photowall'", 'symmetrical': 'False', 'to': u"orm['auth.User']"}),
+            'access_users': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'access_users_of_photowall'", 'symmetrical': 'False', 'to': u"orm['picwall.WebSiteUser']"}),
             'create_data': ('django.db.models.fields.DateField', [], {'default': 'datetime.datetime(2014, 7, 8, 0, 0)'}),
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'creator_of_photowall'", 'to': u"orm['picwall.WebSiteUser']"}),
             'description': ('django.db.models.fields.CharField', [], {'max_length': '256'}),
