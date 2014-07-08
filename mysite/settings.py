@@ -4,7 +4,7 @@
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -33,7 +33,7 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 TIME_ZONE = 'America/Chicago'
 
@@ -125,7 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+	'django.contrib.staticfiles',
     'django.contrib.admin',
     'picwall',
 	# 'south',

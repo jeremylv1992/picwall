@@ -47,7 +47,7 @@ TEMPLATE = {
 
 def get_user(user):
 	if not user.is_authenticated():
-		return HttpResponseRedirect(CONTEXT['login_page'])
+		raise WebSiteUser.DoesNotExist
 	return WebSiteUser.objects.get(user=user)
 
 def index(request):
@@ -176,13 +176,13 @@ def pw_index(request):
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(CONTEXT['login_page'])
+	else:
+		photowalls = PhotoWall.objects.get_access_photowall(user)
 
-	photowalls = PhotoWall.objects.get_access_photowall(user)
-
-	context = CONTEXT
-	context['photowalls'] = photowalls
-	context['user'] = user
-	return render(request, TEMPLATE['photowall'], context)
+		context = CONTEXT
+		context['photowalls'] = photowalls
+		context['user'] = user
+		return render(request, TEMPLATE['photowall'], context)
 
 # pictures
 def get_user_pics(request):
