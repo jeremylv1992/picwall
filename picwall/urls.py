@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 
 	# picture maintain
 	url(r'^picture/$', views.pic_index),
-	url(r'^picture/upload$', views.upload_pic),
+	url(r'^picture/upload/$', views.upload_pic),
 	url(r'^picture/delete/(?P<file_name>\w+)/$', views.delete_pic),
 	## picture image
 	url(r'^picture/image/(?P<file_name>\w+)/$', views.pic_image),
