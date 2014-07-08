@@ -30,7 +30,7 @@ class Picture(models.Model):
 	name = models.CharField(max_length = 50)
 	desc = models.CharField(max_length = 100)
 	upload_time = models.DateTimeField()
-	author = models.ForeignKey(WebSiteUser, related_name="picture_author")
+	author = models.ForeignKey(WebSiteUser)
 	url  = models.CharField(max_length = 200)
 	objects = PictureManager()
 
@@ -47,7 +47,7 @@ class Picture(models.Model):
 
 class PictureComment(models.Model):
 	content = models.CharField(max_length=100)
-	author = models.ForeignKey(WebSiteUser, related_name="commenter")
+	author = models.ForeignKey(WebSiteUser)
 	pic = models.ForeignKey(Picture)
 	published_date = models.DateField()
 	def __unicode__(self):
@@ -62,18 +62,18 @@ class PhotoWallManager(models.Manager):
 		photowall.access_users.add(creator)
 		photowall.save()
 	def get_access_photowall(self, user):
-		photowalls = []
-		for photowall in self.all():
-			print photowall
-			if user in photowall.access_users.all():
-				photowalls.append(photowall)
+		users = [user]
+		for friend in user.friends.all():
+			users.append(user)
+		photowalls = [ e for e in user.photowall_set.all() for user in users]
+		print photowalls
 		return photowalls
 
 class PhotoWall(models.Model):
 	name = models.CharField(max_length=32)
-	creator = models.ForeignKey(WebSiteUser, related_name="creator_of_photowall")
+	creator = models.ForeignKey(WebSiteUser, related_name='creator+')
 	create_data = models.DateField(default=datetime.now())
-	access_users = models.ManyToManyField(WebSiteUser, related_name="access_users_of_photowall")
+	access_users = models.ManyToManyField(WebSiteUser)
 	description = models.CharField(max_length=256)
 
 	objects = PhotoWallManager()

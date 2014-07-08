@@ -4,25 +4,35 @@ from picwall import views
 urlpatterns = patterns('',
 	url(r'^$', views.index, name = 'index'),
 
+	# user maintain
 	url(r'^login/$', views.log_in),
 	url(r'^logout/$', views.log_out),
 	url(r'^register/$', views.register),
 
-	url(r'^home/$', views.index_pic),
-	url(r'^upload_pic/$', views.upload_pic),
-	url(r'^delete_pic/(?P<file_name>\w+)/$', views.delete_pic),
 
-	url(r'^pics/(?P<file_name>\w+)/$', views.find_pic),
-	url(r'^pic_info/(?P<file_name>\w+)/$', views.pic_info),
+	# picture maintain
+	url(r'^picture/$', views.pic_index),
+	url(r'^picture/upload$', views.upload_pic),
+	url(r'^picture/delete/(?P<file_name>\w+)/$', views.delete_pic),
+	## picture image
+	url(r'^picture/image/(?P<file_name>\w+)/$', views.pic_image),
+	## picture information
+	url(r'^picture/info/(?P<file_name>\w+)/$', views.pic_info),
 
-	url(r'^publish_comment/$', views.publish_comment),
-	url(r'^home_walls/$', views.index_picWall),
-	url(r'^get_pics/$', views.return_pics),
-	url(r'^picwall_info/(?P<picwall_id>\d+)$', views.picwall_info),
-	url(r'^create_picwall/$', views.create_picwall),
+	# comment
+	url(r'^picture/comment/$', views.pic_comment),
+
+	# photowall
+	url(r'^photowall/$', views.pw_index),
+
+	## POST
+	url(r'^get_user_pics/$', views.get_user_pics),
+	url(r'^photowall/info/(?P<wid>\d+)$', views.pw_info),
+	url(r'^photowall/create/$', views.create_pw),
 	
-	url(r'^get_photowall/$', views.get_photo_information_of_photowall),
-	url(r'^photowall/(?P<wid>\d+)/$', views.view_photowall),
-	url(r'^save_photowall/$', views.save_photowall),
-	url(r'^delete_photowall/(?P<wid>\d+)$', views.delete_photowall),
+	url(r'^photowall/pics/(?P<wid>\d+)/$', views.get_pics_of_pw),
+	url(r'^photowall/(?P<wid>\d+)/$', views.view_pw),
+	url(r'^photowall/save$', views.save_pw),
+	url(r'^photowall/delete/(?P<wid>\d+)$', views.delete_pw),
+
 )
