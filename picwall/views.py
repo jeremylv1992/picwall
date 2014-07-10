@@ -18,31 +18,39 @@ import json
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
 
+APP_NAME = 'picwall'
+
+ROOT_PATH = '/'+APP_NAME+'/'
+
 CONTEXT = {
-		'picture_page': '/picwall/picture/',
-		'photowall_page': '/picwall/photowall/',
+		'index_page': ROOT_PATH,
 
-		'login_page': '/picwall/login/',
-		'logout_page': '/picwall/logout/',
-		'register_page': '/picwall/register/',
+		'login_page': ROOT_PATH+'login/',
+		'logout_page': ROOT_PATH+'logout/',
+		'register_page': ROOT_PATH+'register/',
 
-		'picture_info_page': '/picwall/picture/info/',
-		'photowall_info_page': '/picwall/photowall/info/',
+		'pic_info_page': ROOT_PATH+'picture/info/',
+		'pw_info_page': ROOT_PATH+'photowall/info/',
 
-		'comment': '/picwall/picture/comment/',
-		'create_photowall': '/picwall/photowall/create/',
-		'upload_pictrue': '/picwall/picture/upload/'
+		'pic_image': ROOT_PATH+'picture/image/',
+		'comment': ROOT_PATH+'picture/comment/',
+		'create_pw': ROOT_PATH+'photowall/create/',
+		'upload_pic': ROOT_PATH+'picture/upload/',
+		'delete_pic': ROOT_PATH+'picture/delete/',
+		'delete_pw': ROOT_PATH+'photowall/delete/',
+
+		'base_page': APP_NAME+'/base.html',
 		}
 
-HOME_PAGE = CONTEXT['picture_page']
+HOME_PAGE = CONTEXT['index_page']
 
 TEMPLATE = {
-		'login': 'picwall/login.html',
-		'register': 'picwall/register.html',
-		'picture': 'picwall/picture_index.html',
-		'photowall': 'picwall/photowall_index.html',
-		'pic_info': 'picwall/picture_info.html',
-		'pw_info': 'picwall/photowall_info.html',
+		'index': APP_NAME+'/index.html',
+		'login': APP_NAME+'/login.html',
+		'register': APP_NAME+'/register.html',
+
+		'pic_info': APP_NAME+'/picture_info.html',
+		'pw_info': APP_NAME+'/photowall_info.html',
 		}
 
 def get_user(user):
@@ -54,32 +62,49 @@ def return_origin_page(request):
 	return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 def index(request):
-	return HttpResponse('Hello Picturewall!')
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(CONTEXT['login_page'])
+
+	pws = PhotoWall.objects.get_access_photowalls(user)
+	pics = Picture.objects.get_access_pictures(user)
+
+	context = CONTEXT
+	context['pws'] = pws
+	context['user'] = user
+	context['pics'] = pics
+
+	return render(request, TEMPLATE['index'], context)
 
 def log_in(request):
-
-	login_prompt = ''
-	email = ''
-	if request.method == 'POST':
-		email = request.POST['email']
-		password = request.POST['password']
-		users = User.objects.filter(email = email)
-		if len(users) > 0:
-			user = authenticate(username = users[0].username, password = password)
-			if user is not None:
-				if user.is_active:
-					login(request, user)
-					return HttpResponseRedirect(HOME_PAGE)
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		login_prompt = ''
+		email = ''
+		if request.method == 'POST':
+			email = request.POST['email']
+			password = request.POST['password']
+			users = User.objects.filter(email = email)
+			if len(users) > 0:
+				user = authenticate(username = users[0].username, password = password)
+				if user is not None:
+					if user.is_active:
+						login(request, user)
+						return HttpResponseRedirect(HOME_PAGE)
+					else:
+						login_promt = 'Invalid user'
 				else:
-					login_promt = 'Invalid user'
+					login_prompt = 'Password is wrong'
 			else:
-				login_prompt = 'Password is wrong'
-		else:
-			login_prompt = 'E-mail is invalid'
+				login_prompt = 'E-mail is invalid'
 
-	context = CONTEXT;
-	context['login_prompt'] = login_prompt;
-	return render(request, TEMPLATE['login'], context)
+		context = CONTEXT;
+		context['login_prompt'] = login_prompt;
+		return render(request, TEMPLATE['login'], context)
+	else:
+		return HttpResponseRedirect(HOME_PAGE)
 
 def log_out(request):
 	logout(request)
@@ -89,33 +114,33 @@ def register(request):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
-		return HttpResponseRedirect(CONTEXT['login_page'])
+		register_prompt = ''
+		if request.method == 'POST':
+			name = request.POST['name']
+			email = request.POST['email']
+			pwd = request.POST['password']
+			users1 = User.objects.filter(email=email)
+			users2 = User.objects.filter(username=name)
 
-	register_prompt = ''
-	if request.method == 'POST':
-		name = request.POST['name']
-		email = request.POST['email']
-		pwd = request.POST['password']
-		users1 = User.objects.filter(email = email)
-		users2 = User.objects.filter(username = name)
+			if len(users1) == 0:
+				if len(users2) == 0:
+					user = User.objects.create_user(name, email, pwd)
+					webuser = WebSiteUser.objects.create_user(user)
 
-		if len(users1) == 0:
-			if len(users2) == 0:
-				user = User.objects.create_user(name, email, pwd)
-				webuser = WebSiteUser.objects.create_user(user)
-	
-				register_prompt = 'Succeed to register! Now Please log in!'
-				user = authenticate(username = name, password = pwd)
-				login(request, user)
-				return HttpResponseRedirect(HOME_PAGE)
+					register_prompt = 'Succeed to register! Now Please log in!'
+					user = authenticate(username = name, password = pwd)
+					login(request, user)
+					return HttpResponseRedirect(HOME_PAGE)
+				else:
+					register_prompt = 'The name have been registered!'
 			else:
-				register_prompt = 'The name have been registered!'
-		else:
-			register_prompt = 'Your email have been registered!'
+				register_prompt = 'Your email have been registered!'
 
-	context = CONTEXT
-	context['register_prompt'] = register_prompt
-	return render(request, TEMPLATE['register'], context)
+		context = CONTEXT
+		context['register_prompt'] = register_prompt
+		return render(request, TEMPLATE['register'], context)
+	else:
+		return HttpResponseRedirect(HOME_PAGE)
 
 def upload_pic(request):
 	try:
@@ -148,6 +173,9 @@ def delete_pic(request, file_name):
 		return HttpResponseRedirect(CONTEXT['login_page'])
 
 	pic = get_object_or_404(Picture, file_name=file_name)
+	url = os.path.join(IMAGE_DIR, file_name)
+	if os.path.isfile(url):
+		os.remove(url)
 	pic.delete()
 	return return_origin_page(request)
 
@@ -159,32 +187,6 @@ def pic_image(request, file_name):
 
 	image = open(os.path.join(IMAGE_DIR, file_name), "rb").read()
 	return HttpResponse(image)
-
-def pic_index(request):
-	try:
-		user = get_user(request.user)
-	except WebSiteUser.DoesNotExist:
-		return HttpResponseRedirect(CONTEXT['login_page'])
-
-	pics = Picture.objects.filter(author=user)
-
-	context = CONTEXT
-	context['pics'] = pics
-	context['username'] = str(user)
-	return render(request, TEMPLATE['picture'], context)
-
-def pw_index(request):
-	try:
-		user = get_user(request.user)
-	except WebSiteUser.DoesNotExist:
-		return HttpResponseRedirect(CONTEXT['login_page'])
-	else:
-		photowalls = PhotoWall.objects.get_access_photowall(user)
-
-		context = CONTEXT
-		context['photowalls'] = photowalls
-		context['user'] = user
-		return render(request, TEMPLATE['photowall'], context)
 
 # pictures
 def get_user_pics(request):
@@ -213,8 +215,7 @@ def pic_info(request, file_name):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(CONTEXT['login_page'])
 
-
-	pic = get_object_or_404(Picture, file_name = file_name)
+	pic = get_object_or_404(Picture, file_name=file_name)
 	comments = PictureComment.objects.filter(pic=pic)
 
 	context = CONTEXT

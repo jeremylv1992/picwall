@@ -4,7 +4,7 @@
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -12,26 +12,26 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'picwallDB',
-#         'USER': 'root',
-#         'PASSWORD': 'zhaopianqiang',
-#         'HOST': '',
-#         'PORT': '',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rKTfLnZDQVwYMuuCQeJH',
-        'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
-        'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
-        'HOST': 'sqld.duapp.com',
-        'PORT': 4050,
+        'NAME': 'picwallDB',
+        'USER': 'root',
+        'PASSWORD': 'zhaopianqiang',
+        'HOST': '',
+        'PORT': '',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'rKTfLnZDQVwYMuuCQeJH',
+#         'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
+#         'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
+#         'HOST': 'sqld.duapp.com',
+#         'PORT': 4050,
+#     }
+# }
 
 ALLOWED_HOSTS = ['*']
 
@@ -128,7 +128,7 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
     'django.contrib.admin',
     'picwall',
-	# 'south',
+	'south',
 )
 
 # A sample logging configuration. The only tangible logging
