@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.forms import ModelForm
+
+from datetime import date
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
+
 import time
 import random
 
@@ -41,13 +48,23 @@ class PictureManager(models.Manager):
 		pics = user.picture_set.all()
 		return pics
 
+class PictureCreateForm(ModelForm):
+	class Meta:
+		model = Picture
+		fields = ['name', 'description']
+
+class PictureEditForm(ModelForm):
+	class Meta:
+		model = Picture
+		fields = ['name', 'description']
+
 class Picture(models.Model):
 	pid = models.CharField(max_length = 100, default='')
-	name = models.CharField(max_length = 50, default='')
-	description = models.CharField(max_length = 100, default='')
+	name = models.CharField(max_length = 50, default='name')
+	description = models.CharField(max_length = 100, default='description')
+	# image = models.ImageField(upload_to = IMAGE_DIR, default=IMAGE_DIR+'Christmas.jpg')
 	upload_time = models.DateTimeField(datetime.today())
 	author = models.ForeignKey(WebSiteUser)
-	# url  = models.CharField(max_length = 200)
 
 	objects = PictureManager()
 

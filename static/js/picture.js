@@ -19,8 +19,7 @@
 			$('#edit-title').val(data['name']);
 			$('#edit-dsr').val(data['description']);
 			$('#edit-pid').val(pid);
-		},
-		"json");
+		}, "json");
 	});
 
 };

@@ -214,8 +214,8 @@ def edit_pic(request):
 
 	if request.method == 'POST':
 		pid = request.POST['pid']
-		name = request.POST['title']
-		description = request.POST['desc']
+		name = request.POST['name']
+		description = request.POST['description']
 
 		pic = Picture.objects.save_picture(pid, name, description)
 
@@ -456,15 +456,15 @@ def get_pic_info(request):
 
 	return HttpResponse("")
 
-def get_pw_info(request, photowall_id):
+def get_pw_info(request):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(CONTEXT['login_page'])
 
-	wall = PhotoWall.objects.get(pk=photowall_id)
-	pics = PhotoInformation.objects.filter(photowall=wall)
-	l = []
-	for pic in pics:
-		l.append(pic.toDICT())
-	return HttpResponse(json.dumps(l))
+	if request.method == 'POST':
+		wid = request.POST["wid"]
+		wall = get_object_or_404(PhotoWall, pk=wid)
+		return HttpResponse(json.dumps(wall.toDICT()))
+
+	return HttpResponse("")
