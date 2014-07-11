@@ -1,186 +1,157 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Demo</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<!-- Bootstrap -->
-		<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+{% extends base_page %}
 
-		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-		<!--[if lt IE 9]>
-		<script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
-		<script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
-		<![endif]-->
-		<script type="text/javascript" src="{{STATIC_URL}}js/upload1.js"></script>
-	</head>
-	<body>
-		<div class="container">
-			<div class="row clearfix">
-				<div class="col-md-12 column">
-					<div class="page-header">
-						<div class="row clearfix">
-							<div class="col-md-10 column">
-								<h1>
-									Web Application Demo <small>A better way for photo sharing</small>
-								</h1>
-							</div>
-							<div class="col-md-2 column">
+{% block extrahead %}
+<script src="{{ STATIC_URL }}js/picture.js"></script>
+{% endblock %}
 
-								<h1>
-									<a class="btn" href="#">{{username}}</a>
-									<a class="btn btn-primary" href="/picwall/logout">Quit</a>
-								</h1>
+{% block extranav %}
+<li class="dropdown">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">photo manage<span class="caret"></span></a>
+<ul class="dropdown-menu" role="menu">
+	<li><a data-toggle="modal" data-target="#myUploadPhotoModal">Upload</a></li>
+</ul>
+</li>
+{% endblock %}
 
-								<!-- Modal (Upload Photo) -->
-								<div class="modal fade" id="myUploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-												<h4 class="modal-title" id="myModalLabel">Upload Photo</h4>
-											</div>
+{% block extrabody %}
+<!-- Modal (Upload Photo) -->
+<div class="modal fade" id="myUploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Upload Photo</h4>
+			</div>
 
-											<div class="modal-body">
-												<form role="form" id="photoForm" action={{ upload_pictrue }} method="post" enctype="multipart/form-data">{% csrf_token %}                  
-													<div class="form-group">
-														<label for="input-img">Photo</label>
-														<div id="preview"></div>
-														<input type="file" name='pic' accept="image/*" id="input-img" onchange="preview(this)">
-														<p class="help-block">Select a photo</p>
-													</div>
-													<div class="form-group">
-														<label for="img-title">Title of photo</label>
-														<input type="text" name='title' class="form-control" id="img-title" placeholder="input the title of your photo">
-													</div>
-													<div class="form-group">
-														<label for="image-dsr">Description of photo</label>
-														<textarea id="image-dsr" name='desc' class="form-control" rows="3" placeholder="briefly describe your photo" ></textarea>
-													</div>
-												</form>
-											</div>
-
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-												<button type="submit" id="submitPhotoBtn" class="btn btn-default" data-dismiss="modal">Submit</button>
-											</div>
-										</div><!-- /.modal-content -->
-									</div><!-- /.modal-dialog -->
-								</div><!-- /.modal -->
-
-								<!-- Modal (Create Wall)-->
-								<div class="modal fade" id="myCreateWallModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-									<div class="modal-dialog">
-										<div class="modal-content">
-											<div class="modal-header">
-												<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-												<h4 class="modal-title" id="myModalLabel">Create Picture Wall</h4>
-											</div>
-
-											<div class="modal-body">                
-												<form role="form" id="wallForm" action={{ create_photowall }} method="post" enctype="multipart/form-data">{% csrf_token %}
-													<div class="form-group">
-														<label for="img-title">Name of Picture Wall</label>
-														<input type="text" name='name' class="form-control" id="img-title" placeholder="input the name of picture wall">
-													</div>
-													<div class="form-group">
-														<label for="image-dsr">Description of Picture Wall</label>
-														<textarea id="image-dsr" name='description'  class="form-control" rows="3" placeholder="briefly describe your picture wall" ></textarea>
-													</div>
-												</form>
-											</div>
-
-											<div class="modal-footer">
-												<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-												<button type="submit" id="submitWallBtn" class="btn btn-default" data-dismiss="modal">Submit</button>
-											</div>
-										</div><!-- /.modal-content -->
-									</div><!-- /.modal-dialog -->
-								</div><!-- /.modal -->
-
-							</div>
-						</div>
+			<div class="modal-body">                
+				<form role="form" id="photo-form" action={{ upload_pic }} method="post" enctype="multipart/form-data">                  
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="input-img">Photo</label>
+						<div id="preview"></div>
+						<input type="file" accept="image/*" name="image" id="input-img" onchange="preview(this)">
+						<p class="help-block">Select a photo</p>
 					</div>
-					<ul class="nav nav-tabs">
-						<li class="active">
-						<a href="/picwall/picture">Pictures</a>
-						</li>
-						<li>
-						<a href="/picwall/photowall">Picture Walls</a>
-						</li>
-						<li class="dropdown pull-right">
-						<a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<strong class="caret"></strong></a>
-						<ul class="dropdown-menu">
-							<li>
-							<a data-toggle="modal" data-target="#myUploadPhotoModal">Upload</a>
-							</li>
-							<li class="divider">
-							</li>
-							<li>
-							<a data-toggle="modal" data-target="#myCreateWallModal">Create Wall</a>
-							</li>
-						</ul>
-						</li>
-					</ul>
-					<br/>
+					<div class="form-group">
+						<label for="img-title">Title of photo</label>
+						<input type="text" class="form-control" id="img-title" name="name" placeholder="input the title of your photo"/>
+					</div>
+					<div class="form-group">
+						<label for="image-dsr">Description of photo</label>
+						<textarea id="image-dsr" class="form-control" rows="3" name="description" placeholder="briefly describe your photo" ></textarea>
+					</div>
+					<div class="form-group">
+						<select class="form-control">
+							<option>label1</option>
+							<option>label2</option>
+							<option>label3</option>
+							<option>label4</option>
+							<option>label5</option>
+						</select>
+					</div>
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="submit" id="photo-submit-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+			</div>
+		</div> <!-- /.modal-content -->
+	</div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+
+<!-- Edit modal -->
+<div class="modal fade change-label" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel2" aria-hidden="true"/>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel2">Edit Photo</h4>
+			</div>
+
+			<div class="modal-body">                
+				<form role="form" id="edit-form" action="#" method="post" enctype="multipart/form-data">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="edit-title">Title of photo</label>
+						<input type="text" class="form-control" id="edit-title" name="name" placeholder="input the title of your photo"/>
+					</div>
+					<div class="form-group">
+						<label for="edit-dsr">Description of photo</label>
+						<textarea id="edit-dsr" class="form-control" rows="3" name="description" placeholder="briefly describe your photo" ></textarea>
+					</div>
+					<div class="form-group">
+						<select class="form-control">
+							<option>label1</option>
+							<option>label2</option>
+							<option>label3</option>
+							<option>label4</option>
+							<option>label5</option>
+						</select>
+					</div>
+					<input id="edit-pid" type="hidden" name="edit-pid" value="">
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="submit" id="edit-submit-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+			</div>
+		</div> <!-- /.modal-content -->
+	</div> <!-- /.modal-dialog -->
+</div>
+
+<!-- container -->
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+
+			<ul class="breadcrumb">
+				<li><a data-toggle="tab" href="#Animal">Animal</a></li>
+				<li><a data-toggle="tab" href="#People">People</a></li>
+			</ul>
+
+			<!-- tab-content -->
+			<div class="tab-content">
+				<div id="Animal" class="tab-pane fade in active">
+					<!-- row -->
 					<div class="row">
 						{% for pic in pics %}
-
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<div class="thumbnail">
-								<img alt="300x200" src="/picwall/picture/image/{{pic.file_name}}" />
+								<img alt="600x600" src={{ pic_image }}{{ pic.pid }} />
 								<div class="caption">
-									<h3>
-										{{pic.pic_name}}
-									</h3>
-									<p>
-									{{pic.pic_desc}}
-									</p>
-
-									<p>
-									<a class="btn btn-primary" href="/picwall/picture/info/{{ pic.file_name }}">进入</a>
-									<a class="btn btn-success" href="#">Collect</a>
-									<a class="btn btn-danger" href="/picwall/picture/delete/{{ pic.file_name }}">Delete</a>
-									</p>
-
+									<a class="btn btn-primary btn-sm" href="{{ pic_info_page }}{{ pic.pid }}">Access</a>
+									<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
+									<input type="hidden" name="pid" value="">
+									<a type="button" class="btn btn-danger btn-sm" href="{{ delete_pic }}{{ pic.pid }}">Delete</a>
 								</div>
 							</div>
-						</div>
-
-						{% endfor %} 
-					</div>
-
-					<ul class="pagination">
-						<li>
-						<a href="#">Prev</a>
-						</li>
-						<li>
-						<a href="#">1</a>
-						</li>
-						<li>
-						<a href="#">2</a>
-						</li>
-						<li>
-						<a href="#">3</a>
-						</li>
-						<li>
-						<a href="#">4</a>
-						</li>
-						<li>
-						<a href="#">5</a>
-						</li>
-						<li>
-						<a href="#">Next</a>
-						</li>
-					</ul>
+						</div> <!-- /.col-md-3 -->
+						{% endfor %}
+					</div> <!-- /.row -->
 				</div>
-			</div>
-		</div>
 
-		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
-		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
-	</body>
-</html>
+				<div id="People" class="tab-pane fade">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-3">
+							<div class="thumbnail">
+								<img alt="600x600" src="http://lorempixel.com/600/600/city" />
+								<div class="caption">
+									<a class="btn btn-primary btn-sm" href="#">Access</a>
+									<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
+									<input type="hidden" name="pid" value="">
+									<a type="button" class="btn btn-danger btn-sm" href="#">Delete</a>
+								</div>
+							</div>
+						</div> <!-- /.col-md-3 -->
+					</div> <!-- /.row -->
+				</div>
+			</div> <!-- /.tab-content -->
+
+		</div> <!-- /.col-md-12 column -->
+	</div> <!-- /.row clearfix -->
+</div>  <!-- /.container -->
+
+{% endblock %}

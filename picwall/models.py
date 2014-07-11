@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-from django.utils import timezone
-from datetime import date
 import time
+import random
 
 class WebSiteUserManager(models.Manager):
 	def create_user(self, user):
@@ -17,31 +16,6 @@ class WebSiteUser(models.Model):
 
 	def __unicode__(self):
 		return self.user.username
-
-class PictureManager(models.Manager):
-	def create_picture(self, name, author, desc):
-		upload_time = date.today()
-		file_name = '%s_%s_%s'%(str(time.asctime(time.localtime())).replace(' ', '_').replace(':', '_'), name, author)
-		picture = self.create(name=name, author=author, desc=desc, upload_time = upload_time, file_name=file_name)
-		return picture
-	def get_access_pictures(self, user):
-		users = [user]
-		for friend in user.friends.all():
-			user.append(friend)
-		pics = [e for e in user.picture_set.all() for user in users]
-		return pics
-
-class Picture(models.Model):
-	file_name   = models.CharField(max_length = 100)
-	name = models.CharField(max_length = 50)
-	desc = models.CharField(max_length = 100)
-	upload_time = models.DateTimeField()
-	author = models.ForeignKey(WebSiteUser)
-	url  = models.CharField(max_length = 200)
-	objects = PictureManager()
-
-	def __unicode__(self):
-		return self.file_name
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
@@ -51,11 +25,58 @@ class Picture(models.Model):
 		    d[attr] = str(getattr(self, attr))
 		return d
 
-class PictureComment(models.Model):
-	content = models.CharField(max_length=100)
+class PictureManager(models.Manager):
+	def create_picture(self, name, author, description):
+		upload_time = datetime.today()
+		pid = '%s_%s_%s'%(str(time.asctime(time.localtime())).replace(' ', '_').replace(':', '_'), name, author)
+		picture = self.create(pid=pid, name=name, author=author, description=description, upload_time = upload_time)
+		return picture
+	def save_picture(self, pid, name, description):
+		pic = self.get(pid=pid)
+		if pic is not None:
+			pic.name = name
+			pic.description = description
+			pic.save()
+	def get_access_pictures(self, user):
+		pics = user.picture_set.all()
+		return pics
+
+class Picture(models.Model):
+	pid = models.CharField(max_length = 100, default='')
+	name = models.CharField(max_length = 50, default='')
+	description = models.CharField(max_length = 100, default='')
+	upload_time = models.DateTimeField(datetime.today())
 	author = models.ForeignKey(WebSiteUser)
+	# url  = models.CharField(max_length = 200)
+
+	objects = PictureManager()
+
+	def __unicode__(self):
+		return self.pid
+	def toDICT(self):
+		ff = []
+		for f in self._meta.fields:
+		    ff.append(f.name)
+		d = {}
+		for attr in ff:
+		    d[attr] = str(getattr(self, attr))
+		return d
+
+class PictureCommentManage(models.Manager):
+	def create_picture_comment(self, author, pid, content):
+		pic = Picture.objects.get(pid=pid)
+		published_date = datetime.today()
+		pic_comment = self.create(author=author, pic=pic, content=content, published_date=published_date)
+		return pic_comment
+
+class PictureComment(models.Model):
 	pic = models.ForeignKey(Picture)
+	author = models.ForeignKey(WebSiteUser)
+	content = models.CharField(max_length=100)
 	published_date = models.DateField()
+
+	objects = PictureCommentManage()
+
 	def __unicode__(self):
 		return self.content + '@' + str(self.pic)
 	class Meta:
@@ -67,23 +88,48 @@ class PhotoWallManager(models.Manager):
 		photowall.save()
 		photowall.access_users.add(creator)
 		photowall.save()
+	def save_photowall(self, wid, name, description):
+		pw = self.get(pk=wid)
+		if pw is not None:
+			pw.name = name
+			pw.description = description
+			pw.modify_date = date.today()
+			pw.save()
+	def access_photowall(self, wid):
+		pw = self.get(pk=wid)
+		if pw is not None:
+			pw.access_times += 1
+	def get_private_photowall(self, user):
+		pws = user.photowall_creator.all()
+		return pws
 	def get_access_photowalls(self, user):
-		users = [user]
-		for friend in user.friends.all():
-			users.append(friend)
-		photowalls = [ e for e in user.photowall_set.all() for user in users]
-		return photowalls
+		pws = user.access_users.all()
+		return pws
 	def get_manage_photowalls(self, user):
-		users = []
+		pws = user.manage_users.all()
+		return pws
+	def get_random_photowalls(self):
+		pws = random.sample(PhotoWall.objects.all(), min(5, PhotoWall.objects.count()))
+		return pws
+	def get_hot_photowalls(self):
+		pws = PhotoWall.objects.order_by('-access_times').all()[:min(5, PhotoWall.objects.count())]
+		return pws
+	def get_new_photowalls(self):
+		pws = PhotoWall.objects.order_by('-modify_date').all()[:min(5, PhotoWall.objects.count())]
+		return pws
 
 class PhotoWall(models.Model):
-	name = models.CharField(max_length=32)
-	creator = models.ForeignKey(WebSiteUser, related_name='creator+')
-	create_data = models.DateField(default=datetime.now())
-	access_users = models.ManyToManyField(WebSiteUser)
-	# manage_users = models.ManyToManyField(WebSiteUser)
-	description = models.CharField(max_length=256)
-	# 
+	name = models.CharField(max_length=32, default='')
+	creator = models.ForeignKey(WebSiteUser, related_name='photowall_creator')
+	description = models.CharField(max_length=256, default='')
+
+	access_users = models.ManyToManyField(WebSiteUser, related_name='access_users')
+	manage_users = models.ManyToManyField(WebSiteUser, related_name='manage_users')
+
+	create_date = models.DateField(default=datetime.now())
+	modify_date  = models.DateField(default=datetime.now())
+
+	access_times = models.IntegerField(default=0)
 
 	objects = PhotoWallManager()
 
@@ -101,10 +147,12 @@ class PhotoWall(models.Model):
 class PhotoInformation(models.Model):
 	picture = models.ForeignKey(Picture)
 	photowall = models.ForeignKey(PhotoWall)
+
 	left = models.CharField(max_length=16)
 	top = models.CharField(max_length=16)
 	width = models.CharField(max_length=16)
 	height = models.CharField(max_length=16)
+
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
