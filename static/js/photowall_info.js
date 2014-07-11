@@ -7,13 +7,6 @@ var PHOTOPADDING = 7;
 var PHOTOPADDINGDOWN = 35;
 var PHOTOWIDTH;
 
-var APP_NAME = 'picwall';
-var ROOT_DIR = '/' + APP_NAME + '/';
-var GET_PICUTRE = ROOT_DIR+'picture/image/';
-var SAVE_PHOTOWALL = ROOT_DIR+'photowall/save/';
-var GET_USER_PICTURES = ROOT_DIR+'user/pics/';
-var GET_PHOTOWALL_PICTURES = ROOT_DIR+'photowall/pics/'
-
 $(function() { 
 	init();
 	loadBarPhotos();

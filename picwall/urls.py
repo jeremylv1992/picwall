@@ -11,14 +11,13 @@ urlpatterns = patterns('',
 	url(r'^user/info/$', views.get_user_info),
 	url(r'^user/pics/$', views.get_user_pics),
 
-
 	# pic
 	url(r'^picture/$', views.picture_index),
 	url(r'^picture/upload/$', views.upload_pic),
 	url(r'^picture/delete/(?P<pid>\w+)/$', views.delete_pic),
 	url(r'^picture/image/(?P<pid>\w+)/$', views.pic_image),
 	url(r'^picture/info/(?P<pid>\w+)/$', views.pic_info),
-	url(r'^picture/getinfo/(?P<pid>\w+)/$', views.get_pic_info),
+	url(r'^picture/info/$', views.get_pic_info),
 	url(r'^picture/comment/$', views.pic_comment),
 
 	# pw
@@ -26,7 +25,7 @@ urlpatterns = patterns('',
 	url(r'^photowall/info/(?P<wid>\d+)/$', views.pw_info),
 	url(r'^photowall/create/$', views.create_pw),
 	url(r'^photowall/pics/$', views.get_pics_of_pw),
-	url(r'^photowall/getinfo/(?P<wid>\d+)/$', views.get_pw_info),
+	url(r'^photowall/info/$', views.get_pw_info),
 	url(r'^photowall/save/$', views.save_pw),
 	url(r'^photowall/delete/(?P<wid>\d+)/$', views.delete_pw),
 

@@ -32,6 +32,7 @@ CONTEXT = {
 
 		'pic_index_page': ROOT_PATH+'picture/',
 		'pic_info_page': ROOT_PATH+'picture/info/',
+		'get_pic_info': ROOT_PATH+'picture/info/',
 		'pic_image': ROOT_PATH+'picture/image/',
 		'comment': ROOT_PATH+'picture/comment/',
 		'upload_pic': ROOT_PATH+'picture/upload/',
@@ -140,6 +141,7 @@ def log_in(request):
 				login_prompt = 'E-mail is invalid'
 
 		context = CONTEXT;
+		context['user'] = ''
 		context['login_prompt'] = login_prompt;
 		return render(request, TEMPLATE['login'], context)
 	else:
@@ -441,13 +443,18 @@ def get_user_info(request):
 		return HttpResponseRedirect(CONTEXT['login_page'])
 	return HttpResponse(user.toDICT())
 	
-def get_pic_info(request, pid):
+def get_pic_info(request):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(CONTEXT['login_page'])
-	pic = get_object_or_404(Picture, pid=pid)
-	return HttpResponse(json.dumps(pic.toDICT()))
+
+	if request.method == 'POST':
+		pid = request.POST['pid']
+		pic = get_object_or_404(Picture, pid=pid)
+		return HttpResponse(json.dumps(pic.toDICT()))
+
+	return HttpResponse("")
 
 def get_pw_info(request, photowall_id):
 	try:

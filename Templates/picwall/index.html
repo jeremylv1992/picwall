@@ -20,8 +20,8 @@
 			<div class="tab-content">
 				<div id="hotClass" class="tab-pane fade in active">
 					<!-- row -->
-					{% for pw in hot_pws %}
 					<div class="row">
+						{% for pw in hot_pws %}
 						<div class="col-md-4">
 							<div class="thumbnail">
 								<img alt="300x300" src="http://lorempixel.com/300/300/people" />
@@ -34,14 +34,14 @@
 								</div>
 							</div>
 						</div>
+						{% endfor %}
 					</div> <!-- /.row -->
-					{% endfor %}
 				</div> <!-- /.hotClass -->
 
 				<!-- newClass -->
 				<div id="newClass" class="tab-pane fade">
-					{% for pw in new_pws %}
 					<div class="row">
+						{% for pw in new_pws %}
 						<div class="col-md-4">
 							<div class="thumbnail">
 								<img alt="300x300" src="http://lorempixel.com/300/300/sports" />
@@ -54,14 +54,14 @@
 								</div>
 							</div>
 						</div>
+						{% endfor %}
 					</div> <!-- /.row -->
-					{% endfor %}
 				</div> <!-- /.newClass -->
 
 				<!-- randomClass -->
 				<div id="randomClass" class="tab-pane fade">
-					{% for pw in random_pws %}
 					<div class="row">
+						{% for pw in random_pws %}
 						<div class="col-md-4">
 							<div class="thumbnail">
 								<img alt="300x300" src="http://lorempixel.com/300/300/animals" />
@@ -73,8 +73,8 @@
 								</div>
 							</div>
 						</div>
+						{% endfor %}
 					</div> <!-- /.row -->
-					{% endfor %}
 				</div> <!-- /.randomClass -->
 			</div> <!-- /.tab-content -->
 		</div>
