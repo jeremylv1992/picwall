@@ -5,11 +5,12 @@ from django.forms import ModelForm
 
 from datetime import date
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
-
+import os
 import time
 import random
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
 
 class WebSiteUserManager(models.Manager):
 	def create_user(self, user):
@@ -47,16 +48,6 @@ class PictureManager(models.Manager):
 	def get_access_pictures(self, user):
 		pics = user.picture_set.all()
 		return pics
-
-class PictureCreateForm(ModelForm):
-	class Meta:
-		model = Picture
-		fields = ['name', 'description']
-
-class PictureEditForm(ModelForm):
-	class Meta:
-		model = Picture
-		fields = ['name', 'description']
 
 class Picture(models.Model):
 	pid = models.CharField(max_length = 100, default='')
