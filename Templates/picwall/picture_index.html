@@ -1,4 +1,4 @@
-{% extends base_page %}
+{% extends 'picwall/base.html' %}
 
 {% block extrahead %}
 <script src="{{ STATIC_URL }}js/picture.js"></script>
@@ -24,7 +24,7 @@
 			</div>
 
 			<div class="modal-body">                
-				<form role="form" id="photo-form" action={{ upload_pic }} method="post" enctype="multipart/form-data">                  
+				<form role="form" id="photo-form" action={% url 'upload pic' %} method="post" enctype="multipart/form-data">                  
 					{% csrf_token %}
 					<div class="form-group">
 						<label for="input-img">Photo</label>
@@ -70,7 +70,7 @@
 			</div>
 
 			<div class="modal-body">                
-				<form role="form" id="edit-form" action={{ edit_pic }} method="post" enctype="multipart/form-data">
+				<form role="form" id="edit-form" action={% url 'edit pic' %} method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 					<div class="form-group">
 						<label for="edit-title">Title of photo</label>
@@ -119,12 +119,12 @@
 						{% for pic in pics %}
 						<div class="col-md-3">
 							<div class="thumbnail">
-								<img alt="600x600" src={{ pic_image }}{{ pic.pid }} />
+								<img alt="600x600" src={% url 'pic image' pic.pid %} />
 								<div class="caption">
-									<a class="btn btn-primary btn-sm" href="{{ pic_info_page }}{{ pic.pid }}">Access</a>
+									<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.pid %}>Access</a>
 									<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
 									<input type="hidden" name="pid" value="{{ pic.pid }}">
-									<a type="button" class="btn btn-danger btn-sm" href="{{ delete_pic }}{{ pic.pid }}">Delete</a>
+									<a type="button" class="btn btn-danger btn-sm" href={% url 'delete pic' pic.pid %}>Delete</a>
 								</div>
 							</div>
 						</div> <!-- /.col-md-3 -->

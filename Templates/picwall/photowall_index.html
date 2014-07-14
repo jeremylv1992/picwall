@@ -1,4 +1,4 @@
-{% extends base_page %}
+{% extends 'picwall/base.html' %}
 
 {% block extrahead %}
 <script src="{{ STATIC_URL }}js/photowall.js"></script>
@@ -25,7 +25,7 @@
 			</div>
 
 			<div class="modal-body">                
-				<form role="form" id="wall-form" action="{{ create_pw }}" method="post" enctype="multipart/form-data">
+				<form role="form" id="wall-form" action="{% url 'create pw' %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 					<div class="form-group">
 						<label for="wall-title">Name of Photo Wall</label>
@@ -56,7 +56,7 @@
 			</div>
 
 			<div class="modal-body">                
-				<form role="form" id="edit-form" action="{{ edit_pw }}" method="post" enctype="multipart/form-data">
+				<form role="form" id="edit-form" action="{% url 'edit pw' %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
 					<div class="form-group">
 						<label for="edit-title">Name of Photo Wall</label>
@@ -103,10 +103,10 @@
 									</h3>
 									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 									<p>
-									<a class="btn btn-primary" href="{{ pw_info_page }}{{ pw.id }}">Access</a>
+									<a class="btn btn-primary" href="{% url 'pw info' pw.id %}">Access</a>
 									<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
 									<input type="hidden" name="pid" value="{{ pw.id }}">
-									<a type="button" class="btn btn-danger" href="{{ delete_pw }}{{ pw.id }}">Delete</a>
+									<a type="button" class="btn btn-danger" href="{% url 'delete pw' pw.id %}">Delete</a>
 									</p>
 								</div>
 							</div>

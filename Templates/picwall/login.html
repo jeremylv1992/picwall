@@ -1,4 +1,4 @@
-{% extends base_page %}
+{% extends 'picwall/base.html' %}
 {% block extrahead %}
 
 <link rel="stylesheet" href = "{{ STATIC_URL }}dist/css/bootstrap-theme.css" />
@@ -12,7 +12,7 @@
 
 {% if login_prompt != '' %}
 <div class="panel panel-default">
-	<div class="panel-body"><span class="label label-warning text-center">PROMPT:  {{login_prompt}}</span></div>
+	<div class="panel-body"><span class="label label-warning text-center">PROMPT:  {{ login_prompt }}</span></div>
 </div>
 {% endif %}
 <div class="container">

@@ -1,5 +1,4 @@
-{% extends base_page %}
-<!-- script -->
+{% extends 'picwall/base.html' %}
 {% block extrahead %}
 
 <!-- Bootstrap -->
@@ -21,7 +20,7 @@
 			</div>
 			<div class="btn-group" id="topbarright">
 				<button type="button" class="btn btn-default" id="savebutton">Save</button>
-				<button type="button" class="btn btn-default" onclick="javascript:location.href='{{ index_page }}'">Exit</button>
+				<button type="button" class="btn btn-default" onclick="javascript:location.href='{% url 'pw index' %}'">Exit</button>
 			</div>
 		</div>
 
