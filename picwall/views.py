@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.core import serializers
 from datetime import date
 
-from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser
+from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel
 
 from myForms import Login_Form
 
@@ -23,7 +23,7 @@ ROOT_PATH = '/'+APP_NAME+'/'
 LOGIN_PAGE = ROOT_PATH+'login/'
 INDEX_PAGE = ROOT_PATH
 
-TEMPLATE = {
+TEMPLATES = {
 		'index': APP_NAME+'/index.html',
 		'login': APP_NAME+'/login.html',
 		'register': APP_NAME+'/register.html',
@@ -58,7 +58,7 @@ def index(request):
 	context['random_pws'] = random_pws
 	context['new_pws'] = new_pws
 
-	return render(request, TEMPLATE['index'], context)
+	return render(request, TEMPLATES['index'], context)
 
 def picture_index(request):
 	try:
@@ -66,12 +66,12 @@ def picture_index(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	pics = Picture.objects.get_access_pictures(user)
+	labels = user.user_labels.all()
 
 	context = {}
 	context['user'] = user
-	context['pics'] = pics
-	return render(request, TEMPLATE['pic_index'], context)
+	context['labels'] = labels
+	return render(request, TEMPLATES['pic_index'], context)
 
 def photowall_index(request):
 	try:
@@ -84,7 +84,7 @@ def photowall_index(request):
 	context = {}
 	context['user'] = user
 	context['private_pws'] = private_pws
-	return render(request, TEMPLATE['pw_index'], context)
+	return render(request, TEMPLATES['pw_index'], context)
 
 def log_in(request):
 	try:
@@ -112,7 +112,7 @@ def log_in(request):
 		context = {}
 		context['user'] = ''
 		context['login_prompt'] = login_prompt;
-		return render(request, TEMPLATE['login'], context)
+		return render(request, TEMPLATES['login'], context)
 	else:
 		return HttpResponseRedirect(INDEX_PAGE)
 
@@ -148,7 +148,7 @@ def register(request):
 
 		context = {}
 		context['register_prompt'] = register_prompt
-		return render(request, TEMPLATE['register'], context)
+		return render(request, TEMPLATES['register'], context)
 	else:
 		return HttpResponseRedirect(INDEX_PAGE)
 
@@ -162,8 +162,10 @@ def upload_pic(request):
 		name = request.POST['name']
 		description = request.POST['description']
 		author = WebSiteUser.objects.get(user=request.user)
+		lid = request.POST['label']
+		label = PictureLabel.objects.get(pk=lid)
 
-		pic = Picture.objects.create_picture(name, author, description)
+		pic = Picture.objects.create_picture(name, author, description, label)
 
 		# save image file
 		image = request.FILES['image']
@@ -185,8 +187,10 @@ def edit_pic(request):
 		pid = request.POST['pid']
 		name = request.POST['name']
 		description = request.POST['description']
+		lid = request.POST['label']
+		label = PictureLabel.objects.get(pk=lid)
 
-		pic = Picture.objects.save_picture(pid, name, description)
+		pic = Picture.objects.save_picture(pid, name, description, label)
 
 	return return_origin_page(request)
 
@@ -197,9 +201,9 @@ def delete_pic(request, pid):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	pic = get_object_or_404(Picture, pid=pid)
-	url = os.path.join(IMAGE_DIR, pid)
-	if os.path.isfile(url):
-		os.remove(url)
+	pic_file = os.path.join(IMAGE_DIR, pid)
+	if os.path.isfile(pic_file):
+		os.remove(pic_file)
 	pic.delete()
 	return return_origin_page(request)
 
@@ -245,7 +249,7 @@ def pic_info(request, pid):
 	context['pic'] = pic
 	context['comments'] = comments
 	context['user'] = user
-	return render(request, TEMPLATE['pic_info'], context)
+	return render(request, TEMPLATES['pic_info'], context)
 
 def pic_comment(request):
 	try:
@@ -271,7 +275,7 @@ def pw_info(request, wid):
 
 	context = {}
 	context['user'] = user
-	return render(request, TEMPLATE['pw_info'], context)
+	return render(request, TEMPLATES['pw_info'], context)
 
 def create_pw(request):
 	try:
@@ -437,3 +441,20 @@ def get_pw_info(request):
 		return HttpResponse(json.dumps(wall.toDICT()))
 
 	return HttpResponse("")
+
+def get_users(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	if request.method == 'GET':
+		text = request.GET['user_name']
+		users = User.objects.filter(username__icontains=text)
+		webusers = [WebSiteUser.objects.get(user=e) for e in users]
+
+		context = {}
+		context['users'] = webusers
+		return render(request, TEMPLATES['find_user_result'], context)
+	
+	return return_origin_page(request)

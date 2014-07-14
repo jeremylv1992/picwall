@@ -35,9 +35,9 @@ DATABASES = {
 
 ALLOWED_HOSTS = ['*']
 
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Asia/Shanghai'
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-cn'
 
 SITE_ID = 1
 
@@ -128,7 +128,7 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
     'django.contrib.admin',
     'picwall',
-	# 'south',
+	'south',
 )
 
 # A sample logging configuration. The only tangible logging

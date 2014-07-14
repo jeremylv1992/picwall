@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
-
 from datetime import date
 
 import os
@@ -14,6 +13,8 @@ IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
 class WebSiteUserManager(models.Manager):
 	def create_user(self, user):
 		webuser = self.create(user=user)
+		webuser.user_labels.add(PictureLabel.objects.create(owner=webuser, name="default"))
+		webuser.save()
 		return webuser
 
 class WebSiteUser(models.Model):
@@ -32,17 +33,35 @@ class WebSiteUser(models.Model):
 		    d[attr] = str(getattr(self, attr))
 		return d
 
+# class WebSiteUserGroup(models.Model):
+# 	name = models.CharField(max_length=32)
+# 	users = models.ManyToManyField(WebSiteUser)
+
+class PictureLabelManager(models.Manager):
+	def create_label(self, owner, name):
+		label = self.create(owner=owner, name=name)
+		return label
+	def add_label(self, pic, label):
+		label.pics.add(pic)
+
+class PictureLabel(models.Model):
+	name = models.CharField(max_length=10)
+	owner = models.ForeignKey(WebSiteUser, related_name="user_labels")
+	
+	objects = PictureLabelManager()
+
 class PictureManager(models.Manager):
-	def create_picture(self, name, author, description):
+	def create_picture(self, name, author, description, label):
 		upload_time = datetime.today()
 		pid = '%s_%s_%s'%(str(time.asctime(time.localtime())).replace(' ', '_').replace(':', '_'), name, author)
-		picture = self.create(pid=pid, name=name, author=author, description=description, upload_time = upload_time)
+		picture = self.create(pid=pid, name=name, author=author, description=description, upload_time = upload_time, label=label)
 		return picture
-	def save_picture(self, pid, name, description):
+	def save_picture(self, pid, name, description, label):
 		pic = self.get(pid=pid)
 		if pic is not None:
 			pic.name = name
 			pic.description = description
+			pic.label = label
 			pic.save()
 	def get_access_pictures(self, user):
 		pics = user.picture_set.all()
@@ -52,9 +71,9 @@ class Picture(models.Model):
 	pid = models.CharField(max_length = 100, default='')
 	name = models.CharField(max_length = 50, default='name')
 	description = models.CharField(max_length = 100, default='description')
-	# image = models.ImageField(upload_to = IMAGE_DIR, default=IMAGE_DIR+'Christmas.jpg')
 	upload_time = models.DateTimeField(datetime.today())
 	author = models.ForeignKey(WebSiteUser)
+	label = models.ForeignKey(PictureLabel, related_name='label_pics')
 
 	objects = PictureManager()
 

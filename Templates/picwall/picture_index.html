@@ -10,6 +10,7 @@
 <a href="#" class="dropdown-toggle" data-toggle="dropdown">photo manage<span class="caret"></span></a>
 <ul class="dropdown-menu" role="menu">
 	<li><a data-toggle="modal" data-target="#myUploadPhotoModal">Upload</a></li>
+	<li><a data-toggle="modal" data-target="#myAddPictureLabel">Add Label</a></li>
 </ul>
 </li>
 {% endblock %}
@@ -42,12 +43,10 @@
 						<textarea id="image-dsr" class="form-control" rows="3" name="description" placeholder="briefly describe your photo" ></textarea>
 					</div>
 					<div class="form-group">
-						<select class="form-control">
-							<option>label1</option>
-							<option>label2</option>
-							<option>label3</option>
-							<option>label4</option>
-							<option>label5</option>
+						<select class="form-control" name="label">
+							{% for label in labels %}
+							<option value={{ label.id }}> {{ label.name }}</option>
+							{% endfor %}
 						</select>
 					</div>
 				</form>
@@ -82,12 +81,10 @@
 						<textarea id="edit-dsr" class="form-control" rows="3" name="description" placeholder="briefly describe your photo" ></textarea>
 					</div>
 					<div class="form-group">
-						<select class="form-control">
-							<option>label1</option>
-							<option>label2</option>
-							<option>label3</option>
-							<option>label4</option>
-							<option>label5</option>
+						<select class="form-control" name="label">
+							{% for label in labels %}
+							<option value={{ label.id }}> {{ label.name }}</option>
+							{% endfor %}
 						</select>
 					</div>
 					<input id="edit-pid" type="hidden" name="pid" value="">
@@ -108,16 +105,18 @@
 		<div class="col-md-12 column">
 
 			<ul class="breadcrumb">
-				<li><a data-toggle="tab" href="#Animal">Animal</a></li>
-				<li><a data-toggle="tab" href="#People">People</a></li>
+				{% for label in labels %}
+				<li><a data-toggle="tab" href="#label-{{ label.id }}">{{ label.name }}</a></li>
+				{% endfor %}
 			</ul>
 
 			<!-- tab-content -->
 			<div class="tab-content">
-				<div id="Animal" class="tab-pane fade in active">
+				{% for label in labels %}
+				<div id="label-{{ label.id }}" class="tab-pane fade in active">
 					<!-- row -->
 					<div class="row">
-						{% for pic in pics %}
+						{% for pic in label.label_pics.all %}
 						<div class="col-md-3">
 							<div class="thumbnail">
 								<img alt="600x600" src={% url 'pic image' pic.pid %} />
@@ -132,12 +131,7 @@
 						{% endfor %}
 					</div> <!-- /.row -->
 				</div>
-
-				<div id="People" class="tab-pane fade">
-					<!-- row -->
-					<div class="row">
-					</div> <!-- /.row -->
-				</div>
+				{% endfor %}
 			</div> <!-- /.tab-content -->
 
 		</div> <!-- /.col-md-12 column -->
