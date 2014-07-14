@@ -1,12 +1,12 @@
 {% extends 'picwall/base.html' %}
+{% load staticfiles %}
+
 {% block extrahead %}
-
 <!-- Bootstrap -->
-<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.10.4.custom.min.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}css/photowall.css">
-<script src="{{ STATIC_URL }}js/jquery-ui-1.10.4.custom.min.js"></script>
-
-<script src="{{ STATIC_URL }}js/photowall_info.js"></script>
+<link rel="stylesheet" href={% static 'css/jquery-ui-1.10.4.custom.min.css' %}>
+<link rel="stylesheet" href={% static 'css/photowall.css' %}>
+<script src={% static 'js/jquery-ui-1.10.4.custom.min.js' %}></script>
+<script src={% static 'js/photowall_info.js' %}></script>
 {% endblock %}
 
 {% block extrabody %}

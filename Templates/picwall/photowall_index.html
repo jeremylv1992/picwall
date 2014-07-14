@@ -1,7 +1,8 @@
 {% extends 'picwall/base.html' %}
+{% load staticfiles %}
 
 {% block extrahead %}
-<script src="{{ STATIC_URL }}js/photowall.js"></script>
+<script src={% static 'js/photowall.js' %}></script>
 {% endblock  %}
 
 {% block extranav %}
@@ -14,7 +15,6 @@
 {% endblock %}
 
 {% block extrabody %}
-
 <!-- Modal (Create Wall)-->
 <div class="modal fade" id="myCreateWallModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">

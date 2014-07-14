@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html>
 	<head>
@@ -6,9 +7,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href = "{{ STATIC_URL }}dist/css/bootstrap.css" />
-		<link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
-		<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui-1.10.4.custom.min.css">
+		<link rel="stylesheet" href={% static 'dist/css/bootstrap.css' %}/>
+		<link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}/>
+		<link rel="stylesheet" href={% static 'css/jquery-ui-1.10.4.custom.min.css' %}/>
 
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,11 +19,11 @@
 		<![endif]-->
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-		<script src="{{ STATIC_URL }}js/jquery-1.11.1.min.js"></script>
+		<script src={% static 'js/jquery-1.11.1.min.js' %}></script>
 
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
-		<script src="{{ STATIC_URL }}js/bootstrap.min.js"></script>
-		<script src="{{ STATIC_URL }}js/constant.js"></script>
+		<script src={% static 'js/bootstrap.min.js' %}></script>
+		<script src={% static 'js/constant.js' %}></script>
 
 		{% block extrahead %}
 		{% endblock %}

@@ -1,14 +1,15 @@
 {% extends 'picwall/base.html' %}
+{% load staticfiles %}
 
 {% block extrahead %}
-<script src="{{ STATIC_URL }}js/register.js"></script>
+<script src={% static 'js/register.js' %}></script>
 {% endblock %}
 
 {% block extrabody %}
 
-{% if login_prompt != '' %}
+{% if register_prompt != '' %}
 <div class="panel panel-default">
-	<div class="panel-body"><span class="label label-warning text-center">PROMPT:  {{login_prompt}}</span></div>
+	<div class="panel-body"><span class="label label-warning text-center">PROMPT:  {{register_prompt}}</span></div>
 </div>
 {% endif %}
 

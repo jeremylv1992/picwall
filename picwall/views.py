@@ -21,6 +21,7 @@ APP_NAME = 'picwall'
 ROOT_PATH = '/'+APP_NAME+'/'
 
 LOGIN_PAGE = ROOT_PATH+'login/'
+INDEX_PAGE = ROOT_PATH
 
 TEMPLATE = {
 		'index': APP_NAME+'/index.html',
@@ -31,7 +32,7 @@ TEMPLATE = {
 		'pw_index': APP_NAME+'/photowall_index.html',
 		'pic_info': APP_NAME+'/picture_info.html',
 		'pw_info': APP_NAME+'/photowall_info.html',
-		}
+}
 
 def get_user(user):
 	if not user.is_authenticated():
@@ -100,7 +101,7 @@ def log_in(request):
 				if user is not None:
 					if user.is_active:
 						login(request, user)
-						return HttpResponseRedirect(HOME_PAGE)
+						return HttpResponseRedirect(INDEX_PAGE)
 					else:
 						login_promt = 'Invalid user'
 				else:
@@ -113,7 +114,7 @@ def log_in(request):
 		context['login_prompt'] = login_prompt;
 		return render(request, TEMPLATE['login'], context)
 	else:
-		return HttpResponseRedirect(HOME_PAGE)
+		return HttpResponseRedirect(INDEX_PAGE)
 
 def log_out(request):
 	logout(request)
@@ -139,7 +140,7 @@ def register(request):
 					register_prompt = 'Succeed to register! Now Please log in!'
 					user = authenticate(username = name, password = pwd)
 					login(request, user)
-					return HttpResponseRedirect(HOME_PAGE)
+					return HttpResponseRedirect(INDEX_PAGE)
 				else:
 					register_prompt = 'The name have been registered!'
 			else:
@@ -149,7 +150,7 @@ def register(request):
 		context['register_prompt'] = register_prompt
 		return render(request, TEMPLATE['register'], context)
 	else:
-		return HttpResponseRedirect(HOME_PAGE)
+		return HttpResponseRedirect(INDEX_PAGE)
 
 def upload_pic(request):
 	try:

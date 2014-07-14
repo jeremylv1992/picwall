@@ -1,15 +1,13 @@
 {% extends 'picwall/base.html' %}
+{% load staticfiles %}
+
 {% block extrahead %}
-
-<link rel="stylesheet" href = "{{ STATIC_URL }}dist/css/bootstrap-theme.css" />
-<link rel="stylesheet" href = "{{ STATIC_URL }}dist/css/bootstrap-theme.min.css" />
-
-<script src="{{ STATIC_URL }}js/login.js"></script>
-
+<link rel="stylesheet" href = {% static 'dist/css/bootstrap-theme.css' %} />
+<link rel="stylesheet" href = {% static 'dist/css/bootstrap-theme.min.css' %} />
+<script src={% static 'js/login.js' %}></script>
 {% endblock %}
 
 {% block extrabody %}
-
 {% if login_prompt != '' %}
 <div class="panel panel-default">
 	<div class="panel-body"><span class="label label-warning text-center">PROMPT:  {{ login_prompt }}</span></div>
@@ -64,5 +62,4 @@
 		</div>
 	</div>
 </div>
-
 {% endblock %}

@@ -1,7 +1,8 @@
 {% extends 'picwall/base.html' %}
+{% load staticfiles %}
 
 {% block extrahead %}
-<script src="{{ STATIC_URL }}js/picture.js"></script>
+<script src={% static 'js/picture.js' %}></script>
 {% endblock %}
 
 {% block extranav %}
