@@ -31,4 +31,7 @@ urlpatterns = patterns('',
 	url(r'^photowall/save/$', views.save_pw, name='save pw'),
 	url(r'^photowall/edit/$', views.edit_pw, name='edit pw'),
 
+	# friend
+	url(r'^friend/create/(?P<user_name>/w+)/$', views.make_friend, name='make friend'),
+	url(r'^friend/delete/(?P<user_name>/w+)/$', views.delete_friend, name='delete friend'),
 )
