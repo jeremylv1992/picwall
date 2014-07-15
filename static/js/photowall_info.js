@@ -45,7 +45,7 @@ function loadBarPhotos()
 		var str="";
 		for(var i=0; i<data.length; i++)
 	{
-		str+="<img class='barphotos' class='list-group-item' src='"+GET_PICUTRE+data[i]["pid"]+
+		str+="<img class='barphotos' class='list-group-item' src='"+GET_PICUTRE+data[i]["id"]+
 		"/' id='photo" + i.toString() + "'alt='404' onmousedown='mouseDown(event)' >";
 	}
 	$("#sidebar").append(str);

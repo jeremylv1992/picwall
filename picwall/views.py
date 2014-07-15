@@ -169,7 +169,7 @@ def upload_pic(request):
 
 		# save image file
 		image = request.FILES['image']
-		url = os.path.join(IMAGE_DIR, pic.pid)
+		url = os.path.join(IMAGE_DIR, str(pic.id))
 		fp = open(url, "ab")
 		for chunk in image.chunks():  
 			fp.write(chunk)  
@@ -200,8 +200,8 @@ def delete_pic(request, pid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	pic = get_object_or_404(Picture, pid=pid)
-	pic_file = os.path.join(IMAGE_DIR, pid)
+	pic = get_object_or_404(Picture, pk=pid)
+	pic_file = os.path.join(IMAGE_DIR, str(pid))
 	if os.path.isfile(pic_file):
 		os.remove(pic_file)
 	pic.delete()
@@ -213,7 +213,7 @@ def pic_image(request, pid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	image = open(os.path.join(IMAGE_DIR, pid), "rb").read()
+	image = open(os.path.join(IMAGE_DIR, str(pid)), "rb").read()
 	return HttpResponse(image)
 
 def get_user_pics(request):
@@ -242,7 +242,7 @@ def pic_info(request, pid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	pic = get_object_or_404(Picture, pid=pid)
+	pic = get_object_or_404(Picture, pk=pid)
 	comments = PictureComment.objects.filter(pic=pic)
 
 	context = {}
@@ -339,8 +339,10 @@ def save_pw(request):
 		for pic in l:
 			x = pic['left']
 			y = pic['top']
-			pic = Picture.objects.get(pid=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y)
+			w = pic['width']
+			h = pic['height']
+			pic = Picture.objects.get(pk=pic['pid'])
+			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
 	elif request.method == 'GET':
@@ -356,7 +358,7 @@ def save_pw(request):
 			y = pic['top']
 			w = pic['width']
 			h = pic['height']
-			pic = Picture.objects.get(pid=pic['pid'])
+			pic = Picture.objects.get(pk=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
 		return HttpResponse("Save OK!")
@@ -424,7 +426,7 @@ def get_pic_info(request):
 
 	if request.method == 'POST':
 		pid = request.POST['pid']
-		pic = get_object_or_404(Picture, pid=pid)
+		pic = get_object_or_404(Picture, pk=pid)
 		return HttpResponse(json.dumps(pic.toDICT()))
 
 	return HttpResponse("")
@@ -458,3 +460,38 @@ def get_users(request):
 		return render(request, TEMPLATES['find_user_result'], context)
 	
 	return return_origin_page(request)
+
+def get_pw_authority(request, wid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+def set_pw_authority(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	if request.method == 'POST':
+		wid = request.POST['wid']
+		pw = get_object_or_404(PhotoWall, pk=wid)
+		if user == pw.creator:
+
+			pw.access_users.clear()
+			access_authority = request.POST['access']
+			if access_authority == 'private':
+				pw.access_users.add(user)
+			if access_authority == 'friend':
+				pw.access_users.add(user)
+				for friend in user.friends:
+					pw.access_users.add(friend)
+			if access_authority == 'all':
+				for user in User.objects.all():
+					pw.access_users.add(user)
+
+			pw.manage_users.clear()
+			pw.manage_users.add(user)
+			manage_authority = request.POST['manage[]']
+	
+	return HttpResponse("Set OK!")

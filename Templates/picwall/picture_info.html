@@ -17,7 +17,7 @@
 						{{ pic.name }}
 						</p><small>{{ pic.author }}</small>
 					</blockquote>
-					<img alt="140x140" src={% url 'pic image' pic.pid %} class="img-thumbnail myImageSize" />
+					<img alt="140x140" src={% url 'pic image' pic.id %} class="img-thumbnail myImageSize" />
 				</div>
 				<div class="col-md-4 column">
 					<div class="detailBox">
@@ -31,7 +31,7 @@
 						<div class="actionBox">
 							<form class="form-inline" action={% url 'pic comment' %} method='POST' role="form">
 								{% csrf_token %}
-								<input type='text' name='pid' value='{{ pic.pid }}' style="display:none;"/>
+								<input type='text' name='pid' value='{{ pic.id }}' style="display:none;"/>
 								<div class="form-group">
 									<input class="form-control" type="text" name='content' placeholder="Your comments" />
 								</div>

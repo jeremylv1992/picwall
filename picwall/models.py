@@ -1,3 +1,4 @@
+from django.utils.timezone import utc
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -52,12 +53,11 @@ class PictureLabel(models.Model):
 
 class PictureManager(models.Manager):
 	def create_picture(self, name, author, description, label):
-		upload_time = datetime.today()
-		pid = '%s_%s_%s'%(str(time.asctime(time.localtime())).replace(' ', '_').replace(':', '_'), name, author)
-		picture = self.create(pid=pid, name=name, author=author, description=description, upload_time = upload_time, label=label)
+		upload_time = datetime.utcnow().replace(tzinfo=utc)
+		picture = self.create(name=name, author=author, description=description, upload_time = upload_time, label=label)
 		return picture
 	def save_picture(self, pid, name, description, label):
-		pic = self.get(pid=pid)
+		pic = self.get(pk=pid)
 		if pic is not None:
 			pic.name = name
 			pic.description = description
@@ -68,7 +68,6 @@ class PictureManager(models.Manager):
 		return pics
 
 class Picture(models.Model):
-	pid = models.CharField(max_length = 100, default='')
 	name = models.CharField(max_length = 50, default='name')
 	description = models.CharField(max_length = 100, default='description')
 	upload_time = models.DateTimeField(datetime.today())
@@ -78,7 +77,7 @@ class Picture(models.Model):
 	objects = PictureManager()
 
 	def __unicode__(self):
-		return self.pid
+		return str(self.id)
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
@@ -90,7 +89,7 @@ class Picture(models.Model):
 
 class PictureCommentManage(models.Manager):
 	def create_picture_comment(self, author, pid, content):
-		pic = Picture.objects.get(pid=pid)
+		pic = Picture.objects.get(pk=pid)
 		published_date = datetime.today()
 		pic_comment = self.create(author=author, pic=pic, content=content, published_date=published_date)
 		return pic_comment
@@ -160,7 +159,7 @@ class PhotoWall(models.Model):
 	objects = PhotoWallManager()
 
 	def __unicode__(self):
-		return str(self.name)
+		return self.name
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
