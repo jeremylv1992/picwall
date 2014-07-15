@@ -12,26 +12,30 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'photowallDB',
-#         'USER': 'root',
-#         'PASSWORD': 'zhaopianqiang',
-#         'HOST': '',
-#         'PORT': '',
-#     }
-# }
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rKTfLnZDQVwYMuuCQeJH',
-        'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
-        'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
-        'HOST': 'sqld.duapp.com',
-        'PORT': 4050,
-    }
-}
+DATABASES = {}
+
+if DEBUG:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.mysql',
+	        'NAME': 'photowallDB',
+	        'USER': 'root',
+	        'PASSWORD': 'zhaopianqiang',
+	        'HOST': '',
+	        'PORT': '',
+	    }
+	}
+else:
+	DATABASES = {
+	    'default': {
+	        'ENGINE': 'django.db.backends.mysql',
+	        'NAME': 'rKTfLnZDQVwYMuuCQeJH',
+	        'USER': 'dBqGTUx8L5weFFP5xXqdNGLG',
+	        'PASSWORD': 'OczwsIOsUb9DfWhLQuKBnAbcvMHO36YU',
+	        'HOST': 'sqld.duapp.com',
+	        'PORT': 4050,
+	    }
+	}
 
 ALLOWED_HOSTS = ['*']
 

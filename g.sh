@@ -1,3 +1,2 @@
 git add -A
-git commit -m "tp"
-git push -f origin master
+git commit -m "$1"

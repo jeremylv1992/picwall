@@ -80,10 +80,14 @@ def photowall_index(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	private_pws = PhotoWall.objects.get_private_photowall(user)
+	access_pws = PhotoWall.objects.get_access_photowalls(user)
+	manage_pws = PhotoWall.objects.get_manage_photowalls(user)
 
 	context = {}
 	context['user'] = user
 	context['private_pws'] = private_pws
+	context['access_pws'] = access_pws
+	context['manage_pws'] = manage_pws
 	return render(request, TEMPLATES['pw_index'], context)
 
 def log_in(request):
