@@ -20,4 +20,15 @@ urlpatterns = patterns('',
 	url(r'^picture/image/(?P<pid>\d+)/$', views.pic_image, name='pic image'),
 	url(r'^picture/comment/$', views.pic_comment, name='pic comment'),
 	url(r'^picture/edit/$', views.edit_pic, name='edit pic'),
+
+	# pw
+	url(r'^photowall/$', views.photowall_index, name='pw index'),
+	url(r'^photowall/info/(?P<wid>\d+)/$', views.pw_info, name='pw info'),
+	url(r'^photowall/info/$', views.get_pw_info, name='get pw info'),
+	url(r'^photowall/create/$', views.create_pw, name='create pw'),
+	url(r'^photowall/delete/(?P<wid>\d+)/$', views.delete_pw, name='delete pw'),
+	url(r'^photowall/pics/$', views.get_pics_of_pw, name='get pics of pw'),
+	url(r'^photowall/save/$', views.save_pw, name='save pw'),
+	url(r'^photowall/edit/$', views.edit_pw, name='edit pw'),
+
 )
