@@ -10,4 +10,14 @@ urlpatterns = patterns('',
 	url(r'^register/$', views.register, name='register'),
 	url(r'^user/info/$', views.get_user_info, name='get user info'),
 	url(r'^user/pics/$', views.get_user_pics, name='get user pics'),
+
+	# pic
+	url(r'^picture/$', views.picture_index, name='pic index'),
+	url(r'^picture/info/(?P<pid>\d+)/$', views.pic_info, name='pic info'),
+	url(r'^picture/info/$', views.get_pic_info, name='get pic info'),
+	url(r'^picture/upload/$', views.upload_pic, name='upload pic'),
+	url(r'^picture/delete/(?P<pid>\d+)/$', views.delete_pic, name='delete pic'),
+	url(r'^picture/image/(?P<pid>\d+)/$', views.pic_image, name='pic image'),
+	url(r'^picture/comment/$', views.pic_comment, name='pic comment'),
+	url(r'^picture/edit/$', views.edit_pic, name='edit pic'),
 )
