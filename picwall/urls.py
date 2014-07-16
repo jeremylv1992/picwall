@@ -8,6 +8,8 @@ urlpatterns = patterns('',
 	url(r'^login/$', views.log_in, name='login'),
 	url(r'^logout/$', views.log_out, name='logout'),
 	url(r'^register/$', views.register, name='register'),
+
+	url(r'^user/$', views.user_index, name="user index"),
 	url(r'^user/info/$', views.get_user_info, name='get user info'),
 	url(r'^user/pics/$', views.get_user_pics, name='get user pics'),
 
@@ -20,6 +22,7 @@ urlpatterns = patterns('',
 	url(r'^picture/image/(?P<pid>\d+)/$', views.pic_image, name='pic image'),
 	url(r'^picture/comment/$', views.pic_comment, name='pic comment'),
 	url(r'^picture/edit/$', views.edit_pic, name='edit pic'),
+	url(r'^picture/label/create$', views.create_label, name='create label'),
 
 	# pw
 	url(r'^photowall/$', views.photowall_index, name='pw index'),
@@ -32,6 +35,7 @@ urlpatterns = patterns('',
 	url(r'^photowall/edit/$', views.edit_pw, name='edit pw'),
 
 	# friend
+	url(r'^friend/$', views.friend_index, name='friend index'),
 	url(r'^friend/create/(?P<user_name>/w+)/$', views.make_friend, name='make friend'),
 	url(r'^friend/delete/(?P<user_name>/w+)/$', views.delete_friend, name='delete friend'),
 )

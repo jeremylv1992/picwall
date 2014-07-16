@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block extrahead %}
-<script src={% static 'js/photowall.js' %}></script>
+<script src={% static 'js/custom/photowall.js' %}></script>
 {% endblock  %}
 
 {% block extranav %}
@@ -78,6 +78,53 @@
 	</div><!-- /.modal-dialog -->
 </div> <!-- /.modal -->
 
+<!-- wall permission (Edit Wall)-->
+<div class="modal fade" id="myPermissionModal" tabindex="-1" role="dialog" aria-labelledby="myPermissionLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form role="form" id="edit-form" action="#" method="post" enctype="multipart/form-data">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" >Wall Permission</h4>
+				</div>
+				<div class="modal-body" name="access">
+					<!-- radio -->
+					<label class="radio-inline">
+						<input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="private"> Private
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="friend-only"> Friend only
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="inlineRadioOptions" id="inlineRadio3" value="public"> Public
+					</label>
+					<!-- /.radio -->
+				</div>
+				<div class="modal-body">
+					<!-- friend list -->
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								{% for friend in user.friends.all %}
+								<td>
+									<label class="checkbox-inline">
+										<input type="checkbox" id={{ friends.id }} value="option1"> Tom
+									</label>
+								</td>
+								{% endfor %}
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" id="change-permission-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+				</div>
+			</form>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+
 <!-- container -->
 <div class="container">
 	<div class="row clearfix">
@@ -107,6 +154,7 @@
 									<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
 									<input type="hidden" name="pid" value="{{ pw.id }}">
 									<a type="button" class="btn btn-danger" href="{% url 'delete pw' pw.id %}">Delete</a>
+									<a class="btn btn-info" data-toggle="modal" data-target="#myPermissionModal">Permission</a>
 									</p>
 								</div>
 							</div>

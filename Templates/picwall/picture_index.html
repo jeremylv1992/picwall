@@ -2,15 +2,15 @@
 {% load staticfiles %}
 
 {% block extrahead %}
-<script src={% static 'js/picture.js' %}></script>
+<script src={% static 'js/custom/picture.js' %}></script>
 {% endblock %}
 
 {% block extranav %}
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown">photo manage<span class="caret"></span></a>
 <ul class="dropdown-menu" role="menu">
+	<li><a data-toggle="modal" data-target="#addLabelModal">Add Label</a></li>
 	<li><a data-toggle="modal" data-target="#myUploadPhotoModal">Upload</a></li>
-	<li><a data-toggle="modal" data-target="#myAddPictureLabel">Add Label</a></li>
 </ul>
 </li>
 {% endblock %}
@@ -99,6 +99,26 @@
 	</div> <!-- /.modal-dialog -->
 </div>
 
+<!-- Add label modal -->
+<div id="addLabelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-sm">
+		<div class="modal-content">
+			<form role="form" id="add-label-form" action={% url 'create label' %} method="post">
+				{% csrf_token %}
+				<div class="modal-header">
+					<h4 class="modal-title" id="new-label-title">New Label</h4>
+				</div>
+				<div class="modal-body">
+					<input type="text" class="form-control" id="new-label" name="name" placeholder="input the new label"/>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" id="add-label-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+				</div>  
+			</form>
+		</div>
+	</div>
+</div> <!-- /.Add label modal -->
+
 <!-- container -->
 <div class="container">
 	<div class="row clearfix">
@@ -113,23 +133,22 @@
 			<!-- tab-content -->
 			<div class="tab-content">
 				{% for label in labels %}
-				<div id="label-{{ label.id }}" class="tab-pane fade in active">
+				<div id="label-{{ label.id }}" class="tab-pane fade{% if label.name == 'default' %} in active{% endif %}">
 					<!-- row -->
 					<div class="row">
-						{% for pic in label.label_pics.all %}
-						<div class="col-md-3">
-							<div class="thumbnail">
-								<img alt="600x600" src={% url 'pic image' pic.id %} />
-								<div class="caption">
-									<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.id %}>Access</a>
-									<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
-									<input type="hidden" name="pid" value="{{ pic.id }}">
-									<a type="button" class="btn btn-danger btn-sm" href={% url 'delete pic' pic.id %}>Delete</a>
-								</div>
+					{% for pic in label.label_pics.all %}
+					<div class="col-md-3" height="500">
+						<div class="thumbnail">
+							<img alt="600x600" src={% url 'pic image' pic.id %} width="100px" height="100px">
+							<div class="caption">
+								<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.id %}>Access</a>
+								<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
+								<input type="hidden" name="pid" value="{{ pic.id }}">
+								<a type="button" class="btn btn-danger btn-sm" href={% url 'delete pic' pic.id %}>Delete</a>
 							</div>
-						</div> <!-- /.col-md-3 -->
-						{% endfor %}
-					</div> <!-- /.row -->
+						</div>
+					</div> <!-- /.col-md-3 -->
+					{% endfor %}
 				</div>
 				{% endfor %}
 			</div> <!-- /.tab-content -->

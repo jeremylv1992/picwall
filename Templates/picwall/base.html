@@ -7,16 +7,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 		<!-- Bootstrap -->
-		<link rel="stylesheet" href={% static 'dist/css/bootstrap.css' %}/>
-		<link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}/>
-		<link rel="stylesheet" href={% static 'css/jquery-ui-1.10.4.custom.min.css' %}/>
-
-		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-		<!--[if lt IE 9]>
-		<script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
-		<script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
-		<![endif]-->
+		<link rel="stylesheet" href={% static 'css/bootstrap.css' %}>
+		<link rel="stylesheet" href={% static 'css/bootstrap-theme.css' %}>
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src={% static 'js/jquery-1.11.1.min.js' %}></script>
@@ -47,14 +39,17 @@
 				<ul class="nav navbar-nav">
 					<li><a href="{% url 'pic index' %}">My Photo</a></li>
 					<li><a href="{% url 'pw index' %}">My Wall</a></li>
+					<li><a href="{% url 'friend index' %}">My Friends</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					{% block extranav %}
 					{% endblock %}
 					{% if user != '' %}
-					<li><a href="#">{{ user }}</a></li>
-					{% endif %}
+					<li><a href="{% url 'user index' %}">{{ user }}</a></li>
 					<li><a href="{% url 'logout' %}">Logout</a></li>
+					{% else %}
+					<li><a href="{% url 'login' %}">Login</a></li>
+					{% endif %}
 				</ul>
 			</div><!-- /.navbar-collapse -->
 

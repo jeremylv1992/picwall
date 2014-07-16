@@ -2,18 +2,16 @@
 {% load staticfiles %}
 
 {% block extrahead %}
-<!-- Bootstrap -->
+<link rel="stylesheet" href={% static 'css/custom/photowall.css' %}>
 <link rel="stylesheet" href={% static 'css/jquery-ui-1.10.4.custom.min.css' %}>
-<link rel="stylesheet" href={% static 'css/photowall.css' %}>
+<script src={% static 'js/custom/photowall_info.js' %}></script>
 <script src={% static 'js/jquery-ui-1.10.4.custom.min.js' %}></script>
-<script src={% static 'js/photowall_info.js' %}></script>
 {% endblock %}
 
 {% block extrabody %}
 
 <div class="container-fluid">
 	<div class="row" id="contain">
-
 		<div id="topbar">
 			<div class="btn-group" id="topbarleft" >
 				<button type="button" class="btn btn-default" >Delete</button>
@@ -30,7 +28,6 @@
 			<div id="main"> 
 			</div>
 		</div>
-
 	</div>
 </div>
 

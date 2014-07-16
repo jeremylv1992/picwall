@@ -30,6 +30,7 @@ TEMPLATES = {
 
 		'pic_index': APP_NAME+'/picture_index.html',
 		'pw_index': APP_NAME+'/photowall_index.html',
+		'friend_index': APP_NAME+'/friend_index.html',
 		'pic_info': APP_NAME+'/picture_info.html',
 		'pw_info': APP_NAME+'/photowall_info.html',
 }
@@ -89,6 +90,27 @@ def photowall_index(request):
 	context['access_pws'] = access_pws
 	context['manage_pws'] = manage_pws
 	return render(request, TEMPLATES['pw_index'], context)
+
+def friend_index(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	context = {}
+	context['user'] = user
+	context['friend'] = user.friends.all()
+	return render(request, TEMPLATES['friend_index'], context)
+
+def user_index(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	context = {}
+	context['user'] = user
+	return HttpResponse("user index!")
 
 def log_in(request):
 	try:
@@ -471,7 +493,7 @@ def get_pw_authority(request, wid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-def set_pw_authority(request):
+def set_pw_permission(request):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
@@ -483,19 +505,32 @@ def set_pw_authority(request):
 		if user == pw.creator:
 
 			pw.access_users.clear()
-			access_authority = request.POST['access']
-			if access_authority == 'private':
+			access_permission = request.POST['access']
+			if access_permission == 'private':
 				pw.access_users.add(user)
-			if access_authority == 'friend':
+			if access_permission == 'friend':
 				pw.access_users.add(user)
 				for friend in user.friends:
 					pw.access_users.add(friend)
-			if access_authority == 'all':
+			if access_permission == 'all':
 				for user in User.objects.all():
 					pw.access_users.add(user)
 
 			pw.manage_users.clear()
 			pw.manage_users.add(user)
-			manage_authority = request.POST['manage[]']
+			manage_permission = request.POST['manage[]']
 	
-	return HttpResponse("Set OK!")
+	return return_origin_page(request);
+
+def create_label(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	print "create label"
+	if  request.method == 'POST':
+		name = request.POST['name']
+		label = PictureLabel.objects.create_label(user, name)
+
+	return return_origin_page(request)

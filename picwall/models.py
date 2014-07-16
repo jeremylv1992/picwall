@@ -42,8 +42,6 @@ class PictureLabelManager(models.Manager):
 	def create_label(self, owner, name):
 		label = self.create(owner=owner, name=name)
 		return label
-	def add_label(self, pic, label):
-		label.pics.add(pic)
 
 class PictureLabel(models.Model):
 	name = models.CharField(max_length=10)

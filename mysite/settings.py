@@ -4,7 +4,7 @@
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -77,15 +77,9 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    ('dist/css', os.path.join(STATIC_ROOT, 'css')),
-    ('dist/js', os.path.join(STATIC_ROOT, 'js')),
-    ('dist/fonts', os.path.join(STATIC_ROOT, 'fonts')),
     ('js', os.path.join(STATIC_ROOT, 'js')),
     ('css', os.path.join(STATIC_ROOT, 'css')),
-    ('images', os.path.join(STATIC_ROOT, 'images')),
+    ('img', os.path.join(STATIC_ROOT, 'img')),
 )
 
 # List of finder classes that know how to find static files in
