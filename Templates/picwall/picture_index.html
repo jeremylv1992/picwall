@@ -139,7 +139,7 @@
 					{% for pic in label.label_pics.all %}
 					<div class="col-md-3" height="500">
 						<div class="thumbnail">
-							<img alt="600x600" src={% url 'pic image' pic.id %} width="100px" height="100px">
+							<img alt="600x600" src={% url 'pic image' pic.id %}>
 							<div class="caption">
 								<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.id %}>Access</a>
 								<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
