@@ -1,3 +1,4 @@
+from django.utils.timezone import utc
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404
@@ -357,9 +358,9 @@ def save_pw(request):
 	if request.method == 'POST':
 		text = request.POST['text'];
 		wid = request.POST['wid']
-		wall = PhotoWall.objects.get(pk=wid)
+		pw = PhotoWall.objects.get(pk=wid)
 
-		PhotoInformation.objects.filter(photowall=wall).delete()
+		PhotoInformation.objects.filter(photowall=pw).delete()
 
 		l = json.loads(text)
 		for pic in l:
@@ -370,13 +371,16 @@ def save_pw(request):
 			pic = Picture.objects.get(pk=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
+
+		pw.modify_date = datetime.utcnow().replace(tzinfo=utc)
+		pw.save()
 		return HttpResponse("Save OK!")
 	elif request.method == 'GET':
 		text = request.GET['text'];
 		wid = request.GET['wid']
-		wall = PhotoWall.objects.get(pk=wid)
+		pw = PhotoWall.objects.get(pk=wid)
 
-		PhotoInformation.objects.filter(photowall=wall).delete()
+		PhotoInformation.objects.filter(photowall=pw).delete()
 
 		l = json.loads(text)
 		for pic in l:
@@ -387,6 +391,9 @@ def save_pw(request):
 			pic = Picture.objects.get(pk=pic['pid'])
 			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
 			photo_infomation.save()
+
+		pw.modify_date = datetime.utcnow().replace(tzinfo=utc)
+		pw.save()
 		return HttpResponse("Save OK!")
 	return HttpResponse("Not valid method!")
 

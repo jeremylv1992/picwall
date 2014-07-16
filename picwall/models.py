@@ -107,7 +107,9 @@ class PictureComment(models.Model):
 
 class PhotoWallManager(models.Manager):
 	def create_photowall(self, name, description, creator):
-		photowall = PhotoWall(name=name, creator=creator, description=description)
+		create_date = datetime.utcnow().replace(tzinfo=utc)
+		modify_date = datetime.utcnow().replace(tzinfo=utc)
+		photowall = PhotoWall(name=name, creator=creator, description=description, create_date=create_date, modify_date=modify_date)
 		photowall.save()
 		photowall.access_users.add(creator)
 		photowall.save()
