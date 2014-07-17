@@ -68,8 +68,8 @@ class PictureManager(models.Manager):
 		return pics
 
 class Picture(models.Model):
-	name = models.CharField(max_length = 50, default='name')
-	description = models.CharField(max_length = 100, default='description')
+	name = models.CharField(max_length = 32, default='name')
+	description = models.CharField(max_length = 64, default='description')
 	upload_time = models.DateTimeField(datetime.today())
 	author = models.ForeignKey(WebSiteUser)
 	label = models.ForeignKey(PictureLabel, related_name='label_pics')
@@ -122,10 +122,9 @@ class PhotoWallManager(models.Manager):
 			pw.description = description
 			pw.modify_date = date.today()
 			pw.save()
-	def access_photowall(self, wid):
-		pw = self.get(pk=wid)
-		if pw is not None:
-			pw.access_times += 1
+	def access_photowall(self, pw):
+		pw.access_times += 1
+		pw.save()
 	def get_private_photowall(self, user):
 		pws = user.photowall_creator.all()
 		return pws

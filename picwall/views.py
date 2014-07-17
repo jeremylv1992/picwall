@@ -10,6 +10,7 @@ from datetime import datetime
 from datetime import date
 
 from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel
+from picwall.forms import ImageUploadForm
 
 from myForms import Login_Form
 
@@ -95,8 +96,16 @@ def photowall_index(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	private_pws = PhotoWall.objects.get_private_photowall(user)
-	access_pws = PhotoWall.objects.get_access_photowalls(user)
-	manage_pws = PhotoWall.objects.get_manage_photowalls(user)
+	temp_pws = PhotoWall.objects.get_manage_photowalls(user)
+	manage_pws = []
+	for pw in temp_pws:
+		if pw.creator != user:
+			manage_pws.append(pw)
+	temp_pws = PhotoWall.objects.get_access_photowalls(user)
+	access_pws = []
+	for pw in temp_pws:
+		if pw not in manage_pws and pw.creator != user:
+			access_pws.append(pw)
 
 	context = {}
 	context['user'] = user
@@ -310,8 +319,12 @@ def pw_info(request, wid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	photowall = get_object_or_404(PhotoWall, pk=wid)
-	PhotoWall.objects.access_photowall(wid)
+	pw = get_object_or_404(PhotoWall, pk=wid)
+
+	if user not in pw.access_users.all():
+		return return_origin_page(request);
+
+	PhotoWall.objects.access_photowall(pw)
 
 	context = {}
 	context['user'] = user
@@ -463,7 +476,7 @@ def get_user_info(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 	return HttpResponse(user.toDICT())
-	
+
 def get_pic_info(request):
 	try:
 		user = get_user(request.user)
@@ -497,14 +510,14 @@ def get_users(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	if request.method == 'GET':
-		text = request.GET['user_name']
+		text = request.GET['username']
 		users = User.objects.filter(username__icontains=text)
 		webusers = [WebSiteUser.objects.get(user=e) for e in users]
 
 		context = {}
 		context['users'] = webusers
 		return render(request, TEMPLATES['find_user_result'], context)
-	
+
 	return return_origin_page(request)
 
 def get_pw_authority(request, wid):
@@ -539,7 +552,9 @@ def set_pw_permission(request):
 			pw.manage_users.clear()
 			pw.manage_users.add(user)
 			manage_permission = request.POST['manage[]']
-	
+			for member in manage_permission:
+				pw.manage_users.add(member)
+
 	return return_origin_page(request);
 
 def create_label(request):

@@ -136,26 +136,31 @@
 				{% for label in labels %}
 				<div id="label-{{ label.id }}" class="tab-pane fade{% if label.name == 'default' %} in active{% endif %}">
 					<!-- row -->
-					<div class="row">
 					{% for pic in label.label_pics.all %}
-					<div class="col-md-3">
-						<div class="thumbnail">
-							<img class="new-img-circle" alt="100x100" style="width:300px; height:300px;" src={% url 'pic image' pic.id %}>
-							<div class="caption">
-								<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.id %}>Access</a>
-								<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
-								<input type="hidden" name="pid" value="{{ pic.id }}">
-								<a type="button" class="btn btn-danger btn-sm" href={% url 'delete pic' pic.id %}>Delete</a>
+					{% cycle "<div class='row'>" "" "" ""%}
+						<div class="col-md-3">
+							<div class="thumbnail">
+								<img class="new-img-circle" alt="100x100" src={% url 'pic image' pic.id %}>
+								<div class="caption">
+									<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.id %}>Access</a>
+									<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>
+									<input type="hidden" name="pid" value="{{ pic.id }}">
+									<a type="button" class="btn btn-danger btn-sm" href={% url 'delete pic' pic.id %}>Delete</a>
+								</div>
 							</div>
-						</div>
-					</div> <!-- /.col-md-3 -->
-					{% endfor %}
-				</div>
+						</div> <!-- /.col-md-3 -->
+						{% if forloop.counter == label.label_pics.all.count %}
+					</div>
+					{% else %}
+					{% cycle "" "" "" "</div>"%}
+				{% endif %}
 				{% endfor %}
-			</div> <!-- /.tab-content -->
+			</div>
+			{% endfor %}
+		</div> <!-- /.tab-content -->
 
-		</div> <!-- /.col-md-12 column -->
-	</div> <!-- /.row clearfix -->
+	</div> <!-- /.col-md-12 column -->
+</div> <!-- /.row clearfix -->
 </div>  <!-- /.container -->
 
 {% endblock %}
