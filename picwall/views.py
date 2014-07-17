@@ -10,7 +10,6 @@ from datetime import datetime
 from datetime import date
 
 from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel
-from picwall.forms import ImageUploadForm
 
 from myForms import Login_Form
 
