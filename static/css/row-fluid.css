@@ -22,6 +22,11 @@
 .span9 {
   width: 700px;
 }
+
+.span12 {
+	width: 940px;
+}
+
 .nav-header {
   display: block;
   padding: 3px 15px;
