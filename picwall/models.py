@@ -28,10 +28,10 @@ class WebSiteUser(models.Model):
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
-		    ff.append(f.name)
+			ff.append(f.name)
 		d = {}
 		for attr in ff:
-		    d[attr] = str(getattr(self, attr))
+			d[attr] = str(getattr(self, attr))
 		return d
 
 # class WebSiteUserGroup(models.Model):
@@ -46,8 +46,10 @@ class PictureLabelManager(models.Manager):
 class PictureLabel(models.Model):
 	name = models.CharField(max_length=10)
 	owner = models.ForeignKey(WebSiteUser, related_name="user_labels")
-	
+
 	objects = PictureLabelManager()
+	def __unicode__(self):
+		return self.name
 
 class PictureManager(models.Manager):
 	def create_picture(self, name, author, description, label):
@@ -79,10 +81,10 @@ class Picture(models.Model):
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
-		    ff.append(f.name)
+			ff.append(f.name)
 		d = {}
 		for attr in ff:
-		    d[attr] = str(getattr(self, attr))
+			d[attr] = getattr(self, attr)
 		return d
 
 class PictureCommentManage(models.Manager):

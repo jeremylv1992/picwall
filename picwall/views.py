@@ -1,3 +1,4 @@
+from django.db import models
 from django.utils.timezone import utc
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -5,6 +6,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django.core import serializers
+from datetime import datetime
 from datetime import date
 
 from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel
@@ -35,6 +37,17 @@ TEMPLATES = {
 		'pic_info': APP_NAME+'/picture_info.html',
 		'pw_info': APP_NAME+'/photowall_info.html',
 }
+
+class CJsonEncoder(json.JSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, datetime):
+			return obj.strftime('%Y-%m-%d %H:%M:%S')
+		elif isinstance(obj, date):
+			return obj.strftime('%Y-%m-%d')
+		elif isinstance(obj, models.Model):
+			return obj.__unicode__()
+		else:
+			return json.JSONEncoder.default(self, obj)
 
 def get_user(user):
 	if not user.is_authenticated():
@@ -261,7 +274,7 @@ def get_user_pics(request):
 	for pic in Picture.objects.filter(author=user):
 		pics.append(pic.toDICT())
 
-	return HttpResponse(json.dumps(pics))
+	return HttpResponse(json.dumps(pics, cls=CJsonEncoder))
 
 def pic_info(request, pid):
 	try:
@@ -345,7 +358,7 @@ def get_pics_of_pw(request):
 		l = []
 		for pic_in in PhotoInformation.objects.filter(photowall=wall):
 			l.append(pic_in.toDICT())
-		return HttpResponse(json.dumps(l))
+		return HttpResponse(json.dumps(l, cls=CJsonEncoder))
 
 	return HttpResponse("")
 
@@ -460,7 +473,7 @@ def get_pic_info(request):
 	if request.method == 'POST':
 		pid = request.POST['pid']
 		pic = get_object_or_404(Picture, pk=pid)
-		return HttpResponse(json.dumps(pic.toDICT()))
+		return HttpResponse(json.dumps(pic.toDICT(), cls=CJsonEncoder))
 
 	return HttpResponse("")
 
@@ -473,7 +486,7 @@ def get_pw_info(request):
 	if request.method == 'POST':
 		wid = request.POST["wid"]
 		wall = get_object_or_404(PhotoWall, pk=wid)
-		return HttpResponse(json.dumps(wall.toDICT()))
+		return HttpResponse(json.dumps(wall.toDICT(), cls=CJsonEncoder))
 
 	return HttpResponse("")
 
