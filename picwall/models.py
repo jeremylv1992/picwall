@@ -112,18 +112,16 @@ class PhotoWallManager(models.Manager):
 		photowall.access_users.add(creator)
 		photowall.manage_users.add(creator)
 		photowall.save()
-	def save_photowall(self, wid, name, description):
-		pw = self.get(pk=wid)
-		if pw is not None:
-			pw.name = name
-			pw.description = description
-			pw.modify_date = date.today()
-			pw.save()
+	def save_photowall(self, pw, name, description):
+		pw.name = name
+		pw.description = description
+		pw.modify_date = date.today()
+		pw.save()
 	def access_photowall(self, pw):
 		pw.access_times += 1
 		pw.save()
 	def get_private_photowall(self, user):
-		pws = user.photowall_creator
+		pws = user.photowalls
 		return pws
 	def get_access_photowalls(self, user):
 		pws = user.access_pws
@@ -144,7 +142,7 @@ class PhotoWallManager(models.Manager):
 
 class PhotoWall(models.Model):
 	name = models.CharField(max_length=32, default='')
-	creator = models.ForeignKey(WebSiteUser, related_name='photowall_creator')
+	creator = models.ForeignKey(WebSiteUser, related_name='photowalls')
 	description = models.CharField(max_length=256, default='')
 
 	access_users = models.ManyToManyField(WebSiteUser, related_name='access_pws')
@@ -179,6 +177,11 @@ class PhotoWall(models.Model):
 			d[attr] = str(getattr(self, attr))
 		return d
 
+class PhotoInformationWallManager(models.Manager):
+	def create_photowall_information(self, pic, pw, left, top, width, height):
+		pwinfo = self.create(pic=pic, pw=pw, left=left, top=top, width=width, height=height)
+		return pwinfo
+
 class PhotoInformation(models.Model):
 	picture = models.ForeignKey(Picture)
 	photowall = models.ForeignKey(PhotoWall)
@@ -187,6 +190,8 @@ class PhotoInformation(models.Model):
 	top = models.CharField(max_length=16)
 	width = models.CharField(max_length=16)
 	height = models.CharField(max_length=16)
+
+	objects = PhotoInformationWallManager()
 
 	def toDICT(self):
 		ff = []

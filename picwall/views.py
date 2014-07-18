@@ -244,7 +244,7 @@ def edit_pic(request):
 		lid = request.POST['label']
 		label = PictureLabel.objects.get(pk=lid)
 
-		pic = Picture.objects.save_picture(pid, name, description, label)
+		Picture.objects.save_picture(pid, name, description, label)
 
 	return return_origin_page(request)
 
@@ -259,6 +259,7 @@ def delete_pic(request, pid):
 	if os.path.isfile(pic_file):
 		os.remove(pic_file)
 	pic.delete()
+
 	return return_origin_page(request)
 
 def pic_image(request, pid):
@@ -355,13 +356,12 @@ def edit_pw(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	print "ss"
 	if request.method == 'POST':
 		wid = request.POST['wid']
 		name = request.POST['name']
 		description = request.POST['description']
-
-		PhotoWall.objects.save_photowall(wid, name, description)
+		pws = get_object_or_404(PhotoWall, pk=wid)
+		PhotoWall.objects.save_photowall(pw, name, description)
 
 	return return_origin_page(request)
 
@@ -401,8 +401,7 @@ def save_pw(request):
 			w = pic['width']
 			h = pic['height']
 			pic = Picture.objects.get(pk=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
-			photo_infomation.save()
+			PhotoInformation.objects.create_photowall_information(pic, pw, left, top, width, height)
 
 		pw.modify_date = datetime.utcnow().replace(tzinfo=utc)
 		pw.save()
@@ -421,8 +420,7 @@ def save_pw(request):
 			w = pic['width']
 			h = pic['height']
 			pic = Picture.objects.get(pk=pic['pid'])
-			photo_infomation = PhotoInformation(picture=pic, photowall_id=wid, left=x, top=y, height=h, width=w)
-			photo_infomation.save()
+			PhotoInformation.objects.create_photowall_information(pic, pw, left, top, width, height)
 
 		pw.modify_date = datetime.utcnow().replace(tzinfo=utc)
 		pw.save()
@@ -452,8 +450,13 @@ def make_friend(request, uid):
 	if user1 is not None and user2 is not None:
 		if user2 not in user1.friends.all():
 			user1.friends.add(user2)
-		if user1 not in user2.friends.all():
 			user2.friends.add(user1)
+			for pw in user1.photowalls.all():
+				if pw.access_permission == PhotoWall.FRIEND and user2 not in pw.access_users.all():
+					pw.access_users.add(user2)
+			for pw in user2.photowalls.all():
+				if pw.access_permission == PhotoWall.FRIEND and user1 not in pw.access_users.all():
+					pw.access_users.add(user1)
 	
 	return return_origin_page(request)
 
@@ -469,8 +472,17 @@ def delete_friend(request, uid):
 	if user1 is not None and user2 is not None:
 		if user2 in user1.friends.all():
 			user1.friends.remove(user2)
-		if user1 in user2.friends.all():
 			user2.friends.remove(user1)
+			for pw in user1.photowalls.all():
+				if pw.access_permission == PhotoWall.FRIEND:
+					pw.access_users.remove(user2)
+				if user2 in pw.manage_users.all():
+					pw.manage_users.remove(user2)
+			for pw in user2.photowalls.all():
+				if pw.access_permission == PhotoWall.FRIEND:
+					pw.access_users.remove(user1)
+				if user1 in pw.manage_users.all():
+					pw.manage_users.remove(user1)
 	
 	return return_origin_page(request)
 
