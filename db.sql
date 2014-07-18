@@ -118,7 +118,7 @@ CREATE TABLE `auth_user` (
   `date_joined` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `auth_user` (
 
 LOCK TABLES `auth_user` WRITE;
 /*!40000 ALTER TABLE `auth_user` DISABLE KEYS */;
-INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$12000$DJY8lcqpO7Eb$6OFjEVth0sq8+OtPtP+rN/fXOrrLk4lz8bf5wHzLwdE=','2014-07-17 04:30:27',1,'root','','','',1,1,'2014-07-17 04:30:27'),(2,'pbkdf2_sha256$12000$NOH1fzYJE9wc$2iM9gXccdk1ZyKTldywJ+c627e2uEH2R/CliXBeYmLo=','2014-07-18 00:43:01',0,'1','','','a@b.c',0,1,'2014-07-17 04:32:37'),(3,'pbkdf2_sha256$12000$GiET0U3sAECg$7lWlETyLfCfLb+Fwvm8V+gNMxYTVg6GdzrroeAJw1IE=','2014-07-18 01:18:14',0,'范冰冰','','','b@c.d',0,1,'2014-07-18 01:18:14');
+INSERT INTO `auth_user` VALUES (1,'pbkdf2_sha256$12000$DJY8lcqpO7Eb$6OFjEVth0sq8+OtPtP+rN/fXOrrLk4lz8bf5wHzLwdE=','2014-07-18 07:22:01',1,'root','','','',1,1,'2014-07-17 04:30:27'),(4,'pbkdf2_sha256$12000$Vgmh2nlcvWjc$EPY9w+op1WoI/OzoqYRx8DHMI3FegmTgruKI6ixNybE=','2014-07-18 08:00:49',0,'userss','','','a@b.c',0,1,'2014-07-18 07:22:45'),(5,'pbkdf2_sha256$12000$OUOo9gSfgBqA$n/S1Y7w3DlNCs1RJjPNA7LGPAzn+KD/xHTbdNqCK+tc=','2014-07-18 07:56:30',0,'范冰冰','','','b@c.d',0,1,'2014-07-18 07:56:30'),(6,'pbkdf2_sha256$12000$g72zumMVFrvA$q1z7Y+YK5iopcyKnSQCDIxQRW0A5HJxYwsJblE+pM74=','2014-07-18 09:19:40',0,'test','','','a@b.d',0,1,'2014-07-18 09:19:40');
 /*!40000 ALTER TABLE `auth_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +210,7 @@ CREATE TABLE `django_admin_log` (
   KEY `django_admin_log_37ef4eb4` (`content_type_id`),
   CONSTRAINT `content_type_id_refs_id_93d2d1f8` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `user_id_refs_id_c0d12874` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,6 +219,7 @@ CREATE TABLE `django_admin_log` (
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
+INSERT INTO `django_admin_log` VALUES (1,'2014-07-18 07:22:14',1,3,'2','1',3,''),(2,'2014-07-18 07:22:14',1,3,'3','范冰冰',3,'');
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,7 +272,7 @@ CREATE TABLE `django_session` (
 
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
-INSERT INTO `django_session` VALUES ('l37odvikwi0bs45q4pyqlk9l3f3ei08f','MTk3Y2Q2YTE1YjZmZjYwNzE2MjAxYmMyNWQwMDhkZjVhYWI1N2ZkMDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0=','2014-07-31 04:32:37'),('vj6v2cjrdmgpgccd57er2hlhcpff2lnq','NTAyNWE3YzllMmJmYmZiM2I4NDQwM2E0MTliZGFlNWQzNWExYjQ5NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6M30=','2014-08-01 01:18:14');
+INSERT INTO `django_session` VALUES ('l37odvikwi0bs45q4pyqlk9l3f3ei08f','MTk3Y2Q2YTE1YjZmZjYwNzE2MjAxYmMyNWQwMDhkZjVhYWI1N2ZkMDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0=','2014-07-31 04:32:37'),('o3g6dopvxhhvk6lj98ausltyfxs0tm2w','YWJhZTNmNTUwNzU1NTc2YTlkYWRmOTA5MzBjYzVlNTZlOTVhYjY0MTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Nn0=','2014-08-01 09:19:40'),('roylhvfhbr31w283ev0dly2cjzucl556','MTk3Y2Q2YTE1YjZmZjYwNzE2MjAxYmMyNWQwMDhkZjVhYWI1N2ZkMDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6Mn0=','2014-08-01 05:40:03'),('vj6v2cjrdmgpgccd57er2hlhcpff2lnq','NTAyNWE3YzllMmJmYmZiM2I4NDQwM2E0MTliZGFlNWQzNWExYjQ5NDp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6M30=','2014-08-01 01:18:14'),('ws74t6glov1h569n097irgzhhzrsuuwr','MjhlZjA0MTEwMjM4YWQ2NmM3ZTM4ZDBmMTlhYTNhMTQ2ODg3M2UyZTp7Il9hdXRoX3VzZXJfYmFja2VuZCI6ImRqYW5nby5jb250cmliLmF1dGguYmFja2VuZHMuTW9kZWxCYWNrZW5kIiwiX2F1dGhfdXNlcl9pZCI6NX0=','2014-08-01 07:56:30');
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,10 +348,11 @@ CREATE TABLE `picwall_photowall` (
   `create_date` date NOT NULL,
   `modify_date` date NOT NULL,
   `access_times` int(11) NOT NULL,
+  `access_permission` varchar(10) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `picwall_photowall_ad376f8d` (`creator_id`),
   CONSTRAINT `creator_id_refs_id_98b3c643` FOREIGN KEY (`creator_id`) REFERENCES `picwall_websiteuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -359,7 +361,7 @@ CREATE TABLE `picwall_photowall` (
 
 LOCK TABLES `picwall_photowall` WRITE;
 /*!40000 ALTER TABLE `picwall_photowall` DISABLE KEYS */;
-INSERT INTO `picwall_photowall` VALUES (1,'pw',1,'','2014-07-17','2014-07-17',0),(2,'my wall',2,'','2014-07-18','2014-07-18',1);
+INSERT INTO `picwall_photowall` VALUES (4,'wall234',3,'','2014-07-18','2014-07-18',1,'private'),(6,'5',4,'','2014-07-18','2014-07-18',3,'public');
 /*!40000 ALTER TABLE `picwall_photowall` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +382,7 @@ CREATE TABLE `picwall_photowall_access_users` (
   KEY `picwall_photowall_access_users_44c649b3` (`websiteuser_id`),
   CONSTRAINT `photowall_id_refs_id_e48d0cae` FOREIGN KEY (`photowall_id`) REFERENCES `picwall_photowall` (`id`),
   CONSTRAINT `websiteuser_id_refs_id_2d60dc01` FOREIGN KEY (`websiteuser_id`) REFERENCES `picwall_websiteuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,7 +391,7 @@ CREATE TABLE `picwall_photowall_access_users` (
 
 LOCK TABLES `picwall_photowall_access_users` WRITE;
 /*!40000 ALTER TABLE `picwall_photowall_access_users` DISABLE KEYS */;
-INSERT INTO `picwall_photowall_access_users` VALUES (1,1,1),(2,2,2);
+INSERT INTO `picwall_photowall_access_users` VALUES (45,6,3),(46,6,4),(47,6,5);
 /*!40000 ALTER TABLE `picwall_photowall_access_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -410,7 +412,7 @@ CREATE TABLE `picwall_photowall_manage_users` (
   KEY `picwall_photowall_manage_users_44c649b3` (`websiteuser_id`),
   CONSTRAINT `photowall_id_refs_id_2c33610f` FOREIGN KEY (`photowall_id`) REFERENCES `picwall_photowall` (`id`),
   CONSTRAINT `websiteuser_id_refs_id_0c8a66ae` FOREIGN KEY (`websiteuser_id`) REFERENCES `picwall_websiteuser` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -419,6 +421,7 @@ CREATE TABLE `picwall_photowall_manage_users` (
 
 LOCK TABLES `picwall_photowall_manage_users` WRITE;
 /*!40000 ALTER TABLE `picwall_photowall_manage_users` DISABLE KEYS */;
+INSERT INTO `picwall_photowall_manage_users` VALUES (2,4,3),(36,6,3),(35,6,5);
 /*!40000 ALTER TABLE `picwall_photowall_manage_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -441,7 +444,7 @@ CREATE TABLE `picwall_picture` (
   KEY `picwall_picture_e05256b6` (`label_id`),
   CONSTRAINT `author_id_refs_id_481d8ada` FOREIGN KEY (`author_id`) REFERENCES `picwall_websiteuser` (`id`),
   CONSTRAINT `label_id_refs_id_80f8685f` FOREIGN KEY (`label_id`) REFERENCES `picwall_picturelabel` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,7 +453,7 @@ CREATE TABLE `picwall_picture` (
 
 LOCK TABLES `picwall_picture` WRITE;
 /*!40000 ALTER TABLE `picwall_picture` DISABLE KEYS */;
-INSERT INTO `picwall_picture` VALUES (1,'范冰冰','','2014-07-17 04:38:18',1,1);
+INSERT INTO `picwall_picture` VALUES (2,'2','','2014-07-18 07:31:39',3,3);
 /*!40000 ALTER TABLE `picwall_picture` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -498,7 +501,7 @@ CREATE TABLE `picwall_picturelabel` (
   PRIMARY KEY (`id`),
   KEY `picwall_picturelabel_cb902d83` (`owner_id`),
   CONSTRAINT `owner_id_refs_id_c34b4ad9` FOREIGN KEY (`owner_id`) REFERENCES `picwall_websiteuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -507,7 +510,7 @@ CREATE TABLE `picwall_picturelabel` (
 
 LOCK TABLES `picwall_picturelabel` WRITE;
 /*!40000 ALTER TABLE `picwall_picturelabel` DISABLE KEYS */;
-INSERT INTO `picwall_picturelabel` VALUES (1,'default',1),(2,'default',2);
+INSERT INTO `picwall_picturelabel` VALUES (3,'default',3),(4,'default',4),(5,'default',5);
 /*!40000 ALTER TABLE `picwall_picturelabel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -524,7 +527,7 @@ CREATE TABLE `picwall_websiteuser` (
   PRIMARY KEY (`id`),
   KEY `picwall_websiteuser_6340c63c` (`user_id`),
   CONSTRAINT `user_id_refs_id_18605a51` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -533,7 +536,7 @@ CREATE TABLE `picwall_websiteuser` (
 
 LOCK TABLES `picwall_websiteuser` WRITE;
 /*!40000 ALTER TABLE `picwall_websiteuser` DISABLE KEYS */;
-INSERT INTO `picwall_websiteuser` VALUES (1,2),(2,3);
+INSERT INTO `picwall_websiteuser` VALUES (3,4),(4,5),(5,6);
 /*!40000 ALTER TABLE `picwall_websiteuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -554,7 +557,7 @@ CREATE TABLE `picwall_websiteuser_friends` (
   KEY `picwall_websiteuser_friends_9ac1ceca` (`to_websiteuser_id`),
   CONSTRAINT `from_websiteuser_id_refs_id_68200e56` FOREIGN KEY (`from_websiteuser_id`) REFERENCES `picwall_websiteuser` (`id`),
   CONSTRAINT `to_websiteuser_id_refs_id_68200e56` FOREIGN KEY (`to_websiteuser_id`) REFERENCES `picwall_websiteuser` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -563,7 +566,7 @@ CREATE TABLE `picwall_websiteuser_friends` (
 
 LOCK TABLES `picwall_websiteuser_friends` WRITE;
 /*!40000 ALTER TABLE `picwall_websiteuser_friends` DISABLE KEYS */;
-INSERT INTO `picwall_websiteuser_friends` VALUES (12,1,2),(11,2,1);
+INSERT INTO `picwall_websiteuser_friends` VALUES (16,3,4),(15,4,3),(18,4,5),(17,5,4);
 /*!40000 ALTER TABLE `picwall_websiteuser_friends` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -580,7 +583,7 @@ CREATE TABLE `south_migrationhistory` (
   `migration` varchar(255) NOT NULL,
   `applied` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -589,7 +592,7 @@ CREATE TABLE `south_migrationhistory` (
 
 LOCK TABLES `south_migrationhistory` WRITE;
 /*!40000 ALTER TABLE `south_migrationhistory` DISABLE KEYS */;
-INSERT INTO `south_migrationhistory` VALUES (1,'picwall','0001_initial','2014-07-17 04:30:34'),(2,'picwall','0002_auto__del_field_picture_image','2014-07-17 04:38:07');
+INSERT INTO `south_migrationhistory` VALUES (1,'picwall','0001_initial','2014-07-17 04:30:34'),(2,'picwall','0002_auto__del_field_picture_image','2014-07-17 04:38:07'),(3,'picwall','0003_auto__add_field_photowall_access_permission','2014-07-18 06:20:44');
 /*!40000 ALTER TABLE `south_migrationhistory` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -602,4 +605,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-07-18 10:09:57
+-- Dump completed on 2014-07-18 18:43:51
