@@ -31,6 +31,7 @@ TEMPLATES = {
 		'login': APP_NAME+'/login.html',
 		'register': APP_NAME+'/register.html',
 
+		'user_index': APP_NAME+'/user_index.html',
 		'pic_index': APP_NAME+'/picture_index.html',
 		'pw_index': APP_NAME+'/photowall_index.html',
 		'friend_index': APP_NAME+'/friend_index.html',
@@ -63,9 +64,9 @@ def index(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	hot_pws = PhotoWall.objects.get_hot_photowalls()
-	random_pws = PhotoWall.objects.get_random_photowalls()
-	new_pws = PhotoWall.objects.get_new_photowalls()
+	hot_pws = PhotoWall.objects.get_hot_photowalls(user)
+	random_pws = PhotoWall.objects.get_random_photowalls(user)
+	new_pws = PhotoWall.objects.get_new_photowalls(user)
 
 	context = {}
 	context['user'] = user
@@ -105,12 +106,14 @@ def photowall_index(request):
 	for pw in temp_pws:
 		if pw not in manage_pws and pw.creator != user:
 			access_pws.append(pw)
+	friends = user.friends.all()
 
 	context = {}
 	context['user'] = user
 	context['private_pws'] = private_pws
 	context['access_pws'] = access_pws
 	context['manage_pws'] = manage_pws
+	context['friends'] = friends
 	return render(request, TEMPLATES['pw_index'], context)
 
 def friend_index(request):
@@ -119,20 +122,33 @@ def friend_index(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
+	friends = user.friends.all()
+	recomend_firend = WebSiteUser.objects.all()
+
 	context = {}
 	context['user'] = user
-	context['friend'] = user.friends.all()
+	context['friends'] = friends
+	context['recomend_firend'] = recomend_firend
 	return render(request, TEMPLATES['friend_index'], context)
 
-def user_index(request):
+def user_index(request, uid):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
+	owner = get_object_or_404(WebSiteUser, pk=uid)
+	temp_pws = owner.photowall_creator.all()
+	pws = []
+	for pw in temp_pws:
+		if pw in user.access_users.all():
+			pws.append(pw)
+
 	context = {}
 	context['user'] = user
-	return HttpResponse("user index!")
+	context['pws'] = pws
+	context['owner'] = owner
+	return render(request, TEMPLATES['user_index'], context)
 
 def log_in(request):
 	try:
@@ -195,6 +211,7 @@ def register(request):
 				register_prompt = 'Your email have been registered!'
 
 		context = {}
+		context['user'] = ''
 		context['register_prompt'] = register_prompt
 		return render(request, TEMPLATES['register'], context)
 	else:
@@ -433,41 +450,39 @@ def delete_pw(request, wid):
 
 	return return_origin_page(request)
 
-def make_friend(request, user_name):
+def make_friend(request, uid):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	user1 = get_object_or_404(WebSiteUser, user=request.user)
-	user2 = get_object_or_404(WebSiteUser, name=get_object_or_404(name=user_name))
+	user2 = get_object_or_404(WebSiteUser, id=uid)
 
-	if user1 is None or user2 is None:
-		return HttpResponse("Not valide")
-	else:
+	if user1 is not None and user2 is not None:
 		if user2 not in user1.friends.all():
-			user1.frinds.add(user2)
+			user1.friends.add(user2)
 		if user1 not in user2.friends.all():
-			user2.frinds.add(user1)
-		return HttpResponse("Make friend sceuss")
+			user2.friends.add(user1)
+	
+	return return_origin_page(request)
 
-def delete_friend(request, user_name):
+def delete_friend(request, uid):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	user1 = get_object_or_404(WebSiteUser, user=request.user)
-	user2 = get_object_or_404(WebSiteUser, name=get_object_or_404(name=user_name))
+	user2 = get_object_or_404(WebSiteUser, pk=uid)
 
-	if user1 is None or user2 is None:
-		return HttpResponse("Not valide")
-	else:
+	if user1 is not None and user2 is not None:
 		if user2 in user1.friends.all():
-			user1.frinds.remove(user2)
+			user1.friends.remove(user2)
 		if user1 in user2.friends.all():
-			user2.frinds.remove(user1)
-		return HttpResponse("Make friend sceuss")
+			user2.friends.remove(user1)
+	
+	return return_origin_page(request)
 
 def get_user_info(request):
 	try:

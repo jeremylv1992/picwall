@@ -33,19 +33,21 @@
 				<div id="recomendFriend">
 					<ul class="nav nav-list">
 						<li class="nav-header">Recomend Friend</li>
-						<li><a href="#">E</a></li>
+						{% for user in recomend_firend %}
+						<li><a href={% url 'user index' user.id %}>{{ user }}</a></li>
+						{% endfor %}
 					</ul>
 				</div>
 			</div><!--/.well -->
 		</div><!--/span-->
 
 		<div class="col-md-9 column">
-			{% for friend in user.friends.all %}
+			{% for friend in friends %}
 			<div class="col-md-4 column">
 				<div class="span4">
-					<h2>{{ friends.name }}</h2>
+					<h2>{{ friend }}</h2>
 					<a class="btn" href="#">View details &raquo;</a>
-					<a class="btn btn-primary" href={% url 'delete friend' firend.id %}><i class="icon-minus"></i>Delete</a>
+					<a class="btn btn-primary" href={% url 'delete friend' friend.id %}><i class="icon-minus"></i>Delete</a>
 				</div><!--/span-->
 			</div><!--/row-->
 			{% endfor %}

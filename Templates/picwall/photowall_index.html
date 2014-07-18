@@ -90,7 +90,7 @@
 				<div class="modal-body" name="access">
 					<!-- radio -->
 					<label class="radio-inline">
-						<input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="private"> Private
+						<input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="private" checked="checked"> Private
 					</label>
 					<label class="radio-inline">
 						<input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="friend-only"> Friend only
@@ -104,11 +104,11 @@
 					<!-- friend list -->
 					<div class="table-responsive">
 						<table class="table">
-							{% for friend in user.friends.all %}
+							{% for friend in friends %}
 							{% cycle "<tr>" "" "" "" %}
 								<td>
 									<label class="checkbox-inline">
-										<input type="checkbox" name="manage[]" value={{ friends.id }}> {{ friends.name }}
+										<input type="checkbox" name="manage[]" value={{ friend.id }}> {{ friend }}
 									</label>
 								</td>
 							{% if forloop.counter == user.friends.all.count %}

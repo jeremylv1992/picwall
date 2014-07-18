@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 	url(r'^logout/$', views.log_out, name='logout'),
 	url(r'^register/$', views.register, name='register'),
 
-	url(r'^user/$', views.user_index, name="user index"),
+	url(r'^user/(?P<uid>\d+)/$', views.user_index, name="user index"),
 	url(r'^user/info/$', views.get_user_info, name='get user info'),
 	url(r'^user/pics/$', views.get_user_pics, name='get user pics'),
 
@@ -36,6 +36,6 @@ urlpatterns = patterns('',
 
 	# friend
 	url(r'^friend/$', views.friend_index, name='friend index'),
-	url(r'^friend/create/(?P<user_name>/w+)/$', views.make_friend, name='make friend'),
-	url(r'^friend/delete/(?P<user_name>/w+)/$', views.delete_friend, name='delete friend'),
+	url(r'^friend/create/(?P<uid>\d+)/$', views.make_friend, name='make friend'),
+	url(r'^friend/delete/(?P<uid>\d+)/$', views.delete_friend, name='delete friend'),
 )
