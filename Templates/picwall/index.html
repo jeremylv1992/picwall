@@ -21,7 +21,7 @@
 			<!-- hotClass -->
 			<div class="tab-content">
 				<div id="hotClass" class="tab-pane fade in active">
-					{% for pw in hot_pws %}
+					{% for pw in hot_pws.all %}
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
@@ -45,7 +45,7 @@
 
 			<!-- newClass -->
 			<div id="newClass" class="tab-pane fade">
-				{% for pw in new_pws %}
+				{% for pw in new_pws.all %}
 				{% cycle "<div class='row'>" "" "" %}
 					<div class="col-md-4">
 						<div class="thumbnail">
@@ -69,7 +69,7 @@
 
 		<!-- randomClass -->
 		<div id="randomClass" class="tab-pane fade">
-			{% for pw in random_pws %}
+			{% for pw in random_pws.all %}
 			{% cycle "<div class='row'>" "" "" %}
 				<div class="col-md-4">
 					<div class="thumbnail">

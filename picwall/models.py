@@ -123,24 +123,23 @@ class PhotoWallManager(models.Manager):
 		pw.access_times += 1
 		pw.save()
 	def get_private_photowall(self, user):
-		pws = user.photowall_creator.all()
+		pws = user.photowall_creator
 		return pws
 	def get_access_photowalls(self, user):
-		pws = user.access_pws.all()
+		pws = user.access_pws
 		return pws
 	def get_manage_photowalls(self, user):
-		pws = user.manage_pws.all()
+		pws = user.manage_pws
 		return pws
 
 	def get_random_photowalls(self, user):
-		# pws = random.sample(user.access_pws.all(), min(5, user.access_pws.count()))
-		pws = random.sample(PhotoWall.objects.all(), min(5, PhotoWall.objects.count()))
+		pws = user.access_pws.order_by('?')[:5]
 		return pws
 	def get_hot_photowalls(self, user):
-		pws = user.access_pws.order_by('-access_times').all()[:min(5, PhotoWall.objects.count())]
+		pws = user.access_pws.order_by('-access_times')[:5]
 		return pws
 	def get_new_photowalls(self, user):
-		pws = user.access_pws.order_by('-modify_date').all()[:min(5, PhotoWall.objects.count())]
+		pws = user.access_pws.order_by('-modify_date')[:5]
 		return pws
 
 class PhotoWall(models.Model):

@@ -82,7 +82,7 @@ def picture_index(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	labels = user.user_labels.all()
+	labels = user.user_labels
 
 	context = {}
 	context['user'] = user
@@ -97,9 +97,9 @@ def photowall_index(request):
 
 	private_pws = PhotoWall.objects.get_private_photowall(user)
 	temp_pws = PhotoWall.objects.get_manage_photowalls(user)
-	manage_pws = PhotoWall.objects.get_manage_photowalls(user).exclude(creator=user)
+	manage_pws = PhotoWall.objects.get_manage_photowalls(user)
 	access_pws = PhotoWall.objects.get_access_photowalls(user)
-	friends = user.friends.all()
+	friends = user.friends
 
 	context = {}
 	context['user'] = user
@@ -115,8 +115,8 @@ def friend_index(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	friends = user.friends.all()
-	recomend_firend = WebSiteUser.objects.all()
+	friends = user.friends
+	recomend_firend = WebSiteUser.objects
 
 	context = {}
 	context['user'] = user
@@ -131,11 +131,7 @@ def user_index(request, uid):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	owner = get_object_or_404(WebSiteUser, pk=uid)
-	temp_pws = owner.photowall_creator.all()
-	pws = []
-	for pw in temp_pws:
-		if pw in user.access_pws.all():
-			pws.append(pw)
+	pws = user.access_pws.filter(creator=owner)
 
 	context = {}
 	context['user'] = user

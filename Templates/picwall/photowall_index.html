@@ -105,7 +105,7 @@
 					<!-- friend list -->
 					<div class="table-responsive">
 						<table class="table">
-							{% for friend in friends %}
+							{% for friend in friends.all %}
 							{% cycle "<tr>" "" "" "" %}
 								<td>
 									<label class="checkbox-inline">
@@ -147,14 +147,13 @@
 			<!-- tab-content -->
 			<div class="tab-content">
 				<div id="private" class="tab-pane fade in active">
-					{% for pw in private_pws %}
+					{% for pw in private_pws.all %}
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
 								<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
 								<div class="caption">
-									<h3>
-										{{ pw.name }}
+									<h3> {{ pw.name }}
 									</h3>
 									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 									<p>
@@ -177,34 +176,34 @@
 				</div>
 
 				<div id="manage" class="tab-pane fade">
-					{% for pw in manage_pws %}
+					{% for pw in manage_pws.all %}
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
 								<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
 								<div class="caption">
-									<h3>
-										{{ pw.name }}
-								</h3>
-								<p class="text-right"><small>-- {{ pw.creator }}</small></p>
-								<p>
-								<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
-								<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
-								<input type="hidden" name="pid" value={{ pw.id }}>
-								<a type="button" class="btn btn-danger" href={% url 'delete pw' pw.id %}>Delete</a>
-								</p>
+									<h3> {{ pw.name }} </h3>
+									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
+
+									<p>
+									<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
+									<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
+									<input type="hidden" name="pid" value={{ pw.id }}>
+									<a type="button" class="btn btn-danger" href={% url 'delete pw' pw.id %}>Delete</a>
+									</p>
+								</div>
 							</div>
 						</div>
-					{% if forloop.counter == manage_users.count %}
+						{% if forloop.counter == manage_pws.count %}
 					</div>
 					{% else %}
 					{% cycle "" "" "</div>" %}
 					{% endif %}
 					{% endfor %}
 				</div>
-	
+
 				<div id="access" class="tab-pane fade">
-					{% for pw in access_pws %}
+					{% for pw in access_pws.all %}
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
@@ -212,20 +211,17 @@
 								<div class="caption">
 									<h3>
 										{{ pw.name }}
-								</h3>
-								<p class="text-right"><small>-- {{ pw.creator }}</small></p>
-								<p>
-								<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
-								<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
-								<input type="hidden" name="pid" value={{ pw.id }}>
-								<a type="button" class="btn btn-danger" href={% url 'delete pw' pw.id %}>Delete</a>
-								</p>
+									</h3>
+									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
+									<p>
+									<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
+									</p>
+								</div>
 							</div>
+							{% if forloop.counter == access_pws.count %}
 						</div>
-					{% if forloop.counter == access_users.count %}
-					</div>
-					{% else %}
-					{% cycle "" "" "</div>" %}
+						{% else %}
+						{% cycle "" "" "</div>" %}
 					{% endif %}
 					{% endfor %}
 				</div>
