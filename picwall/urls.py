@@ -33,6 +33,8 @@ urlpatterns = patterns('',
 	url(r'^photowall/pics/$', views.get_pics_of_pw, name='get pics of pw'),
 	url(r'^photowall/save/$', views.save_pw, name='save pw'),
 	url(r'^photowall/edit/$', views.edit_pw, name='edit pw'),
+	url(r'^photowall/get_permission/$', views.get_pw_permission, name='get pw permission'),
+	url(r'^photowall/set_permission/$', views.set_pw_permission, name='set pw permission'),
 
 	# friend
 	url(r'^friend/$', views.friend_index, name='friend index'),

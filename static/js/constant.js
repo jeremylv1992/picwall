@@ -7,6 +7,7 @@ var GET_USER_PICTURES = ROOT_DIR+'user/pics/';
 var GET_PIC_INFO = ROOT_DIR+'picture/info/'
 
 var GET_PW_INFO = ROOT_DIR+'photowall/info/'
+var GET_PW_PERMISSION = ROOT_DIR+'photowall/get_permission/'
 var GET_PHOTOWALL_PICTURES = ROOT_DIR+'photowall/pics/'
 var SAVE_PHOTOWALL = ROOT_DIR+'photowall/save/';
 

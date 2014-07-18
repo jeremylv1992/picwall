@@ -97,22 +97,15 @@ def photowall_index(request):
 
 	private_pws = PhotoWall.objects.get_private_photowall(user)
 	temp_pws = PhotoWall.objects.get_manage_photowalls(user)
-	manage_pws = []
-	for pw in temp_pws:
-		if pw.creator != user:
-			manage_pws.append(pw)
-	temp_pws = PhotoWall.objects.get_access_photowalls(user)
-	access_pws = []
-	for pw in temp_pws:
-		if pw not in manage_pws and pw.creator != user:
-			access_pws.append(pw)
+	manage_pws = PhotoWall.objects.get_manage_photowalls(user).exclude(creator=user)
+	access_pws = PhotoWall.objects.get_access_photowalls(user)
 	friends = user.friends.all()
 
 	context = {}
 	context['user'] = user
 	context['private_pws'] = private_pws
-	context['access_pws'] = access_pws
 	context['manage_pws'] = manage_pws
+	context['access_pws'] = access_pws
 	context['friends'] = friends
 	return render(request, TEMPLATES['pw_index'], context)
 
@@ -141,7 +134,7 @@ def user_index(request, uid):
 	temp_pws = owner.photowall_creator.all()
 	pws = []
 	for pw in temp_pws:
-		if pw in user.access_users.all():
+		if pw in user.access_pws.all():
 			pws.append(pw)
 
 	context = {}
@@ -366,6 +359,7 @@ def edit_pw(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
+	print "ss"
 	if request.method == 'POST':
 		wid = request.POST['wid']
 		name = request.POST['name']
@@ -534,11 +528,30 @@ def get_users(request):
 
 	return return_origin_page(request)
 
-def get_pw_authority(request, wid):
+def get_pw_permission(request):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
+
+	if request.method == 'POST':
+		wid = request.POST['wid']
+		pw = get_object_or_404(PhotoWall, pk=wid)
+		if user == pw.creator:
+			data = {
+				"access_permission": pw.access_permission,
+			}
+			l = []
+			for manager in pw.manage_users.all():
+				if manager != pw.creator:
+					l.append({"id": str(manager.id), "isManager": True})
+			for friend in user.friends.all():
+				if friend not in pw.manage_users.all():
+					l.append({"id": str(manager.id), "isManager": False})
+			data["managers"] = l
+			return HttpResponse(json.dumps(data, cls=CJsonEncoder))
+	
+	return return_origin_page(request)
 
 def set_pw_permission(request):
 	try:
@@ -552,22 +565,28 @@ def set_pw_permission(request):
 		if user == pw.creator:
 
 			pw.access_users.clear()
-			access_permission = request.POST['access']
+			access_permission = request.POST['access-permission']
 			if access_permission == 'private':
+				pw.access_permission = PhotoWall.PRIVATE
 				pw.access_users.add(user)
 			if access_permission == 'friend':
+				pw.access_permission = PhotoWall.FRIEND
 				pw.access_users.add(user)
-				for friend in user.friends:
+				for friend in user.friends.all():
 					pw.access_users.add(friend)
-			if access_permission == 'all':
-				for user in User.objects.all():
+			if access_permission == 'public':
+				pw.access_permission = PhotoWall.PUBLIC
+				for user in WebSiteUser.objects.all():
 					pw.access_users.add(user)
 
 			pw.manage_users.clear()
 			pw.manage_users.add(user)
-			manage_permission = request.POST['manage[]']
-			for member in manage_permission:
+			manage_permission = request.POST.getlist('manager')
+			for uid in manage_permission:
+				member = get_object_or_404(WebSiteUser, pk=uid)
 				pw.manage_users.add(member)
+
+			pw.save()
 
 	return return_origin_page(request);
 
@@ -577,7 +596,6 @@ def create_label(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	print "create label"
 	if  request.method == 'POST':
 		name = request.POST['name']
 		label = PictureLabel.objects.create_label(user, name)

@@ -34,10 +34,6 @@ class WebSiteUser(models.Model):
 			d[attr] = str(getattr(self, attr))
 		return d
 
-# class WebSiteUserGroup(models.Model):
-# 	name = models.CharField(max_length=32)
-# 	users = models.ManyToManyField(WebSiteUser)
-
 class PictureLabelManager(models.Manager):
 	def create_label(self, owner, name):
 		label = self.create(owner=owner, name=name)
@@ -114,6 +110,7 @@ class PhotoWallManager(models.Manager):
 		photowall = PhotoWall(name=name, creator=creator, description=description, create_date=create_date, modify_date=modify_date)
 		photowall.save()
 		photowall.access_users.add(creator)
+		photowall.manage_users.add(creator)
 		photowall.save()
 	def save_photowall(self, wid, name, description):
 		pw = self.get(pk=wid)
@@ -129,21 +126,21 @@ class PhotoWallManager(models.Manager):
 		pws = user.photowall_creator.all()
 		return pws
 	def get_access_photowalls(self, user):
-		pws = user.access_users.all()
+		pws = user.access_pws.all()
 		return pws
 	def get_manage_photowalls(self, user):
-		pws = user.manage_users.all()
+		pws = user.manage_pws.all()
 		return pws
 
 	def get_random_photowalls(self, user):
-		# pws = random.sample(user.access_users.all(), min(5, user.access_users.count()))
+		# pws = random.sample(user.access_pws.all(), min(5, user.access_pws.count()))
 		pws = random.sample(PhotoWall.objects.all(), min(5, PhotoWall.objects.count()))
 		return pws
 	def get_hot_photowalls(self, user):
-		pws = user.access_users.order_by('-access_times').all()[:min(5, PhotoWall.objects.count())]
+		pws = user.access_pws.order_by('-access_times').all()[:min(5, PhotoWall.objects.count())]
 		return pws
 	def get_new_photowalls(self, user):
-		pws = user.access_users.order_by('-modify_date').all()[:min(5, PhotoWall.objects.count())]
+		pws = user.access_pws.order_by('-modify_date').all()[:min(5, PhotoWall.objects.count())]
 		return pws
 
 class PhotoWall(models.Model):
@@ -151,8 +148,19 @@ class PhotoWall(models.Model):
 	creator = models.ForeignKey(WebSiteUser, related_name='photowall_creator')
 	description = models.CharField(max_length=256, default='')
 
-	access_users = models.ManyToManyField(WebSiteUser, related_name='access_users')
-	manage_users = models.ManyToManyField(WebSiteUser, related_name='manage_users')
+	access_users = models.ManyToManyField(WebSiteUser, related_name='access_pws')
+	manage_users = models.ManyToManyField(WebSiteUser, related_name='manage_pws')
+
+	PRIVATE = 'private'
+	FRIEND = 'friend'
+	PUBLIC = 'public'
+
+	PERMISSION_CHOICES = (
+		(PRIVATE, 'Private'),
+		(FRIEND, 'Friend'),
+		(PUBLIC, 'Pulbic'),
+	)
+	access_permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default=PRIVATE)
 
 	create_date = models.DateField(default=datetime.now())
 	modify_date  = models.DateField(default=datetime.now())
