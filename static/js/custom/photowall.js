@@ -7,17 +7,17 @@
 	var editForm = document.getElementById('edit-form'); 
 	var permissionForm = document.getElementById('change-permission-form');
 
-	wallSubmitBtn.onclick = function () {
-		wallForm.submit();
-	};
+	$("#wall-submit-btn").click(function () {
+		$("#wall-form").submit();
+	});
 
 	$("#edit-submit-btn").click(function () {
 		$("#edit-form").submit();
 	});
 
-	permissionSubmitBtn.onclick = function() {
-		permissionForm.submit();
-	};
+	$("#change-permission-btn").click(function() {
+		$("#change-permission-form").submit();
+	});
 
 	$('.my-btn-edit').click(function () {
 		var wid = $(this).next().attr('value');

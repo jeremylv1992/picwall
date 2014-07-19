@@ -201,3 +201,23 @@ class PhotoInformation(models.Model):
 		for attr in ff:
 			d[attr] = str(getattr(self, attr))
 		return d
+
+class MessageManager(models.Manager):
+	def create_message(self, sender, receiver):
+		msg = self.create(sender=sender, receiver=receiver)
+		return msg
+
+class AskForFriendMessage(models.Model):
+	sender = models.ForeignKey(WebSiteUser, related_name="sent_messages")
+	receiver = models.ForeignKey(WebSiteUser, related_name="received_messages")
+
+	objects = MessageManager()
+
+	def toDICT(self):
+		ff = []
+		for f in self._meta.fields:
+			ff.append(f.name)
+		d = {}
+		for attr in ff:
+			d[attr] = str(getattr(self, attr))
+		return d

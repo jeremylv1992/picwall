@@ -530,9 +530,13 @@ def get_users(request):
 		users = User.objects.filter(username__icontains=text)
 		webusers = [WebSiteUser.objects.get(user=e) for e in users]
 
+		recomend_firend = WebSiteUser.objects
+
 		context = {}
-		context['users'] = webusers
-		return render(request, TEMPLATES['find_user_result'], context)
+		context['user'] = user;
+		context['friends'] = webusers
+		context['recomend_firend'] = recomend_firend
+		return render(request, TEMPLATES['friend_index'], context)
 
 	return return_origin_page(request)
 
@@ -604,8 +608,35 @@ def create_label(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	if  request.method == 'POST':
+	if request.method == 'POST':
 		name = request.POST['name']
 		label = PictureLabel.objects.create_label(user, name)
 
+	return return_origin_page(request)
+
+def get_user_message(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	rcv_msgs = user.received_messages
+	snd_msgs = user.sent_messages
+
+	data = {"rcv_msgs": rcv_msgs, "snd_msgs": snd_msgs}
+
+	return HttpResponse(json.dumps(data, cls=JSONEncoder));
+
+def sent_message(request, uid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	sender = user
+	receiver = get_object_or_404(WebSiteUser, pk=uid)
+
+	if AskForFriendMessage.objects.get(sender=sender, receiver=receiver) is None:
+		msg = AskForFriendMessage.objects.create_message(sender, receiver)
+	
 	return return_origin_page(request)

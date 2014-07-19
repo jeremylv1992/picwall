@@ -38,6 +38,7 @@ urlpatterns = patterns('',
 
 	# friend
 	url(r'^friend/$', views.friend_index, name='friend index'),
+	url(r'^friend/search/$', views.get_users, name='search users'),
 	url(r'^friend/create/(?P<uid>\d+)/$', views.make_friend, name='make friend'),
 	url(r'^friend/delete/(?P<uid>\d+)/$', views.delete_friend, name='delete friend'),
 )
