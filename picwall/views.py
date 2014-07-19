@@ -527,14 +527,15 @@ def get_users(request):
 
 	if request.method == 'GET':
 		text = request.GET['username']
-		users = User.objects.filter(username__icontains=text)
-		webusers = [WebSiteUser.objects.get(user=e) for e in users]
+		users = User.objects.filter(username__icontains=text).exclude(username='root').prefetch_related('webuser',)
 
 		recomend_firend = WebSiteUser.objects
 
+		print users
+
 		context = {}
 		context['user'] = user;
-		context['friends'] = webusers
+		context['friends'] = users
 		context['recomend_firend'] = recomend_firend
 		return render(request, TEMPLATES['friend_index'], context)
 

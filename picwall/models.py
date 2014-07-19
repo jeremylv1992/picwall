@@ -19,7 +19,7 @@ class WebSiteUserManager(models.Manager):
 		return webuser
 
 class WebSiteUser(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User, related_name="webuser")
 	friends = models.ManyToManyField("self")
 	objects = WebSiteUserManager()
 
