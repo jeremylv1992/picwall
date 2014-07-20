@@ -38,10 +38,10 @@
 				</span>
 			</div><!-- /input-group -->
 
-			<div id="recomendFriend">
+			<div id="recommendFriend">
 				<ul class="nav nav-list">
-					<li class="nav-header">Recomend Friend</li>
-					{% for user in recomend_firend.all %}
+					<li class="nav-header">Recommend Friend</li>
+					{% for user in recommend_users.all %}
 					<li><a href={% url 'user index' user.id %}>{{ user }}</a></li>
 					{% endfor %}
 				</ul>

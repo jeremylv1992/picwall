@@ -1,3 +1,4 @@
+from __future__ import division
 from django.db import models
 from django.utils.timezone import utc
 from django.contrib.auth import authenticate, login, logout
@@ -37,7 +38,7 @@ TEMPLATES = {
 		'friend_index': APP_NAME+'/friend_index.html',
 		'pic_info': APP_NAME+'/picture_info.html',
 		'pw_info': APP_NAME+'/photowall_info.html',
-}
+		}
 
 class CJsonEncoder(json.JSONEncoder):
 	def default(self, obj):
@@ -116,12 +117,30 @@ def friend_index(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	friends = user.friends
-	recomend_firend = WebSiteUser.objects
+
+	recommend = []
+	for u in WebSiteUser.objects.all():
+		if u == user:
+			continue
+		d = {}
+		d['id'] = u.id
+		d['name'] = u.user.username
+		common_friends = len([e for e in u.friends.all() if e in user.friends.all()])
+		total_friends = len(set([e for e in u.friends.all()]).union(set([e for e in user.friends.all()])))
+		if total_friends == 0:
+			d['value'] = 0
+		else:
+			d['value'] = common_friends/total_friends
+		recommend.append(d)
+
+	recommend.sort(lambda x, y : -cmp(x['value'], y['value']))
+	recommend_ids = [e['id'] for e in recommend[0:5]]
+	recommend_users = WebSiteUser.objects.filter(id__in=recommend_ids)
 
 	context = {}
 	context['user'] = user
 	context['friends'] = friends
-	context['recomend_firend'] = recomend_firend
+	context['recommend_users'] = recommend_users
 	return render(request, TEMPLATES['friend_index'], context)
 
 def user_index(request, uid):
@@ -470,7 +489,7 @@ def delete_friend(request, uid):
 					pw.access_users.remove(user1)
 				if user1 in pw.manage_users.all():
 					pw.manage_users.remove(user1)
-	
+
 	return return_origin_page(request)
 
 def get_user_info(request):
@@ -539,8 +558,8 @@ def get_pw_permission(request):
 		pw = get_object_or_404(PhotoWall, pk=wid)
 		if user == pw.creator:
 			data = {
-				"access_permission": pw.access_permission,
-			}
+					"access_permission": pw.access_permission,
+					}
 			l = []
 			for manager in pw.manage_users.all():
 				if manager != pw.creator:
@@ -550,7 +569,7 @@ def get_pw_permission(request):
 					l.append({"id": str(manager.id), "isManager": False})
 			data["managers"] = l
 			return HttpResponse(json.dumps(data, cls=CJsonEncoder))
-	
+
 	return return_origin_page(request)
 
 def set_pw_permission(request):
@@ -625,7 +644,7 @@ def send_message(request, uid):
 	receiver = get_object_or_404(WebSiteUser, pk=uid)
 
 	msg = AskForFriendMessage.objects.create_message(sender, receiver)
-	
+
 	return return_origin_page(request)
 
 def ignore_message(request, mid):
