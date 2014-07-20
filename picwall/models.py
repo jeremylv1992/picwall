@@ -94,7 +94,7 @@ class PictureComment(models.Model):
 	pic = models.ForeignKey(Picture)
 	author = models.ForeignKey(WebSiteUser)
 	content = models.CharField(max_length=100)
-	published_date = models.DateField()
+	published_date = models.DateField(default=datetime.now().date())
 
 	objects = PictureCommentManage()
 
@@ -204,15 +204,31 @@ class PhotoInformation(models.Model):
 
 class MessageManager(models.Manager):
 	def create_message(self, sender, receiver):
-		msg = self.create(sender=sender, receiver=receiver)
+		msg = self.create(sender=sender, receiver=receiver, state=AskForFriendMessage.WAIT)
 		return msg
 
 class AskForFriendMessage(models.Model):
 	sender = models.ForeignKey(WebSiteUser, related_name="sent_messages")
 	receiver = models.ForeignKey(WebSiteUser, related_name="received_messages")
 
+	ask_date = models.DateField(default=datetime.now().date())
+
+	UNDEFINE = 'unknown'
+	WAIT = 'wait'
+	ACCEPT = 'accept'
+	REFUSE = 'refuse'
+	STATE_CHOICES = (
+		(UNDEFINE, 'Unknown'),
+		(WAIT, 'Wait'),
+		(ACCEPT, 'Accept'),
+		(REFUSE, 'Refuse'),
+	)
+	state = models.CharField(max_length=10, choices=STATE_CHOICES, default=UNDEFINE)
+
 	objects = MessageManager()
 
+	def __unicode__(self):
+		return self.sender.user.username + ' to ' + self.receiver.user.username
 	def toDICT(self):
 		ff = []
 		for f in self._meta.fields:
@@ -221,3 +237,5 @@ class AskForFriendMessage(models.Model):
 		for attr in ff:
 			d[attr] = str(getattr(self, attr))
 		return d
+	class Meta:
+		ordering = ('ask_date',)

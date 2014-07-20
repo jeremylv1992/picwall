@@ -4,6 +4,54 @@
 {% endblock %}
 
 {% block extrabody %}
+<!-- Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Friends Application</h4>
+			</div>
+
+			<div class="modal-body">				
+				<ul class="list-group">
+					{% for msg in received_messages.all %}
+					{% if msg.state == 'wait' %}
+					<li class="list-group-item">
+					<div class="btn-group pull-right">
+						<a href="{% url 'make friend' msg.id %}"><button type="button" class="btn btn-primary">Accept</button></a>
+						<a href="{% url 'ignore message' msg.id %}"><button type="button" class="btn btn-default">Ingore</button></a>
+					</div>
+					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
+					<p class="list-group-item-text">{{ msg.ask_date }}
+					</li>
+					{% elif msg.state == 'accept' %}
+					<li class="list-group-item">
+					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
+					<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">I Accepted</span></p>
+					</li>
+					{% endif %}
+					{% endfor %}
+
+					{% for msg in sent_messages.all %}
+					{% if msg.state == 'wait' %}
+					<li class="list-group-item">
+					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.receiver.id %}">{{ msg.receiver }}</a></h4>
+					<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">Waiting for reply</span></p>
+					</li>
+					{% elif msg.state == 'accept' %}
+					<li class="list-group-item">
+					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.receiver.id %}">{{ msg.receiver }}</a></h4>
+					<p class="list-group-item-text">{{ msg.ask_date }}<span class="label label-default">Has Accepted My Request</span></p>
+					</li>
+					{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <!-- container -->
 <div class="container">
 	<div class="row clearfix">
@@ -13,9 +61,8 @@
 			{% if owner == user %}
 			<form action='#'>
 				<div class="form-group">
-					<button type="submit" class="btn btn-default">
-						<span class="glyphicon glyphicon-user"></span>
-						Message
+					<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#messageModal">
+						<span class="glyphicon glyphicon-user"></span> Messages <span class="badge">{{ received_messages.count|add:sent_messages.count }}</span>
 					</button>
 				</div>
 			</form>
@@ -29,7 +76,7 @@
 				</div>
 			</form>
 			{% else %}
-			<form action={% url 'make friend' owner.id %}>
+			<form action={% url 'send message' owner.id %}>
 				<div class="form-group">
 					<button type="submit" class="btn btn-default">
 						<span class="glyphicon glyphicon-plus"></span>

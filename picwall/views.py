@@ -9,7 +9,7 @@ from django.core import serializers
 from datetime import datetime
 from datetime import date
 
-from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel
+from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel, AskForFriendMessage
 
 from myForms import Login_Form
 
@@ -133,10 +133,15 @@ def user_index(request, uid):
 	owner = get_object_or_404(WebSiteUser, pk=uid)
 	pws = user.access_pws.filter(creator=owner)
 
+	received_messages = user.received_messages
+	sent_messages = user.sent_messages
+
 	context = {}
 	context['user'] = user
 	context['pws'] = pws
 	context['owner'] = owner
+	context['received_messages'] = received_messages
+	context['sent_messages'] = sent_messages
 	return render(request, TEMPLATES['user_index'], context)
 
 def log_in(request):
@@ -434,30 +439,12 @@ def delete_pw(request, wid):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	wall = get_object_or_404(PhotoWall, pk=wid)
+
+	if user != wall.creator:
+		return return_origin_page(request);
+
 	wall.delete()
 
-	return return_origin_page(request)
-
-def make_friend(request, uid):
-	try:
-		user = get_user(request.user)
-	except WebSiteUser.DoesNotExist:
-		return HttpResponseRedirect(LOGIN_PAGE)
-
-	user1 = get_object_or_404(WebSiteUser, user=request.user)
-	user2 = get_object_or_404(WebSiteUser, id=uid)
-
-	if user1 is not None and user2 is not None:
-		if user2 not in user1.friends.all():
-			user1.friends.add(user2)
-			user2.friends.add(user1)
-			for pw in user1.photowalls.all():
-				if pw.access_permission == PhotoWall.FRIEND and user2 not in pw.access_users.all():
-					pw.access_users.add(user2)
-			for pw in user2.photowalls.all():
-				if pw.access_permission == PhotoWall.FRIEND and user1 not in pw.access_users.all():
-					pw.access_users.add(user1)
-	
 	return return_origin_page(request)
 
 def delete_friend(request, uid):
@@ -628,7 +615,7 @@ def get_user_message(request):
 
 	return HttpResponse(json.dumps(data, cls=JSONEncoder));
 
-def sent_message(request, uid):
+def send_message(request, uid):
 	try:
 		user = get_user(request.user)
 	except WebSiteUser.DoesNotExist:
@@ -637,7 +624,62 @@ def sent_message(request, uid):
 	sender = user
 	receiver = get_object_or_404(WebSiteUser, pk=uid)
 
-	if AskForFriendMessage.objects.get(sender=sender, receiver=receiver) is None:
-		msg = AskForFriendMessage.objects.create_message(sender, receiver)
+	msg = AskForFriendMessage.objects.create_message(sender, receiver)
 	
+	return return_origin_page(request)
+
+def ignore_message(request, mid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	msg = get_object_or_404(AskForFriendMessage, pk=mid)
+
+	sender = msg.sender
+	receiver = msg.receiver
+
+	if user != receiver:
+		return return_origin_page(request)
+
+	if msg.state == AskForFriendMessage.WAIT:
+		msg.state = AskForFriendMessage.REFUSE
+		msg.save()
+
+	return return_origin_page(request)
+
+def make_friend(request, mid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	msg = get_object_or_404(AskForFriendMessage, pk=mid)
+	sender = msg.sender
+	receiver = msg.receiver
+
+	if user != receiver:
+		return return_origin_page(request)
+
+	if receiver is not None and sender is not None and msg.state == AskForFriendMessage.WAIT:
+		if receiver not in sender.friends.all():
+			receiver.friends.add(sender)
+			sender.friends.add(receiver)
+
+			receiver.save()
+			sender.save()
+
+			for pw in receiver.photowalls.all():
+				if pw.access_permission == PhotoWall.FRIEND and sender not in pw.access_users.all():
+					pw.access_users.add(sender)
+					pw.save()
+
+			for pw in sender.photowalls.all():
+				if pw.access_permission == PhotoWall.FRIEND and receiver not in pw.access_users.all():
+					pw.access_users.add(receiver)
+					pw.save()
+
+			msg.state = AskForFriendMessage.ACCEPT
+			msg.save()
+
 	return return_origin_page(request)
