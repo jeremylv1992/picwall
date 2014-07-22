@@ -3,7 +3,7 @@
 
 {% block extrahead %}
 <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
-<link href={% static 'css/custom/style.css' %} rel="stylesheet">
+<link href="{% static 'css/custom/style.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block extrabody %}
@@ -12,12 +12,12 @@
 		<div class="col-md-12 column">
 			<div class="row clearfix">
 				<div class="col-md-8 column">
-					<blockquote>
+					<h2>
 						<p>
 						{{ pic.name }}
-						</p><small>{{ pic.author }}</small>
-					</blockquote>
-					<img alt="140x140" src={% url 'pic image' pic.id %} class="img-thumbnail myImageSize" />
+						</p><small>-- {{ pic.author }}</small>
+					</h2>
+					<img alt="140x140" class="img-responsive img-thumbnail" src="{% url 'pic image' pic.id %}" />
 				</div>
 				<div class="col-md-4 column">
 					<div class="detailBox">
@@ -29,7 +29,7 @@
 							<p class="taskDescription">{{ pic.pic_desc }}</p>
 						</div>
 						<div class="actionBox">
-							<form class="form-inline" action={% url 'pic comment' %} method='POST' role="form">
+							<form class="form-inline" action="{% url 'pic comment' %}" method='POST' role="form">
 								{% csrf_token %}
 								<input type='text' name='pid' value='{{ pic.id }}' style="display:none;"/>
 								<div class="form-group">

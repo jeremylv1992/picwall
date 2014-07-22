@@ -118,24 +118,7 @@ def friend_index(request):
 
 	friends = user.friends
 
-	recommend = []
-	for u in WebSiteUser.objects.all():
-		if u == user:
-			continue
-		d = {}
-		d['id'] = u.id
-		d['name'] = u.user.username
-		common_friends = len([e for e in u.friends.all() if e in user.friends.all()])
-		total_friends = len(set([e for e in u.friends.all()]).union(set([e for e in user.friends.all()])))
-		if total_friends == 0:
-			d['value'] = 0
-		else:
-			d['value'] = common_friends/total_friends
-		recommend.append(d)
-
-	recommend.sort(lambda x, y : -cmp(x['value'], y['value']))
-	recommend_ids = [e['id'] for e in recommend[0:5]]
-	recommend_users = WebSiteUser.objects.filter(id__in=recommend_ids)
+	recommend_users = WebSiteUser.objects.get_recommend(user)
 
 	context = {}
 	context['user'] = user
@@ -420,10 +403,10 @@ def save_pw(request):
 
 		l = json.loads(text)
 		for pic in l:
-			x = pic['left']
-			y = pic['top']
-			w = pic['width']
-			h = pic['height']
+			left = pic['left']
+			top = pic['top']
+			width = pic['width']
+			height = pic['height']
 			pic = Picture.objects.get(pk=pic['pid'])
 			PhotoInformation.objects.create_photowall_information(pic, pw, left, top, width, height)
 
@@ -439,10 +422,10 @@ def save_pw(request):
 
 		l = json.loads(text)
 		for pic in l:
-			x = pic['left']
-			y = pic['top']
-			w = pic['width']
-			h = pic['height']
+			left = pic['left']
+			top = pic['top']
+			width = pic['width']
+			height = pic['height']
 			pic = Picture.objects.get(pk=pic['pid'])
 			PhotoInformation.objects.create_photowall_information(pic, pw, left, top, width, height)
 
@@ -535,14 +518,12 @@ def get_users(request):
 		text = request.GET['username']
 		users = User.objects.filter(username__icontains=text).exclude(username='root').prefetch_related('webuser',)
 
-		recomend_firend = WebSiteUser.objects
-
-		print users
+		recommend_users = WebSiteUser.objects.get_recommend(user)
 
 		context = {}
 		context['user'] = user;
 		context['friends'] = users
-		context['recomend_firend'] = recomend_firend
+		context['recommend_users'] = recommend_users
 		return render(request, TEMPLATES['friend_index'], context)
 
 	return return_origin_page(request)

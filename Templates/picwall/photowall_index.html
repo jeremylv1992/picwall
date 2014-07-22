@@ -82,7 +82,7 @@
 <div class="modal fade" id="myPermissionModal" tabindex="-1" role="dialog" aria-labelledby="myPermissionLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<form role="form" id="change-permission-form" action={% url 'set pw permission' %} method="post" enctype="multipart/form-data">
+			<form role="form" id="change-permission-form" action="{% url 'set pw permission' %}" method="post" enctype="multipart/form-data">
 				{% csrf_token %}
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -153,7 +153,7 @@
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
-								<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
+								<img alt="250x250" class="img-responsive" src="{% static 'img/default/photowall.jpeg' %}" />
 								<div class="caption">
 									<h3> {{ pw.name }}
 									</h3>
@@ -169,66 +169,66 @@
 								</div>
 							</div>
 						</div>
-					{% if forloop.counter == private_pws.count %}
+						{% if forloop.counter == private_pws.count %}
 					</div>
 					{% else %}
 					{% cycle "" "" "</div>" %}
-					{% endif %}
-					{% endfor %}
-				</div>
+				{% endif %}
+				{% endfor %}
+			</div>
 
-				<div id="manage" class="tab-pane fade">
-					{% for pw in manage_pws.all %}
-					{% cycle "<div class='row'>" "" "" %}
-						<div class="col-md-4">
-							<div class="thumbnail">
-								<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
-								<div class="caption">
-									<h3> {{ pw.name }} </h3>
-									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
+			<div id="manage" class="tab-pane fade">
+				{% for pw in manage_pws.all %}
+				{% cycle "<div class='row'>" "" "" %}
+					<div class="col-md-4">
+						<div class="thumbnail">
+							<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
+							<div class="caption">
+								<h3> {{ pw.name }} </h3>
+								<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 
-									<p>
-									<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
-									<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
-									<input type="hidden" name="pid" value={{ pw.id }}>
-									<a type="button" class="btn btn-danger" href={% url 'delete pw' pw.id %}>Delete</a>
-									</p>
-								</div>
+								<p>
+								<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
+								<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
+								<input type="hidden" name="pid" value={{ pw.id }}>
+								<a type="button" class="btn btn-danger" href={% url 'delete pw' pw.id %}>Delete</a>
+								</p>
 							</div>
 						</div>
-						{% if forloop.counter == manage_pws.count %}
 					</div>
-					{% else %}
-					{% cycle "" "" "</div>" %}
-					{% endif %}
-					{% endfor %}
+					{% if forloop.counter == manage_pws.count %}
 				</div>
-
-				<div id="access" class="tab-pane fade">
-					{% for pw in access_pws.all %}
-					{% cycle "<div class='row'>" "" "" %}
-						<div class="col-md-4">
-							<div class="thumbnail">
-								<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
-								<div class="caption">
-									<h3>
-										{{ pw.name }}
-									</h3>
-									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
-									<p>
-									<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
-									</p>
-								</div>
-							</div>
-							{% if forloop.counter == access_pws.count %}
-						</div>
-						{% else %}
-						{% cycle "" "" "</div>" %}
-					{% endif %}
-					{% endfor %}
-				</div>
-			</div> <!-- /.tab-content -->
+				{% else %}
+				{% cycle "" "" "</div>" %}
+			{% endif %}
+			{% endfor %}
 		</div>
+
+		<div id="access" class="tab-pane fade">
+			{% for pw in access_pws.all %}
+			{% cycle "<div class='row'>" "" "" %}
+				<div class="col-md-4">
+					<div class="thumbnail">
+						<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
+						<div class="caption">
+							<h3>
+								{{ pw.name }}
+							</h3>
+							<p class="text-right"><small>-- {{ pw.creator }}</small></p>
+							<p>
+							<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
+							</p>
+						</div>
+					</div>
+					{% if forloop.counter == access_pws.count %}
+				</div>
+				{% else %}
+				{% cycle "" "" "</div>" %}
+			{% endif %}
+			{% endfor %}
+		</div>
+	</div> <!-- /.tab-content -->
+</div>
 	</div>
 </div>
 {% endblock %}

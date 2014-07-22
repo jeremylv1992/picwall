@@ -17,6 +17,26 @@ class WebSiteUserManager(models.Manager):
 		webuser.user_labels.add(PictureLabel.objects.create(owner=webuser, name="default"))
 		webuser.save()
 		return webuser
+	def get_recommend(self, user):
+		recommend = []
+		for u in self.all():
+			if u == user:
+				continue
+			d = {}
+			d['id'] = u.id
+			common_friends = len([e for e in u.friends.all() if e in user.friends.all()])
+			total_friends = len(set([e for e in u.friends.all()]).union(set([e for e in user.friends.all()])))
+			if total_friends == 0:
+				d['value'] = 0
+			else:
+				d['value'] = common_friends/total_friends
+			recommend.append(d)
+
+		recommend.sort(lambda x, y : -cmp(x['value'], y['value']))
+		recommend_ids = [e['id'] for e in recommend[0:5]]
+		recommend_users = WebSiteUser.objects.filter(id__in=recommend_ids)
+		return recommend_users
+
 
 class WebSiteUser(models.Model):
 	user = models.ForeignKey(User, related_name="webuser")
@@ -179,7 +199,7 @@ class PhotoWall(models.Model):
 
 class PhotoInformationWallManager(models.Manager):
 	def create_photowall_information(self, pic, pw, left, top, width, height):
-		pwinfo = self.create(pic=pic, pw=pw, left=left, top=top, width=width, height=height)
+		pwinfo = self.create(picture=pic, photowall=pw, left=left, top=top, width=width, height=height)
 		return pwinfo
 
 class PhotoInformation(models.Model):
