@@ -3,7 +3,7 @@
 
 {% block extrahead %}
 <link rel="stylesheet" href={% static 'css/jquery-ui-1.10.4.custom.min.css' %}>
-<link rel="stylesheet" href={% static 'css/custom/photowall.css' %}>
+<link rel="stylesheet" href={% static 'css/custom/photowall_edit.css' %}>
 <script src={% static 'js/custom/photowall_info_edit.js' %}></script>
 <script src={% static 'js/jquery-ui-1.10.4.custom.min.js' %}></script>
 {% endblock %}
@@ -14,11 +14,14 @@
 	<div class="row" id="contain">
 		<div id="down">
 			<div id="sidebar">
-				<div class="col-xs-5">
+				<div class="col-xs-4">
 					<button type="button" class="btn btn-primary" id="save-btn">Save</button>
 				</div>
-				<div class="col-xs-5">
+				<div class="col-xs-4">
 					<button type="button" class="btn btn-danger" id="delete-btn">Delete</button>
+				</div>
+				<div class="col-xs-4">
+					<button type="button" class="btn btn-danger" id="clear-btn">Clear</button>
 				</div>
 			</div>
 			<div id="main"> 

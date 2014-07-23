@@ -38,6 +38,9 @@ function init()
 		save();
 	});
 
+	$("#clear-btn").click(function(){
+		$("canvas").remove(".wallphotos");
+	});
 }
 
 function onResize()
