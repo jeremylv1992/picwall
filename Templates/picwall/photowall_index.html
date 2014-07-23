@@ -153,7 +153,7 @@
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
-								<img alt="250x250" class="img-responsive" src="{% static 'img/default/photowall.jpeg' %}" />
+								<img alt="250x250" class="img-responsive" src="{% url 'pw image' pw.id %}" />
 								<div class="caption">
 									<h3> {{ pw.name }}
 									</h3>
@@ -182,7 +182,7 @@
 				{% cycle "<div class='row'>" "" "" %}
 					<div class="col-md-4">
 						<div class="thumbnail">
-							<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
+							<img alt="250x250" class="img-responsive" src="{% url 'pw image' pw.id %}" />
 							<div class="caption">
 								<h3> {{ pw.name }} </h3>
 								<p class="text-right"><small>-- {{ pw.creator }}</small></p>
@@ -209,7 +209,7 @@
 			{% cycle "<div class='row'>" "" "" %}
 				<div class="col-md-4">
 					<div class="thumbnail">
-						<img alt="250x250" src="{% static 'img/default/photowall.jpeg' %}" />
+						<img alt="250x250" class="img-responsive" src="{% url 'pw image' pw.id %}" />
 						<div class="caption">
 							<h3>
 								{{ pw.name }}

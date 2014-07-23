@@ -1,12 +1,4 @@
 ﻿window.onload = function () {
-	var wallSubmitBtn = document.getElementById('wall-submit-btn');
-	var editSubmitBtn = document.getElementById('edit-submit-btn');
-	var permissionSubmitBtn = document.getElementById('change-permission-btn');
-
-	var wallForm = document.getElementById('wall-form');
-	var editForm = document.getElementById('edit-form'); 
-	var permissionForm = document.getElementById('change-permission-form');
-
 	$("#wall-submit-btn").click(function () {
 		$("#wall-form").submit();
 	});
@@ -38,7 +30,9 @@
 			for (i = 0; i < data['managers'].length; i++) {
 				var id = "#friend" + data['managers'][i]['id'];
 				var isManager = data['managers'][i]['isManager'];
+				console.log(id);
 				if (isManager) {
+					alert('hehe');
 					$(id).attr('checked', true);
 				} else {
 					$(id).attr('checked', false);

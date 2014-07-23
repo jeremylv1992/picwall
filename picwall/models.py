@@ -10,6 +10,8 @@ import random
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
+PICTURE_DIR = os.path.join(IMAGE_DIR, 'picture/')
+PHOTOWALL_DIR = os.path.join(IMAGE_DIR, 'photowall/')
 
 class WebSiteUserManager(models.Manager):
 	def create_user(self, user):
@@ -132,6 +134,16 @@ class PhotoWallManager(models.Manager):
 		photowall.access_users.add(creator)
 		photowall.manage_users.add(creator)
 		photowall.save()
+
+		defaultFile = open(IMAGE_DIR+'default/corkboard.jpg', "rb")
+		imageFile = open(PHOTOWALL_DIR+str(photowall.id), "wb")
+
+		imageData = defaultFile.read()
+		imageFile.write(imageData)
+
+		imageFile.close()
+		defaultFile.close()
+
 	def save_photowall(self, pw, name, description):
 		pw.name = name
 		pw.description = description

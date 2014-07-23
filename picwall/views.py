@@ -20,6 +20,8 @@ import json
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
+PICTURE_DIR = os.path.join(IMAGE_DIR, 'picture/')
+PHOTOWALL_DIR = os.path.join(IMAGE_DIR, 'photowall/')
 
 APP_NAME = 'picwall'
 ROOT_PATH = '/'+APP_NAME+'/'
@@ -230,7 +232,7 @@ def upload_pic(request):
 
 		# save image file
 		image = request.FILES['image']
-		url = os.path.join(IMAGE_DIR, str(pic.id))
+		url = os.path.join(PICTURE_DIR, str(pic.id))
 		fp = open(url, "ab")
 		for chunk in image.chunks():  
 			fp.write(chunk)  
@@ -262,7 +264,11 @@ def delete_pic(request, pid):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	pic = get_object_or_404(Picture, pk=pid)
-	pic_file = os.path.join(IMAGE_DIR, str(pid))
+
+	if user != pic.author:
+		return return_origin_page(request)
+
+	pic_file = os.path.join(PICTURE_DIR, str(pid))
 	if os.path.isfile(pic_file):
 		os.remove(pic_file)
 	pic.delete()
@@ -275,7 +281,16 @@ def pic_image(request, pid):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	image = open(os.path.join(IMAGE_DIR, str(pid)), "rb").read()
+	image = open(os.path.join(PICTURE_DIR, str(pid)), "rb").read()
+	return HttpResponse(image)
+
+def pw_image(request, wid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	image = open(os.path.join(PHOTOWALL_DIR, str(wid)), "rb").read()
 	return HttpResponse(image)
 
 def get_user_pics(request):
@@ -394,29 +409,16 @@ def save_pw(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	if request.method == 'POST':
-		text = request.POST['text'];
-		wid = request.POST['wid']
-		pw = PhotoWall.objects.get(pk=wid)
-
-		PhotoInformation.objects.filter(photowall=pw).delete()
-
-		l = json.loads(text)
-		for pic in l:
-			left = pic['left']
-			top = pic['top']
-			width = pic['width']
-			height = pic['height']
-			pic = Picture.objects.get(pk=pic['pid'])
-			PhotoInformation.objects.create_photowall_information(pic, pw, left, top, width, height)
-
-		pw.modify_date = datetime.utcnow().replace(tzinfo=utc)
-		pw.save()
-		return HttpResponse("Save OK!")
-	elif request.method == 'GET':
+	if request.method == 'GET':
+		import base64
 		text = request.GET['text'];
 		wid = request.GET['wid']
+		imageData = base64.b64decode(request.GET['data'])
 		pw = PhotoWall.objects.get(pk=wid)
+
+		imageFile = open(PHOTOWALL_DIR+wid, "wb")
+		imageFile.write(imageData)
+		imageFile.close()
 
 		PhotoInformation.objects.filter(photowall=pw).delete()
 
@@ -445,6 +447,9 @@ def delete_pw(request, wid):
 	if user != wall.creator:
 		return return_origin_page(request);
 
+	imageUrl = os.path.join(PHOTOWALL_DIR, str(wall.id))
+	if os.path.isfile(imageUrl):
+		os.remove(imageUrl)
 	wall.delete()
 
 	return return_origin_page(request)
