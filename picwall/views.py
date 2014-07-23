@@ -687,7 +687,7 @@ def ignore_message(request, mid):
 		return return_origin_page(request)
 
 	if msg.state == AskForFriendMessage.WAIT:
-		msg.state = AskForFriendMessage.REFUSE
+		msg.state = AskForFriendMessage.REJECT
 		msg.save()
 
 	return return_origin_page(request)

@@ -273,12 +273,12 @@ class AskForFriendMessage(models.Model):
 	UNDEFINE = 'unknown'
 	WAIT = 'wait'
 	ACCEPT = 'accept'
-	REFUSE = 'refuse'
+	REJECT = 'reject'
 	STATE_CHOICES = (
 		(UNDEFINE, 'Unknown'),
 		(WAIT, 'Wait'),
 		(ACCEPT, 'Accept'),
-		(REFUSE, 'Refuse'),
+		(REJECT, 'ReJect'),
 	)
 	state = models.CharField(max_length=10, choices=STATE_CHOICES, default=UNDEFINE)
 
