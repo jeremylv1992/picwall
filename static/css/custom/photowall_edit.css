@@ -9,7 +9,7 @@ body {
 
 #sidebar
 {
-	width: 25.5%;
+	width: 200px;
 	overflow: auto;
 	z-index: 3;
 	float: right;

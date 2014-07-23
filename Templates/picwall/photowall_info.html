@@ -6,24 +6,49 @@
 <link rel="stylesheet" href={% static 'css/custom/photowall.css' %}>
 <script src={% static 'js/custom/photowall_info.js' %}></script>
 <script src={% static 'js/jquery-ui-1.10.4.custom.min.js' %}></script>
+<link rel="stylesheet" href={% static 'css/custom/style.css' %}>
 {% endblock %}
 
 {% block extrabody %}
 
 <div class="container-fluid">
 	<div class="row" id="contain">
-		<div id="topbar">
-			<div class="btn-group" id="topbarleft" >
-				<button type="button" class="btn btn-default" >Delete</button>
-			</div>
-			<div class="btn-group" id="topbarright">
-				<button type="button" class="btn btn-default" id="savebutton">Save</button>
-				<button type="button" class="btn btn-default" onclick="javascript:location.href='{% url 'pw index' %}'">Exit</button>
-			</div>
-		</div>
-
 		<div id="down">
 			<div id="sidebar">
+				<div class="detailBox">
+					<div class="titleBox">
+						<label>Comment Box</label>
+						<button type="button" class="close" aria-hidden="true">&times;</button>
+					</div>
+					<div class="commentBox">  
+						<p class="taskDescription">{{ pw.pic_desc }}</p>
+					</div>
+					<div class="actionBox">
+						<form class="form-inline" action="{% url 'pw comment' %}" method='POST' role="form">
+							{% csrf_token %}
+							<input type='text' name='wid' value='{{ pw.id }}' style="display:none;"/>
+							<div class="form-group">
+								<input class="form-control" type="text" name='content' placeholder="Your comments" />
+							</div>
+							<div class="form-group">
+								<button class="btn btn-default" type='submit'>Add</button>
+							</div>
+						</form>
+						<ul class="commentList">
+							{% for comment in comments.all %}
+							<li>
+							<div class="commenterImage">
+								<img src="http://lorempixel.com/50/50/people/6" />
+							</div>
+							<div class="commentText">
+								<p class="">{{ comment.content }}</p> <span class="date sub-text">on {{ comment.published_date }}</span>
+							</div>
+							</li>
+							{% endfor %}
+						</ul>
+						<a class="glyphicon glyphicon-hand-down btn" href="#">more</a>
+					</div>
+				</div>
 			</div>
 			<div id="main"> 
 				<div id="board">

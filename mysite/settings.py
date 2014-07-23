@@ -6,7 +6,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-DATABASE_DEBUG = False
+DATABASE_DEBUG = True
 
 ADMINS = (
 )
@@ -128,7 +128,7 @@ INSTALLED_APPS = (
 	'django.contrib.staticfiles',
     'django.contrib.admin',
     'picwall',
-	# 'south',
+	'south',
 )
 
 # A sample logging configuration. The only tangible logging

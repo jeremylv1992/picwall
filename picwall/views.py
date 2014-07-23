@@ -10,7 +10,7 @@ from django.core import serializers
 from datetime import datetime
 from datetime import date
 
-from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel, AskForFriendMessage
+from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel, AskForFriendMessage, PhotowallComment
 
 from myForms import Login_Form
 
@@ -39,8 +39,9 @@ TEMPLATES = {
 		'pw_index': APP_NAME+'/photowall_index.html',
 		'friend_index': APP_NAME+'/friend_index.html',
 		'pic_info': APP_NAME+'/picture_info.html',
-		'pw_info': APP_NAME+'/photowall_info.html',
-		}
+		'pw_info': APP_NAME+'/photowall_info_edit.html',
+		'pw_view': APP_NAME+'/photowall_info.html',
+}
 
 class CJsonEncoder(json.JSONEncoder):
 	def default(self, obj):
@@ -337,9 +338,23 @@ def pic_comment(request):
 	if request.method == 'POST':
 		pid = request.POST['pid']
 		content = request.POST['content']
-		comments = PictureComment.objects.create_picture_comment(user, pid, content)
+		comment = PictureComment.objects.create_picture_comment(user, pid, content)
 
 	return return_origin_page(request)
+
+def pw_comment(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	if request.method == 'POST':
+		wid = request.POST['wid']
+		content = request.POST['content']
+		comment = PhotowallComment.objects.create_photowall_comment(user, wid, content)
+	
+	return return_origin_page(request)
+
 
 def pw_info(request, wid):
 	try:
@@ -352,11 +367,30 @@ def pw_info(request, wid):
 	if user not in pw.access_users.all():
 		return return_origin_page(request);
 
-	PhotoWall.objects.access_photowall(pw)
-
 	context = {}
 	context['user'] = user
 	return render(request, TEMPLATES['pw_info'], context)
+
+def pw_view(request, wid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	pw = get_object_or_404(PhotoWall, pk=wid)
+
+	if user not in pw.access_users.all():
+		return return_origin_page(request);
+
+	PhotoWall.objects.access_photowall(pw)
+
+	comments = PhotowallComment.objects.filter(pw=pw)
+
+	context = {}
+	context['user'] = user
+	context['pw'] = pw
+	context['comments'] = comments
+	return render(request, TEMPLATES['pw_view'], context)
 
 def create_pw(request):
 	try:
@@ -436,7 +470,7 @@ def save_pw(request):
 			pic = Picture.objects.get(pk=pic['pid'])
 			PhotoInformation.objects.create_photowall_information(pic, pw, left, top, width, height)
 
-		pw.modify_date = datetime.utcnow().replace(tzinfo=utc)
+		pw.modify_date = datetime.now()
 		pw.save()
 		return HttpResponse("Save OK!")
 	return HttpResponse("Not valid method!")

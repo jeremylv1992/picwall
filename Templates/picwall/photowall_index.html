@@ -46,13 +46,13 @@
 	</div><!-- /.modal-dialog -->
 </div> <!-- /.modal -->
 
-<!-- Modal (Edit Wall)-->
-<div class="modal fade" id="myEditWallModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<!-- Modal (Info Wall)-->
+<div class="modal fade" id="myInfoWallModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" >Edit Photo Wall</h4>
+				<h4 class="modal-title" >Info Photo Wall</h4>
 			</div>
 
 			<div class="modal-body">                
@@ -78,7 +78,7 @@
 	</div><!-- /.modal-dialog -->
 </div> <!-- /.modal -->
 
-<!-- wall permission (Edit Wall)-->
+<!-- wall permission (Info Wall)-->
 <div class="modal fade" id="myPermissionModal" tabindex="-1" role="dialog" aria-labelledby="myPermissionLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -89,7 +89,7 @@
 					<h4 class="modal-title" >Wall Permission</h4>
 				</div>
 				<div class="modal-body">
-					<h4>Access permission</h4>
+					<h4>Edit permission</h4>
 					<!-- radio -->
 					<label class="radio-inline">
 						<input type="radio" name="access-permission" id="my-private" value="private"> Private
@@ -159,8 +159,8 @@
 									</h3>
 									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 									<p>
-									<a class="btn btn-primary" href="{% url 'pw info' pw.id %}">Access</a>
-									<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
+									<a class="btn btn-primary" href="{% url 'pw info' pw.id %}">Edit</a>
+									<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myInfoWallModal">Info</a>
 									<input type="hidden" name="wid" value="{{ pw.id }}">
 									<a class="btn btn-danger" href="{% url 'delete pw' pw.id %}">Delete</a>
 									<a class="btn btn-info my-btn-permission" data-toggle="modal" data-target="#myPermissionModal">Permission</a>
@@ -188,8 +188,8 @@
 								<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 
 								<p>
-								<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
-								<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myEditWallModal">Edit</a>
+								<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Edit</a>
+								<a class="btn btn-success my-btn-edit" data-toggle="modal" data-target="#myInfoWallModal">Info</a>
 								<input type="hidden" name="pid" value={{ pw.id }}>
 								<a type="button" class="btn btn-danger" href={% url 'delete pw' pw.id %}>Delete</a>
 								</p>
@@ -216,18 +216,19 @@
 							</h3>
 							<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 							<p>
-							<a class="btn btn-primary" href={% url 'pw info' pw.id %}>Access</a>
+							<a class="btn btn-primary" href={% url 'pw view' pw.id %}>View</a>
 							</p>
 						</div>
 					</div>
-					{% if forloop.counter == access_pws.count %}
 				</div>
-				{% else %}
-				{% cycle "" "" "</div>" %}
-			{% endif %}
-			{% endfor %}
-		</div>
-	</div> <!-- /.tab-content -->
+				{% if forloop.counter == access_pws.count %}
+			</div>
+			{% else %}
+			{% cycle "" "" "</div>" %}
+		{% endif %}
+		{% endfor %}
+	</div>
+</div> <!-- /.tab-content -->
 </div>
 	</div>
 </div>

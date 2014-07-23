@@ -25,7 +25,7 @@
 					{% cycle "<div class='row'>" "" "" %}
 						<div class="col-md-4">
 							<div class="thumbnail">
-								<img alt="300x300" src="{% url 'pw image' pw.id %}" />
+								<a href="{% url 'pw view' pw.id %}"><img alt="300x300" src="{% url 'pw image' pw.id %}" /></a>
 								<div class="caption">
 									<h3>
 										<a href="{% url 'pw info' pw.id %}">{{ pw.name }}</a>

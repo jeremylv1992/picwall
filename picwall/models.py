@@ -116,7 +116,7 @@ class PictureComment(models.Model):
 	pic = models.ForeignKey(Picture)
 	author = models.ForeignKey(WebSiteUser)
 	content = models.CharField(max_length=100)
-	published_date = models.DateField(default=datetime.now().date())
+	published_date = models.DateField(default=datetime.now())
 
 	objects = PictureCommentManage()
 
@@ -213,6 +213,26 @@ class PhotoWall(models.Model):
 		for attr in ff:
 			d[attr] = str(getattr(self, attr))
 		return d
+
+class PhotowallCommentManager(models.Manager):
+	def create_photowall_comment(self, author, wid, content):
+		pw = PhotoWall.objects.get(pk=wid)
+		published_date = datetime.today()
+		pw_comment = self.create(author=author, pw=pw, content=content, published_date=published_date)
+		return pw_comment
+
+class PhotowallComment(models.Model):
+	pw = models.ForeignKey(PhotoWall)
+	author = models.ForeignKey(WebSiteUser)
+	content = models.CharField(max_length=100)
+	published_date = models.DateField(default=datetime.now())
+
+	objects = PhotowallCommentManager()
+
+	def __unicode__(self):
+		return self.content + '@' + str(self.pw)
+	class Meta:
+		ordering = ('published_date', )
 
 class PhotoInformationWallManager(models.Manager):
 	def create_photowall_information(self, pic, pw, left, top, width, height):

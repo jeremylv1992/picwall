@@ -1,6 +1,8 @@
 var APP_NAME = 'picwall';
 var ROOT_DIR = '/' + APP_NAME + '/';
 
+var GOTO_PICTURE_INFO = ROOT_DIR+'picture/info/';
+
 var GET_PICUTRE = ROOT_DIR+'picture/image/';
 var GET_USER_PICTURES = ROOT_DIR+'user/pics/';
 

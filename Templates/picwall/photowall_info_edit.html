@@ -1,0 +1,33 @@
+{% extends 'picwall/base.html' %}
+{% load staticfiles %}
+
+{% block extrahead %}
+<link rel="stylesheet" href={% static 'css/jquery-ui-1.10.4.custom.min.css' %}>
+<link rel="stylesheet" href={% static 'css/custom/photowall.css' %}>
+<script src={% static 'js/custom/photowall_info_edit.js' %}></script>
+<script src={% static 'js/jquery-ui-1.10.4.custom.min.js' %}></script>
+{% endblock %}
+
+{% block extrabody %}
+
+<div class="container-fluid">
+	<div class="row" id="contain">
+		<div id="down">
+			<div id="sidebar">
+				<div class="col-xs-5">
+					<button type="button" class="btn btn-primary" id="save-btn">Save</button>
+				</div>
+				<div class="col-xs-5">
+					<button type="button" class="btn btn-danger" id="delete-btn">Delete</button>
+				</div>
+			</div>
+			<div id="main"> 
+				<div id="board">
+					<img src={% static 'img/corkboard.jpg' %}>
+				</div> 
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
