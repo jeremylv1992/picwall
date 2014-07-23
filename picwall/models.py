@@ -135,8 +135,13 @@ class PhotoWallManager(models.Manager):
 		photowall.manage_users.add(creator)
 		photowall.save()
 
+		if not os.path.exists(IMAGE_DIR):
+			os.mkdir(IMAGE_DIR)
+		if not os.path.exists(PHOTOWALL_DIR):
+			os.mkdir(PHOTOWALL_DIR)
 		defaultFile = open(IMAGE_DIR+'default/corkboard.jpg', "rb")
-		imageFile = open(PHOTOWALL_DIR+str(photowall.id), "wb")
+		imageUrl = os.path.join(PHOTOWALL_DIR, str(photowall.id))
+		imageFile = open(PHOTOWALL_DIR + str(photowall.id), "wb")
 
 		imageData = defaultFile.read()
 		imageFile.write(imageData)
