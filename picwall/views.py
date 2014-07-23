@@ -409,11 +409,16 @@ def save_pw(request):
 	except WebSiteUser.DoesNotExist:
 		return HttpResponseRedirect(LOGIN_PAGE)
 
-	if request.method == 'GET':
+	if request.method == 'GET' or request.method == 'POST':
 		import base64
-		text = request.GET['text'];
-		wid = request.GET['wid']
-		imageData = base64.b64decode(request.GET['data'])
+		if request.method == 'GET':
+			text = request.GET['text'];
+			wid = request.GET['wid']
+			imageData = base64.b64decode(request.GET['data'])
+		else:
+			text = request.POST['text'];
+			wid = request.POST['wid']
+			imageData = base64.b64decode(request.POST['data'])
 		pw = PhotoWall.objects.get(pk=wid)
 
 		imageFile = open(PHOTOWALL_DIR+wid, "wb")

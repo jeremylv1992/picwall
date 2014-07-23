@@ -319,6 +319,7 @@ function save()
 	wid = wid[wid.length-2];
 
 	$.ajax({ url : SAVE_PHOTOWALL,
+		type: "POST",
 		data : {"wid":wid,"text":jsonStr,"data":b64 },
 		success: function(data){
 			alert(data);
