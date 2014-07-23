@@ -4,8 +4,9 @@
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+DATABASE_DEBUG = FALSE
 
 ADMINS = (
 )
@@ -14,7 +15,7 @@ MANAGERS = ADMINS
 
 DATABASES = {}
 
-if DEBUG:
+if DATABASE_DEBUG:
 	DATABASES = {
 	    'default': {
 	        'ENGINE': 'django.db.backends.mysql',
