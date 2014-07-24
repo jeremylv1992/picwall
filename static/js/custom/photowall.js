@@ -1,10 +1,29 @@
 ﻿window.onload = function () {
+	$("#create-warn").hide();
 	$("#wall-submit-btn").click(function () {
-		$("#wall-form").submit();
+		var title = $("#wall-title").val();
+		if (title != "") {
+			$("#wall-form").submit();
+		} else {
+			$('#create-warn').show();
+		}
+	});
+
+	$('#edit-warn').hide();
+	$('#create-warn-cancel-btn').click(function() {
+		$('#create-warn').hide();
 	});
 
 	$("#edit-submit-btn").click(function () {
-		$("#edit-form").submit();
+		var title = $("#edit-title").val();
+		if (title != "") {
+			$("#edit-form").submit();
+		} else {
+			$('#edit-warn').show();
+		}
+	});
+	$('#edit-warn-cancel-btn').click(function() {
+		$('#edit-warn').hide();
 	});
 
 	$("#change-permission-btn").click(function() {

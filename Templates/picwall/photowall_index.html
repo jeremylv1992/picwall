@@ -27,6 +27,12 @@
 			<div class="modal-body">                
 				<form role="form" id="wall-form" action="{% url 'create pw' %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
+					<div id="create-warn">
+						<div class="alert alert-warning alert-dismissible fade in" role="alert" >
+							<button type="button" class="close" id="create-warn-cancel-btn"><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+							<strong>Warning!</strong> please input the name.
+						</div>
+					</div> 
 					<div class="form-group">
 						<label for="wall-title">Name of Photo Wall</label>
 						<input type="text" class="form-control" id="wall-title" name="name" placeholder="input the name of photo wall"/>
@@ -40,7 +46,7 @@
 
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" id="wall-submit-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+				<button type="submit" id="wall-submit-btn" class="btn btn-default" >Submit</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -58,6 +64,12 @@
 			<div class="modal-body">                
 				<form role="form" id="edit-form" action="{% url 'edit pw' %}" method="post" enctype="multipart/form-data">
 					{% csrf_token %}
+					<div id="edit-warn">
+						<div class="alert alert-warning alert-dismissible fade in" role="alert" >
+							<button type="button" class="close" id='edit-warn-cancel-btn'><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+							<strong>Warning!</strong> please input the name.
+						</div>
+					</div> 
 					<div class="form-group">
 						<label for="edit-title">Name of Photo Wall</label>
 						<input type="text" class="form-control" id="edit-title" name="name" placeholder="input the name of photo wall">
@@ -72,7 +84,7 @@
 
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" id="edit-submit-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+				<button type="submit" id="edit-submit-btn" class="btn btn-default">Submit</button>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

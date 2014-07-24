@@ -2,7 +2,6 @@
 {% load staticfiles %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="{% static 'css/row-fluid.css' %}">
 <script src={% static 'js/custom/picture.js' %}></script>
 {% endblock %}
 
@@ -27,8 +26,14 @@
 			</div>
 
 			<div class="modal-body">                
-				<form role="form" id="photo-form" action={% url 'upload pic' %} method="post" enctype="multipart/form-data">                  
+				<form role="form" id="photo-form" action={% url 'upload pic' %} method="post" enctype="multipart/form-data">
 					{% csrf_token %}
+					<div id="upload-warn">
+						<div class="alert alert-warning alert-dismissible fade in" role="alert" >
+							<button type="button" class="close" id='upload-warn-cancel-btn'><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+							<strong>Warning!</strong> please input the name.
+						</div>
+					</div> 
 					<div class="form-group">
 						<label for="input-img">Photo</label>
 						<div id="preview"></div>
@@ -55,7 +60,7 @@
 
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" id="photo-submit-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+				<button type="submit" id="photo-submit-btn" class="btn btn-default">Submit</button>
 			</div>
 		</div> <!-- /.modal-content -->
 	</div> <!-- /.modal-dialog -->
@@ -73,6 +78,12 @@
 			<div class="modal-body">                
 				<form role="form" id="edit-form" action={% url 'edit pic' %} method="post" enctype="multipart/form-data">
 					{% csrf_token %}
+					<div id="edit-warn">
+						<div class="alert alert-warning alert-dismissible fade in" role="alert" >
+							<button type="button" class="close" id='edit-warn-cancel-btn'><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+							<strong>Warning!</strong> please input the name.
+						</div>
+					</div> 
 					<div class="form-group">
 						<label for="edit-title">Title of photo</label>
 						<input type="text" class="form-control" id="edit-title" name="name" placeholder="input the title of your photo"/>
@@ -94,29 +105,40 @@
 
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				<button type="submit" id="edit-submit-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
+				<button type="submit" id="edit-submit-btn" class="btn btn-default">Submit</button>
 			</div>
 		</div> <!-- /.modal-content -->
 	</div> <!-- /.modal-dialog -->
 </div>
 
 <!-- Add label modal -->
-<div id="addLabelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div id="addLabelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="addNewLabel" aria-hidden="true">
 	<div class="modal-dialog modal-sm">
 		<div class="modal-content">
-			<form role="form" id="add-label-form" action={% url 'create label' %} method="post">
-				{% csrf_token %}
-				<div class="modal-header">
-					<h4 class="modal-title" id="new-label-title">New Label</h4>
-				</div>
-				<div class="modal-body">
-					<input type="text" class="form-control" id="new-label" name="name" placeholder="input the new label"/>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="submit" id="add-label-btn" class="btn btn-default" data-dismiss="modal">Submit</button>
-				</div>  
-			</form>
+
+			<div class="modal-header">
+				<h4 class="modal-title" id="new-label-title">New Label</h4>
+			</div>
+
+			<div class="modal-body">
+				<form role="form" id="add-label-form" action={% url 'create label' %} method="post">
+					{% csrf_token %}
+					<div id="label-warn">
+						<div class="alert alert-warning alert-dismissible fade in" role="alert" >
+							<button type="button" class="close" id='label-warn-cancel-btn'><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+							<strong>Warning!</strong> please input the name.
+						</div>
+					</div> 
+					<div class="modal-body">
+						<input type="text" class="form-control" id="new-label" name="name" placeholder="input the new label"/>
+					</div>
+				</form>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="submit" id="add-label-btn" class="btn btn-default">Submit</button>
+			</div>  
 		</div>
 	</div>
 </div> <!-- /.Add label modal -->

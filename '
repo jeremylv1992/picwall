@@ -1,45 +1,21 @@
 ﻿window.onload = function () {
-	$("#upload-warn").hide();
 	$("#photo-submit-btn").click(function () {
 		var title = $("#img-title").val();
 		if (title != "") {
 			$("#photo-form").submit();
 		} else {
-			$('#upload-warn').show();
+			$('#photo-warn').show();
 		}
 	});
 
-	$("#upload-warn-cancel-btn").click(function() {
-		$("#upload-warn").hide();
-	});
+	$("edit-submit-btn").onclick = function () {
+		$("edit-form").submit();
+	};
+	$("#add-label-btn").onclick = function(){
+		$("add-label-form").submit();
+	};
 
-	$("#edit-warn").hide();
-	$("#edit-submit-btn").click(function () {
-		var title = $("#edit-title").val();
-		if (title != "") {
-			$("#edit-form").submit();
-		} else {
-			$('#edit-warn').show();
-		}
-	});
-
-	$("#edit-warn-cancel-btn").click(function() {
-		$("#edit-warn").hide();
-	});
-
-	$("#label-warn").hide();
-	$("#add-label-btn").click(function(){
-		var name = $("#new-label").val();
-		if (name != "") {
-			$("#add-label-form").submit();
-		} else {
-			$("#label-warn").show();
-		}
-	});
-
-	$("#label-warn-cancel-btn").click(function() {
-		$("#label-warn").hide();
-	});
+	$("#upload-warn").hide();
 
 	$('.my-btn-edit').click(function () {
 		var pid = $(this).next().attr('value');
