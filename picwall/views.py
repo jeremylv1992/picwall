@@ -560,13 +560,12 @@ def get_users(request):
 
 	if request.method == 'GET':
 		text = request.GET['username']
-		users = User.objects.filter(username__icontains=text).exclude(username='root').prefetch_related('webuser',)
-
+		users = User.objects.filter(username__icontains=text).exclude(username='root')
 		recommend_users = WebSiteUser.objects.get_recommend(user)
 
 		context = {}
 		context['user'] = user;
-		context['friends'] = users
+		context['search_users'] = users
 		context['recommend_users'] = recommend_users
 		return render(request, TEMPLATES['friend_index'], context)
 

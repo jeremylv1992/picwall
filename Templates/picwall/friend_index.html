@@ -57,6 +57,12 @@
 			<a class="btn btn-primary" href={% url 'delete friend' friend.id %}><i class="icon-minus"></i>Delete</a>
 		</div><!--/row-->
 		{% endfor %}
+		{% for user in search_users.all %}
+		<div class="col-md-4 column">
+			<h2>{{ user }}</h2>
+			<a class="btn" href={% url 'user index' user.webuser.first.id %}>View details &raquo;</a>
+		</div><!--/row-->
+		{% endfor %}
 	</div><!--/span-->
 </div><!--/.container-->
 {% endblock %}
