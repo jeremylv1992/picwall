@@ -17,9 +17,6 @@
 				<ul class="list-group">
 					{% for msg in received_messages.all %}
 					<li class="list-group-item">
-					<div class="btn-group pull-right">
-						<a href="#"><button type="button" class="btn btn-danger">Delete</button></a>
-					</div>
 					{% if msg.state == 'wait' %}
 					<div class="btn-group pull-right">
 						<a href="{% url 'make friend' msg.id %}"><button type="button" class="btn btn-primary">Accept</button></a>
@@ -39,9 +36,6 @@
 
 					{% for msg in sent_messages.all %}
 					<li class="list-group-item">
-					<div class="btn-group pull-right">
-						<a href="#"><button type="button" class="btn btn-danger">Delete</button></a>
-					</div>
 					{% if msg.state == 'wait' %}
 					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.receiver.id %}">{{ msg.receiver }}</a></h4>
 					<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">Waiting for reply</span></p>
