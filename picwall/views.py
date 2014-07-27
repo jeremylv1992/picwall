@@ -148,6 +148,7 @@ def user_index(request, uid):
 	context['owner'] = owner
 	context['received_messages'] = received_messages
 	context['sent_messages'] = sent_messages
+	context['num_of_msgs'] = len(received_messages.filter(receiver_visible=True)) + len(sent_messages.filter(sender_visible=True))
 	return render(request, TEMPLATES['user_index'], context)
 
 def log_in(request):
