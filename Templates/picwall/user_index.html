@@ -47,12 +47,13 @@
 
 					{% for msg in sent_messages.all %}
 					{% if msg.sender_visible %}
+						<li class="list-group-item">
 						{% if msg.state != 'wait' %}
 						<div class="btn-group pull-right">
 							<button type="button" class="btn btn-danger cancel-btn">Delete</button>
 							<input id="mid" type="hidden" name="mid" value={{ msg.id }}>
 						</div>
-						<li class="list-group-item">
+						{% endif %}
 						{% if msg.state == 'wait' %}
 						<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.receiver.id %}">{{ msg.receiver }}</a></h4>
 						<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">Waiting for reply</span></p>
@@ -83,7 +84,7 @@
 			<form action='#'>
 				<div class="form-group">
 					<button class="btn btn-primary" type="submit" data-toggle="modal" data-target="#messageModal">
-						<span class="glyphicon glyphicon-user"></span> Messages <span class="badge">{{ num_of_msgs }}</span>
+						<span class="glyphicon glyphicon-user"></span> Messages <span class="badge" id="num-of-msgs">{{ num_of_msgs }}</span>
 					</button>
 				</div>
 			</form>

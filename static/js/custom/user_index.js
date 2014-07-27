@@ -8,5 +8,7 @@ window.onload = function () {
 				alert(data);
 		}});
 		$(this).parent().parent().remove();
+		var cur = $("#num-of-msgs").text()-1;
+		$("#num-of-msgs").text(cur);
 	});
 };

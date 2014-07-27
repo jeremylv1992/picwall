@@ -769,9 +769,9 @@ def cancel_visble(request):
 		elif user == msg.receiver:
 			msg.receiver_visible = False
 
-		if not msg.sender_visible and not receiver_visible:
+		if not msg.sender_visible and not msg.receiver_visible:
 			msg.delete()
 		else:
 			msg.save()
 
-	return HttpResponse("OK!")
+	return HttpResponse("Success cancel one msg!")
