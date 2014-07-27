@@ -1,5 +1,5 @@
-import django
 from __future__ import division
+import django
 from django.db import models
 from django.utils.timezone import utc
 from django.contrib.auth import authenticate, login, logout
