@@ -39,10 +39,10 @@ class WebSiteUserManager(models.Manager):
 		recommend_users = WebSiteUser.objects.filter(id__in=recommend_ids)
 		return recommend_users
 
-
 class WebSiteUser(models.Model):
 	user = models.ForeignKey(User, related_name="webuser")
 	friends = models.ManyToManyField("self")
+
 	objects = WebSiteUserManager()
 
 	def __unicode__(self):
@@ -61,6 +61,20 @@ class PictureLabelManager(models.Manager):
 		label = self.create(owner=owner, name=name)
 		return label
 
+class PictureManager(models.Manager):
+	def create_picture(self, name, author, description, label):
+		upload_time = datetime.utcnow().replace(tzinfo=utc)
+		picture = self.create(name=name, author=author, description=description, upload_time = upload_time, label=label)
+		return picture
+	def save_picture(self, pic, name, description, label):
+		pic.name = name
+		pic.description = description
+		pic.label = label
+		pic.save()
+	def get_access_pictures(self, user):
+		pics = user.picture_set.all()
+		return pics
+
 class PictureLabel(models.Model):
 	name = models.CharField(max_length=10)
 	owner = models.ForeignKey(WebSiteUser, related_name="user_labels")
@@ -68,22 +82,6 @@ class PictureLabel(models.Model):
 	objects = PictureLabelManager()
 	def __unicode__(self):
 		return self.name
-
-class PictureManager(models.Manager):
-	def create_picture(self, name, author, description, label):
-		upload_time = datetime.utcnow().replace(tzinfo=utc)
-		picture = self.create(name=name, author=author, description=description, upload_time = upload_time, label=label)
-		return picture
-	def save_picture(self, pid, name, description, label):
-		pic = self.get(pk=pid)
-		if pic is not None:
-			pic.name = name
-			pic.description = description
-			pic.label = label
-			pic.save()
-	def get_access_pictures(self, user):
-		pics = user.picture_set.all()
-		return pics
 
 class Picture(models.Model):
 	name = models.CharField(max_length = 32, default='name')
@@ -190,10 +188,10 @@ class PhotoWall(models.Model):
 	PUBLIC = 'public'
 
 	PERMISSION_CHOICES = (
-		(PRIVATE, 'Private'),
-		(FRIEND, 'Friend'),
-		(PUBLIC, 'Pulbic'),
-	)
+			(PRIVATE, 'Private'),
+			(FRIEND, 'Friend'),
+			(PUBLIC, 'Pulbic'),
+			)
 	access_permission = models.CharField(max_length=10, choices=PERMISSION_CHOICES, default=PRIVATE)
 
 	create_date = models.DateField(default=datetime.now())
@@ -215,8 +213,7 @@ class PhotoWall(models.Model):
 		return d
 
 class PhotowallCommentManager(models.Manager):
-	def create_photowall_comment(self, author, wid, content):
-		pw = PhotoWall.objects.get(pk=wid)
+	def create_photowall_comment(self, author, pw, content):
 		published_date = datetime.today()
 		pw_comment = self.create(author=author, pw=pw, content=content, published_date=published_date)
 		return pw_comment
@@ -234,7 +231,7 @@ class PhotowallComment(models.Model):
 	class Meta:
 		ordering = ('published_date', )
 
-class PhotoInformationWallManager(models.Manager):
+class PhotoInformationManager(models.Manager):
 	def create_photowall_information(self, pic, pw, left, top, width, height):
 		pwinfo = self.create(picture=pic, photowall=pw, left=left, top=top, width=width, height=height)
 		return pwinfo
@@ -248,7 +245,7 @@ class PhotoInformation(models.Model):
 	width = models.CharField(max_length=16)
 	height = models.CharField(max_length=16)
 
-	objects = PhotoInformationWallManager()
+	objects = PhotoInformationManager()
 
 	def toDICT(self):
 		ff = []
@@ -275,11 +272,11 @@ class AskForFriendMessage(models.Model):
 	ACCEPT = 'accept'
 	REJECT = 'reject'
 	STATE_CHOICES = (
-		(UNDEFINE, 'Unknown'),
-		(WAIT, 'Wait'),
-		(ACCEPT, 'Accept'),
-		(REJECT, 'ReJect'),
-	)
+			(UNDEFINE, 'Unknown'),
+			(WAIT, 'Wait'),
+			(ACCEPT, 'Accept'),
+			(REJECT, 'ReJect'),
+			)
 	state = models.CharField(max_length=10, choices=STATE_CHOICES, default=UNDEFINE)
 
 	objects = MessageManager()

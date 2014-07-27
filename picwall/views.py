@@ -248,13 +248,16 @@ def edit_pic(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	if request.method == 'POST':
-		pid = request.POST['pid']
+		pic = get_object_or_404(Picture, pk=request.POST['pid'])
 		name = request.POST['name']
 		description = request.POST['description']
 		lid = request.POST['label']
 		label = PictureLabel.objects.get(pk=lid)
 
-		Picture.objects.save_picture(pid, name, description, label)
+		if user != pic.author:
+			return return_origin_page(request);
+
+		Picture.objects.save_picture(pic, name, description, label)
 
 	return return_origin_page(request)
 
@@ -349,9 +352,13 @@ def pw_comment(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	if request.method == 'POST':
-		wid = request.POST['wid']
+		pw = get_object_or_404(PhotoWall, pk=request.POST['wid'])
 		content = request.POST['content']
-		comment = PhotowallComment.objects.create_photowall_comment(user, wid, content)
+
+		if user not in pw.access_users.all():
+			return return_origin_page(request)
+
+		comment = PhotowallComment.objects.create_photowall_comment(user, pw, content)
 	
 	return return_origin_page(request)
 
@@ -416,7 +423,11 @@ def edit_pw(request):
 		wid = request.POST['wid']
 		name = request.POST['name']
 		description = request.POST['description']
-		pws = get_object_or_404(PhotoWall, pk=wid)
+		pw = get_object_or_404(PhotoWall, pk=wid)
+
+		if user not in pw.access_users.all():
+			return return_origin_page(request)
+
 		PhotoWall.objects.save_photowall(pw, name, description)
 
 	return return_origin_page(request)
@@ -428,10 +439,13 @@ def get_pics_of_pw(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	if request.method == 'GET':
-		wid = request.GET['wid']
-		wall = get_object_or_404(PhotoWall, pk=wid)
+		pw = get_object_or_404(PhotoWall, pk=request.GET['wid'])
+
+		if user not in pw.access_users.all():
+			return HttpResponse("")
+
 		l = []
-		for pic_in in PhotoInformation.objects.filter(photowall=wall):
+		for pic_in in PhotoInformation.objects.filter(photowall=pw):
 			l.append(pic_in.toDICT())
 		return HttpResponse(json.dumps(l, cls=CJsonEncoder))
 
@@ -454,6 +468,9 @@ def save_pw(request):
 			wid = request.POST['wid']
 			imageData = base64.b64decode(request.POST['data'])
 		pw = PhotoWall.objects.get(pk=wid)
+
+		if user not in pw.manage_users.all():
+			return HttpResponse("You can't save the photowall!");
 
 		imageFile = open(PHOTOWALL_DIR+wid, "wb")
 		imageFile.write(imageData)
@@ -546,9 +563,12 @@ def get_pw_info(request):
 		return HttpResponseRedirect(LOGIN_PAGE)
 
 	if request.method == 'POST':
-		wid = request.POST["wid"]
-		wall = get_object_or_404(PhotoWall, pk=wid)
-		return HttpResponse(json.dumps(wall.toDICT(), cls=CJsonEncoder))
+		pw = get_object_or_404(PhotoWall, pk=request.POST['wid'])
+
+		if user not in pw.manage_users.all():
+			return return_origin_page(request)
+
+		return HttpResponse(json.dumps(pw.toDICT(), cls=CJsonEncoder))
 
 	return HttpResponse("")
 
@@ -580,6 +600,10 @@ def get_pw_permission(request):
 	if request.method == 'POST':
 		wid = request.POST['wid']
 		pw = get_object_or_404(PhotoWall, pk=wid)
+
+		if user != pw.creator:
+			return return_origin_page(request)
+
 		if user == pw.creator:
 			data = {
 					"access_permission": pw.access_permission,
@@ -605,31 +629,32 @@ def set_pw_permission(request):
 	if request.method == 'POST':
 		wid = request.POST['wid']
 		pw = get_object_or_404(PhotoWall, pk=wid)
-		if user == pw.creator:
+		if user != pw.creator:
+			return return_origin_page(request)
 
-			pw.access_users.clear()
-			access_permission = request.POST['access-permission']
-			if access_permission == 'private':
-				pw.access_permission = PhotoWall.PRIVATE
+		pw.access_users.clear()
+		access_permission = request.POST['access-permission']
+		if access_permission == 'private':
+			pw.access_permission = PhotoWall.PRIVATE
+			pw.access_users.add(user)
+		if access_permission == 'friend':
+			pw.access_permission = PhotoWall.FRIEND
+			pw.access_users.add(user)
+			for friend in user.friends.all():
+				pw.access_users.add(friend)
+		if access_permission == 'public':
+			pw.access_permission = PhotoWall.PUBLIC
+			for user in WebSiteUser.objects.all():
 				pw.access_users.add(user)
-			if access_permission == 'friend':
-				pw.access_permission = PhotoWall.FRIEND
-				pw.access_users.add(user)
-				for friend in user.friends.all():
-					pw.access_users.add(friend)
-			if access_permission == 'public':
-				pw.access_permission = PhotoWall.PUBLIC
-				for user in WebSiteUser.objects.all():
-					pw.access_users.add(user)
 
-			pw.manage_users.clear()
-			pw.manage_users.add(user)
-			manage_permission = request.POST.getlist('manager')
-			for uid in manage_permission:
-				member = get_object_or_404(WebSiteUser, pk=uid)
-				pw.manage_users.add(member)
+		pw.manage_users.clear()
+		pw.manage_users.add(user)
+		manage_permission = request.POST.getlist('manager')
+		for uid in manage_permission:
+			member = get_object_or_404(WebSiteUser, pk=uid)
+			pw.manage_users.add(member)
 
-			pw.save()
+		pw.save()
 
 	return return_origin_page(request);
 
@@ -667,7 +692,8 @@ def send_message(request, uid):
 	sender = user
 	receiver = get_object_or_404(WebSiteUser, pk=uid)
 
-	msg = AskForFriendMessage.objects.create_message(sender, receiver)
+	if sender != receiver:
+		msg = AskForFriendMessage.objects.create_message(sender, receiver)
 
 	return return_origin_page(request)
 
