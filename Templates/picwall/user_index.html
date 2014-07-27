@@ -96,7 +96,7 @@
 			{% cycle "<div class='row clearfix'>" "" "" "" %}
 				<div class="col-md-3">
 					<div class="thumbnail">
-						<img alt="300x300" src="{% url 'pw image' pw.id %}" />
+						<a href="{% url 'pw view' pw.id %}"><img alt="300x300" src="{% url 'pw image' pw.id %}" /></a>
 						<div class="caption">
 							<a href="{% url 'pw view' pw.id %}"><h3> {{ pw.name }} </h3></a>
 							<p class="text-right"><small>-- {{ pw.creator }}</small></p>

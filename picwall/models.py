@@ -22,7 +22,7 @@ class WebSiteUserManager(models.Manager):
 	def get_recommend(self, user):
 		recommend = []
 		for u in self.all():
-			if u == user:
+			if u == user or u in user.friends.all():
 				continue
 			d = {}
 			d['id'] = u.id
