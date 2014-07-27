@@ -1,3 +1,4 @@
+import django
 from __future__ import division
 from django.db import models
 from django.utils.timezone import utc
@@ -77,6 +78,7 @@ def index(request):
 	context['hot_pws'] = hot_pws
 	context['random_pws'] = random_pws
 	context['new_pws'] = new_pws
+	context['text'] = "django version: " + django.get_version()
 
 	return render(request, TEMPLATES['index'], context)
 
