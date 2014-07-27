@@ -43,7 +43,7 @@
 								{% for comment in comments %}
 								<li>
 								<div class="commenterImage">
-									<img src="http://lorempixel.com/50/50/people/6" />
+									<img src="{% url 'user image' comment.author.id %}" />
 								</div>
 								<div class="commentText">
 									<p class="">{{ comment.content }}</p> <span class="date sub-text">on {{ comment.published_date }}</span>
