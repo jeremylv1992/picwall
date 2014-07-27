@@ -78,7 +78,6 @@ def index(request):
 	context['hot_pws'] = hot_pws
 	context['random_pws'] = random_pws
 	context['new_pws'] = new_pws
-	context['text'] = "django version: " + django.get_version()
 
 	return render(request, TEMPLATES['index'], context)
 
