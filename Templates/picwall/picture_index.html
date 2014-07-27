@@ -163,7 +163,7 @@
 					{% cycle "<div class='row'>" "" "" ""%}
 						<div class="col-md-3">
 							<div class="thumbnail">
-								<img class="new-img-circle" alt="100x100" src={% url 'pic image' pic.id %}>
+								<img alt="100x100" src={% url 'pic image' pic.id %}>
 								<div class="caption">
 									<a class="btn btn-primary btn-sm" href={% url 'pic info' pic.id %}>Access</a>
 									<a class="btn btn-success btn-sm my-btn-edit" data-toggle="modal" data-target=".change-label">Edit</a>

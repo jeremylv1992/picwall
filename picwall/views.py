@@ -23,6 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 IMAGE_DIR = os.path.join(BASE_DIR, 'files/images/')
 PICTURE_DIR = os.path.join(IMAGE_DIR, 'picture/')
 PHOTOWALL_DIR = os.path.join(IMAGE_DIR, 'photowall/')
+USER_DIR = os.path.join(IMAGE_DIR, 'user/')
 
 APP_NAME = 'picwall'
 ROOT_PATH = '/'+APP_NAME+'/'
@@ -205,11 +206,27 @@ def register(request):
 					register_prompt = 'Succeed to register! Now Please log in!'
 					user = authenticate(username = name, password = pwd)
 					login(request, user)
+					icon = request.FILES['icon']
+					imageUrl = os.path.join(USER_DIR, str(webuser.id))
+					imageFile = open(imageUrl, "wb")
+					if icon is not None:
+						for chunk in icon.chunks():  
+							imageFile.write(chunk)  
+						imageFile.close()   
+					else:
+						defaultFile = open(IMAGE_DIR+'default/corkboard.jpg', "rb")
+
+						imageDate = defaultFile.read()
+						imageFile.write(imageDate)
+
+						defaultFile.close()
+						imageFile.close()
 					return HttpResponseRedirect(INDEX_PAGE)
 				else:
 					register_prompt = 'The name have been registered!'
 			else:
 				register_prompt = 'Your email have been registered!'
+
 
 		context = {}
 		context['user'] = ''
@@ -217,6 +234,15 @@ def register(request):
 		return render(request, TEMPLATES['register'], context)
 	else:
 		return HttpResponseRedirect(INDEX_PAGE)
+
+def user_image(request, uid):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	image = open(os.path.join(USER_DIR, str(uid)), "rb").read()
+	return HttpResponse(image)
 
 def upload_pic(request):
 	try:
@@ -361,7 +387,7 @@ def pw_comment(request):
 			return return_origin_page(request)
 
 		comment = PhotowallComment.objects.create_photowall_comment(user, pw, content)
-	
+
 	return return_origin_page(request)
 
 

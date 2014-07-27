@@ -12,6 +12,7 @@ urlpatterns = patterns('',
 	url(r'^user/(?P<uid>\d+)/$', views.user_index, name="user index"),
 	url(r'^user/info/$', views.get_user_info, name='get user info'),
 	url(r'^user/pics/$', views.get_user_pics, name='get user pics'),
+	url(r'^user/image/(?P<uid>\d+)/$', views.user_image, name='user image'),
 
 	# pic
 	url(r'^picture/$', views.picture_index, name='pic index'),

@@ -52,9 +52,14 @@
 	<div class="col-md-9 column">
 		{% for friend in friends.all %}
 		<div class="col-md-4 column">
-			<h2>{{ friend }}</h2>
-			<a class="btn" href={% url 'user index' friend.id %}>View details &raquo;</a>
-			<a class="btn btn-primary" href={% url 'delete friend' friend.id %}><i class="icon-minus"></i>Delete</a>
+			<div class="thumbnail">
+				<img alt="100x100" src={% url 'user image' friend.id %}>
+				<div class="caption">
+					<a href="{% url 'user index' friend.id %}"><h3>{{ friend }}</h3></a>
+					<a class="btn" href={% url 'user index' friend.id %}>View details &raquo;</a>
+					<a class="btn btn-primary" href={% url 'delete friend' friend.id %}><i class="icon-minus"></i>Delete</a>
+				</div>
+			</div>
 		</div><!--/row-->
 		{% endfor %}
 		{% for user in search_users.all %}

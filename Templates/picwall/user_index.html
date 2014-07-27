@@ -80,6 +80,9 @@
 
 		<!-- column 2 -->
 		<div class="col-md-2 column">
+			<div class="thumbnail">
+				<img class="img-respnsive" alt="100x100" src={% url 'user image' owner.id %}>
+			</div>
 			{% if owner == user %}
 			<form action='#'>
 				<div class="form-group">
