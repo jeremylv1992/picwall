@@ -98,9 +98,7 @@
 					<div class="thumbnail">
 						<img alt="300x300" src="{% url 'pw image' pw.id %}" />
 						<div class="caption">
-							<h3>
-								{{ pw.name }}
-							</h3>
+							<a href="{% url 'pw view' pw.id %}"><h3> {{ pw.name }} </h3></a>
 							<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 						</div>
 					</div>
