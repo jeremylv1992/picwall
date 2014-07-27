@@ -753,3 +753,24 @@ def make_friend(request, mid):
 			msg.save()
 
 	return return_origin_page(request)
+
+def cancel_visble(request):
+	try:
+		user = get_user(request.user)
+	except WebSiteUser.DoesNotExist:
+		return HttpResponseRedirect(LOGIN_PAGE)
+
+	if request.method == "POST":
+		msg = get_object_or_404(AskForFriendMessage, pk=request.POST['mid'])
+
+		if user == msg.sender:
+			msg.sender_visible = False
+		elif user == msg.receiver:
+			msg.receiver_visible = False
+
+		if not msg.sender_visible and not receiver_visible:
+			msg.delete()
+		else:
+			msg.save()
+
+	return HttpResponse("OK!")

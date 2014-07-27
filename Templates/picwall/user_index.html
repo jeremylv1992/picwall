@@ -1,9 +1,12 @@
 {% extends 'picwall/base.html' %}
+{% load staticfiles %}
 
 {% block extrahead %}
+<script src="{% static 'js/custom/user_index.js' %}"></script>
 {% endblock %}
 
 {% block extrabody %}
+{% if user == owner %}
 <!-- Modal -->
 <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -16,22 +19,30 @@
 			<div class="modal-body">				
 				<ul class="list-group">
 					{% for msg in received_messages.all %}
-					<li class="list-group-item">
-					{% if msg.state == 'wait' %}
-					<div class="btn-group pull-right">
-						<a href="{% url 'make friend' msg.id %}"><button type="button" class="btn btn-primary">Accept</button></a>
-						<a href="{% url 'ignore message' msg.id %}"><button type="button" class="btn btn-default">Ingore</button></a>
-					</div>
-					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
-					<p class="list-group-item-text">{{ msg.ask_date }}
-					{% elif msg.state == 'accept' %}
-					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
-					<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">I Accepted</span></p>
-					{% elif msg.state == 'reject' %}
-					<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
-					<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">I Rejected</span></p>
+					{% if msg.receiver_visible %}
+						<li class="list-group-item">
+						{% if msg.state != 'wait' %}
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-danger cancel-btn">Delete</button>
+							<input id="mid" type="hidden" name="mid" value={{ msg.id }}>
+						</div>
+						{% endif %}
+						{% if msg.state == 'wait' %}
+						<div class="btn-group pull-right">
+							<a href="{% url 'make friend' msg.id %}"><button type="button" class="btn btn-primary">Accept</button></a>
+							<a href="{% url 'ignore message' msg.id %}"><button type="button" class="btn btn-default">Ingore</button></a>
+						</div>
+						<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
+						<p class="list-group-item-text">{{ msg.ask_date }}
+						{% elif msg.state == 'accept' %}
+						<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
+						<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">I Accepted</span></p>
+						{% elif msg.state == 'reject' %}
+						<h4 class="list-group-item-heading "><a href="{% url 'user index' msg.sender.id %}">{{ msg.sender }}</a></h4>
+						<p class="list-group-item-text">{{ msg.ask_date }} <span class="label label-default">I Rejected</span></p>
+						{% endif %}
+						</li>
 					{% endif %}
-					</li>
 					{% endfor %}
 
 					{% for msg in sent_messages.all %}
@@ -53,6 +64,7 @@
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+{% endif %}
 
 <!-- container -->
 <div class="container">

@@ -12,6 +12,7 @@ var GET_PW_INFO = ROOT_DIR+'photowall/info/'
 var GET_PW_PERMISSION = ROOT_DIR+'photowall/get_permission/'
 var GET_PHOTOWALL_PICTURES = ROOT_DIR+'photowall/pics/'
 var SAVE_PHOTOWALL = ROOT_DIR+'photowall/save/';
+var CANCEL_MSG = ROOT_DIR+'friend/msg/cancel/';
 
 jQuery(document).ajaxSend(function(event, xhr, settings) {  
     function getCookie(name) {  

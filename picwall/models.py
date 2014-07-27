@@ -279,6 +279,9 @@ class AskForFriendMessage(models.Model):
 			)
 	state = models.CharField(max_length=10, choices=STATE_CHOICES, default=UNDEFINE)
 
+	sender_visible = models.BooleanField(default=True)
+	receiver_visible = models.BooleanField(default=True)
+
 	objects = MessageManager()
 
 	def __unicode__(self):

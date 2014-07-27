@@ -46,4 +46,5 @@ urlpatterns = patterns('',
 	url(r'^friend/delete/(?P<uid>\d+)/$', views.delete_friend, name='delete friend'),
 	url(r'^friend/create/(?P<mid>\d+)/$', views.make_friend, name='make friend'),
 	url(r'^friend/ignore/(?P<mid>\d+)$', views.ignore_message, name='ignore message'),
+	url(r'^friend/msg/cancel/$', views.cancel_visble, name='cancel visble'),
 )
