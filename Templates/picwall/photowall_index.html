@@ -167,8 +167,7 @@
 							<div class="thumbnail">
 								<img alt="250x250" class="img-responsive" src="{% url 'pw image' pw.id %}" />
 								<div class="caption">
-									<h3> {{ pw.name }}
-									</h3>
+									<h3> {{ pw.name }} </h3>
 									<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 									<p>
 									<a class="btn btn-primary" href="{% url 'pw info' pw.id %}">Edit</a>
@@ -223,9 +222,7 @@
 					<div class="thumbnail">
 						<img alt="250x250" class="img-responsive" src="{% url 'pw image' pw.id %}" />
 						<div class="caption">
-							<h3>
-								{{ pw.name }}
-							</h3>
+							<h3> {{ pw.name }} </h3>
 							<p class="text-right"><small>-- {{ pw.creator }}</small></p>
 							<p>
 							<a class="btn btn-primary" href={% url 'pw view' pw.id %}>View</a>

@@ -206,10 +206,10 @@ def register(request):
 					register_prompt = 'Succeed to register! Now Please log in!'
 					user = authenticate(username = name, password = pwd)
 					login(request, user)
-					icon = request.FILES['icon']
 					imageUrl = os.path.join(USER_DIR, str(webuser.id))
 					imageFile = open(imageUrl, "wb")
-					if icon is not None:
+					if 'icon' in request.FILES:
+						icon = request.FILES['icon']
 						for chunk in icon.chunks():  
 							imageFile.write(chunk)  
 						imageFile.close()   
@@ -672,8 +672,8 @@ def set_pw_permission(request):
 				pw.access_users.add(friend)
 		if access_permission == 'public':
 			pw.access_permission = PhotoWall.PUBLIC
-			for user in WebSiteUser.objects.all():
-				pw.access_users.add(user)
+			for u in WebSiteUser.objects.all():
+				pw.access_users.add(u)
 
 		pw.manage_users.clear()
 		pw.manage_users.add(user)

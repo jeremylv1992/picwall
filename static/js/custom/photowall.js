@@ -51,12 +51,23 @@
 				var isManager = data['managers'][i]['isManager'];
 				console.log(id);
 				if (isManager) {
-					alert('hehe');
 					$(id).attr('checked', true);
 				} else {
 					$(id).attr('checked', false);
 				}
 			}
+			if($('#my-private').is(":checked")) {
+				$('table input[type=checkbox]').attr('disabled', true);
+			} else {
+				$('table input[type=checkbox]').removeAttr('disabled', false);
+			}
 		}, "json");
+	});
+	$('input[type=radio]').change(function () {
+		if($('#my-private').is(":checked")) {
+			$('table input[type=checkbox]').attr('disabled', true);
+		} else {
+			$('table input[type=checkbox]').removeAttr('disabled', false);
+		}
 	});
 };
