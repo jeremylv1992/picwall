@@ -1,4 +1,4 @@
-var APP_NAME = 'picwall';
+var APP_NAME = 'photowall';
 var ROOT_DIR = '/' + APP_NAME + '/';
 
 var GOTO_PICTURE_INFO = ROOT_DIR+'picture/info/';

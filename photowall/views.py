@@ -11,7 +11,7 @@ from django.core import serializers
 from datetime import datetime
 from datetime import date
 
-from picwall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel, AskForFriendMessage, PhotowallComment
+from photowall.models import Picture, PictureComment, PhotoWall, PhotoInformation, PhotoInformation, WebSiteUser, PictureLabel, AskForFriendMessage, PhotowallComment
 
 from myForms import Login_Form
 
@@ -25,7 +25,7 @@ PICTURE_DIR = os.path.join(IMAGE_DIR, 'picture/')
 PHOTOWALL_DIR = os.path.join(IMAGE_DIR, 'photowall/')
 USER_DIR = os.path.join(IMAGE_DIR, 'user/')
 
-APP_NAME = 'picwall'
+APP_NAME = 'photowall'
 ROOT_PATH = '/'+APP_NAME+'/'
 
 LOGIN_PAGE = ROOT_PATH+'login/'

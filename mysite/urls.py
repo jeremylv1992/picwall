@@ -5,7 +5,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
 		url(r'^admin/', include(admin.site.urls)),
-		url(r'^picwall/', include('picwall.urls')),
+		url(r'^photowall/', include('photowall.urls')),
 		)
 
 from django.conf import settings

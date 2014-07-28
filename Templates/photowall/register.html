@@ -1,4 +1,4 @@
-{% extends 'picwall/base.html' %}
+{% extends 'photowall/base.html' %}
 {% load staticfiles %}
 
 {% block extrahead %}
@@ -22,7 +22,7 @@
 
 				</div>
 				<div class="panel-body">
-					<form class="form-horizontal" role="form" action="/picwall/register/" method="post" enctype="multipart/form-data">
+					<form class="form-horizontal" role="form" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
 						{% csrf_token  %}
 						<div class="form-group">
 							<label for="" class="col-sm-3 control-label">UserName</label>
